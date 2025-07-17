@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu1_dotan"
+        android:title="הוספת פריטים של דותן לסל האישי"
+        android:tooltipText="הוספת פריטים של דותן לסל האישי"
+        android:icon="@drawable/ic_baseline_download_24"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu1_print_all"
+        android:title="העתקת פריטי רשימה (אפשרות מפתח"
+        android:tooltipText="העתקת פריטי רשימה (אפשרות מפתח)"
+        android:icon="@drawable/ic_baseline_copy_all_24_white"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/menu1_back"
+        android:title="יציאה ממסך"
+        android:tooltipText="יציאה ממסך"
+        android:icon="@drawable/left_arrow_white"
+        app:showAsAction="always"/>
+</menu>

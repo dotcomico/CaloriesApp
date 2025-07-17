@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".MyProductActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scrollbars="vertical"
+        android:scrollbarSize="5dp"
+        android:clipToPadding="false"
+        android:paddingBottom="140dp"
+        android:transcriptMode="alwaysScroll"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/layoutEditProduct"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sty_other"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_baseline_clear_24_w" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="עריכת מוצר"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/et_food"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:hint="מוצר"
+                android:maxLines="1"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:background="@drawable/sty_2"
+                android:textColor="#000"
+                android:textColorHint="#CCCCCC"
+                android:gravity="right" />
+
+            <ImageView
+                android:id="@+id/iv_barcode"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_baseline_qr_code_2_24"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/et_kal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="קלוריות"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/sty_2"
+            android:drawableRight="@drawable/ic_baseline_local_fire_department_24"
+            android:textColor="#000"
+            android:textColorHint="#CCCCCC"
+            android:gravity="right"
+            android:maxLines="1"
+            android:inputType="number" />
+
+        <RelativeLayout
+            android:id="@+id/layoutSpinnerEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingVertical="3dp">
+
+            <EditText
+                android:id="@+id/et_spinnerEditT"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sty_2"
+                android:hint="כתוב סוג מדד.."
+                android:textColor="#000000"
+                android:textColorHint="#CCCCCC" />
+
+            <ImageView
+                android:id="@+id/iv_returnToSpinner"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_baseline_expand_more_24"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/sty_2"
+            android:paddingVertical="3dp" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="שמור מוצר"
+            android:layout_marginTop="13dp"
+            android:textColor="@color/black"
+            android:background="@android:color/white" />
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_add_white"
+        app:backgroundTint="@color/blue"
+        app:tint="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
