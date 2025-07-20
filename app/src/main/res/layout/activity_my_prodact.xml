@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context=".MyProductActivity">
+    tools:context=".ui.screens.MyProductActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -93,38 +93,12 @@
             android:maxLines="1"
             android:inputType="number" />
 
-        <RelativeLayout
-            android:id="@+id/layoutSpinnerEdit"
+        <com.example.calories.ui.views.MeasurementSelectorView
+            android:id="@+id/measurement_selector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:paddingVertical="3dp">
-
-            <EditText
-                android:id="@+id/et_spinnerEditT"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/sty_2"
-                android:hint="כתוב סוג מדד.."
-                android:textColor="#000000"
-                android:textColorHint="#CCCCCC" />
-
-            <ImageView
-                android:id="@+id/iv_returnToSpinner"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_baseline_expand_more_24"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true" />
-        </RelativeLayout>
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/sty_2"
-            android:paddingVertical="3dp" />
+            android:layout_marginBottom="10dp" />
 
         <Button
             android:id="@+id/btn_save"

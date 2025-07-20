@@ -1,7 +1,4 @@
-package com.example.calories;
-
-import static androidx.core.content.ContextCompat.getSystemService;
-import static androidx.core.content.ContextCompat.startActivity;
+package com.example.calories.utils;
 
 import android.app.Activity;
 import android.content.ClipData;

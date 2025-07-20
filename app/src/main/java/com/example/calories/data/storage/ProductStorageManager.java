@@ -1,8 +1,9 @@
-package com.example.calories;
+package com.example.calories.data.storage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.calories.data.models.ProductItem;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

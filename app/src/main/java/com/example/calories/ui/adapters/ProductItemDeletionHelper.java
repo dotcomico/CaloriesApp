@@ -1,8 +1,10 @@
-package com.example.calories;
+package com.example.calories.ui.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
+
+import com.example.calories.data.models.ProductItem;
 
 import java.util.ArrayList;
 

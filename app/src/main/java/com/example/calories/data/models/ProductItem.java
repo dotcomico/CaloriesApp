@@ -1,4 +1,4 @@
-package com.example.calories;
+package com.example.calories.data.models;
 
 public class ProductItem {
 

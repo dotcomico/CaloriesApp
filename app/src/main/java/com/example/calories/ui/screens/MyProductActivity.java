@@ -1,4 +1,4 @@
-package com.example.calories;
+package com.example.calories.ui.screens;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,9 +16,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.calories.ui.dialogs.BarcodeDialogHandler;
+import com.example.calories.ui.views.MeasurementSelectorView;
+import com.example.calories.export.ProductExporter;
+import com.example.calories.ui.adapters.ProductItemAdapter;
+import com.example.calories.ui.adapters.ProductItemDeletionHelper;
+import com.example.calories.data.storage.ProductStorageManager;
+import com.example.calories.R;
+import com.example.calories.ui.adapters.RecyclerItemClickListener;
+import com.example.calories.utils.Utility;
+import com.example.calories.data.models.ProductItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -38,13 +47,14 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
     LinearLayout ly_aditProduct;
     ImageView iv_delete, iv_barcode;
     EditText et_food, et_kal;
-    Spinner spinner;
+
     private int menuToChoose = R.menu.pa_menu;
 
     int lastClickedItem = 0;
     private ProductStorageManager productStorageManager;
     private BarcodeDialogHandler barcodeDialogHandler;
     private ProductItemDeletionHelper deletionHelper;
+    private MeasurementSelectorView measurementSelectorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +63,11 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
 
         productStorageManager = new ProductStorageManager(this);
         barcodeDialogHandler = new BarcodeDialogHandler(this);
+        measurementSelectorView = new MeasurementSelectorView(this);
 
 
         ly_aditProduct = findViewById( R.id.layoutEditProduct);
-        spinner = findViewById( R.id.spinner );
-        spinner = (Spinner) findViewById( R.id.spinner );
-        spinner.setOnItemSelectedListener( this );
-        spinner.getViewTreeObserver().addOnGlobalLayoutListener( this );
+
         et_food = findViewById( R.id.et_food );
         et_kal = findViewById( R.id.et_kal );
         btn_save = findViewById( R.id.btn_save );
@@ -199,13 +207,20 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         if (view == btn_save) {
+            measurementSelectorView = findViewById(R.id.measurement_selector);
+            measurementSelectorView.handleCustomMeasurement();
+
             myProductList.get( lastClickedItem ).setCalorieText( et_kal.getText().toString().trim() );
             myProductList.get( lastClickedItem ).setName( et_food.getText().toString().trim() );
             myProductList.get( lastClickedItem ).setBarcode( barcodeDialogHandler.getBarcodeEditText().getText().toString().trim() );
+            myProductList.get( lastClickedItem ).setUnit(measurementSelectorView.getSelectedMeasurement());
+
             new ProductItemAdapter( myProductList );
             mRecyclerView.setAdapter(productItemAdapter);
             productStorageManager.save(myProductList);
             ly_aditProduct.setVisibility( View.GONE );
+
+            Utility.makeToast(myProductList.get( lastClickedItem ).getUnit().toString() , this);
 
         }
 

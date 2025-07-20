@@ -1,4 +1,4 @@
-package com.example.calories;
+package com.example.calories.ui.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,9 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.calories.R;
+import com.example.calories.data.models.ProductItem;
 
 import java.util.ArrayList;
 

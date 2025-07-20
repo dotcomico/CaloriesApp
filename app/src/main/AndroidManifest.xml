@@ -17,9 +17,9 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
         tools:targetApi="31">
-        <activity android:name=".MyProductActivity"/>
+        <activity android:name=".ui.screens.MyProductActivity"/>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.screens.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CaptureAct"
+            android:name=".ui.utils.CaptureAct"
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             android:windowSoftInputMode="stateAlwaysHidden" />

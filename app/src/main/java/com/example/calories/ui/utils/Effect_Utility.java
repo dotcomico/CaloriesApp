@@ -1,4 +1,4 @@
-package com.example.calories;
+package com.example.calories.ui.utils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

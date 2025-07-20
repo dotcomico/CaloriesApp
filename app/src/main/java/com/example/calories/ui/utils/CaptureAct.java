@@ -1,4 +1,4 @@
-package com.example.calories;
+package com.example.calories.ui.utils;
 
 import com.journeyapps.barcodescanner.CaptureActivity;
 

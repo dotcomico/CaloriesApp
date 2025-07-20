@@ -1,9 +1,11 @@
-package com.example.calories;
+package com.example.calories.utils;
 
-import static com.example.calories.Utility.clipData;
-import static com.example.calories.Utility.makeToast;
+import static com.example.calories.utils.Utility.clipData;
+import static com.example.calories.utils.Utility.makeToast;
 
 import android.content.Context;
+
+import com.example.calories.data.models.ProductItem;
 
 import java.util.ArrayList;
 

@@ -18,7 +18,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_gravity="center"
-                ></TextView>
+                />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="textShortMessage"
                     android:background="@drawable/sty_2"
-                    ></EditText>
+                    />
                 <ImageView
                     android:id="@+id/iv_barcode"
                     android:layout_weight="5"
@@ -47,7 +47,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_baseline_qr_code_2_24"
-                    ></ImageView>
+                    />
             </LinearLayout>
             <EditText
                 android:id="@+id/et_kal"
@@ -64,7 +64,7 @@
                 android:maxLines="1"
                 android:inputType="text"
                 android:background="@drawable/sty_2"
-                ></EditText>
+                />
             <Spinner
                 android:id="@+id/spinner"
                 android:layout_marginHorizontal="3dp"
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="3dp"
                 android:background="@drawable/sty_2"
-                ></Spinner>
+                />
             <RelativeLayout
                 android:visibility="gone"
                 android:id="@+id/layoutSpinnerEdit"
@@ -92,14 +92,14 @@
                     android:hint="כתוב סוג מדד.."
                     android:textColorHint="#CCCCCC"
                     android:background="@drawable/sty_2"
-                    ></EditText>
+                    />
                 <ImageView
                     android:id="@+id/iv_returnToSpinner"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/ic_baseline_expand_more_24"
                     android:layout_alignParentLeft="true"
-                    ></ImageView>
+                    />
             </RelativeLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -116,7 +116,7 @@
                     android:background="#FFFFFF"
                     android:text="הוסף מוצר"
                     android:textColor="@color/black"
-                    ></Button>
+                    />
                 <ImageView
                     android:id="@+id/iv_anther"
                     android:layout_weight="8"
@@ -125,7 +125,7 @@
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_baseline_add_24"
                     android:background="@drawable/sty_w_b"
-                    ></ImageView>
+                    />
             </LinearLayout>
         </LinearLayout>
 
@@ -145,7 +145,7 @@
                 android:layout_gravity="center"
                 android:background="@drawable/sty_blue_serch"
                 android:drawableRight="@drawable/ic_baseline_search_24_white"
-                ></Button>
+                />
             <android.widget.SearchView
                 android:id="@+id/serchview_internet"
                 android:layout_height="50dp"
@@ -153,7 +153,7 @@
                 android:background="#34878787"
                 android:layout_width="match_parent"
                 android:contextClickable="true"
-                ></android.widget.SearchView>
+               />
 
         </LinearLayout>
 </RelativeLayout>

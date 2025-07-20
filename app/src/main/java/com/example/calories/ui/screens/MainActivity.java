@@ -1,9 +1,9 @@
-package com.example.calories;
+package com.example.calories.ui.screens;
 
-import static com.example.calories.SystemProducts_Utils.getSystemProductsArr;
-import static com.example.calories.Utility.clipData;
-import static com.example.calories.Utility.isNumeric;
-import static com.example.calories.Utility.startNewActivity;
+import static com.example.calories.utils.SystemProducts_Utils.getSystemProductsArr;
+import static com.example.calories.utils.Utility.clipData;
+import static com.example.calories.utils.Utility.isNumeric;
+import static com.example.calories.utils.Utility.startNewActivity;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,6 +45,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.calories.ui.utils.CaptureAct;
+import com.example.calories.ui.adapters.ConsumedItemAdapter;
+import com.example.calories.ui.adapters.ProductItemAdapter;
+import com.example.calories.R;
+import com.example.calories.ui.adapters.RecyclerItemClickListener;
+import com.example.calories.data.models.ConsumedItem;
+import com.example.calories.data.models.ProductItem;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -1218,9 +1225,11 @@ finish();
         textttttdtghfd.setOnClickListener( this );
         et_amounttt=findViewById( R.id.et_amounttt );
         et_amounttt.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
         spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
         spinner.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
         iv_backToMain =findViewById( R.id.iv_backToMain );
         iv_backToMain.setOnClickListener( this );
         rl_selfSearch=findViewById(R.id.rl_selfSearch);

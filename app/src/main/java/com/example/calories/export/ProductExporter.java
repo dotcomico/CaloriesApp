@@ -1,12 +1,14 @@
-package com.example.calories;
+package com.example.calories.export;
 
 import android.content.Context;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import static com.example.calories.Utility.clipData;
-import static com.example.calories.Utility.emailSend;
+import static com.example.calories.utils.Utility.clipData;
+import static com.example.calories.utils.Utility.emailSend;
+
+import com.example.calories.data.models.ProductItem;
 
 public class ProductExporter {
 
