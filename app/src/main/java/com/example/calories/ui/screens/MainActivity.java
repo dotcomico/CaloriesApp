@@ -45,6 +45,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.calories.export.ProductExporter;
 import com.example.calories.ui.utils.CaptureAct;
 import com.example.calories.ui.adapters.ConsumedItemAdapter;
 import com.example.calories.ui.adapters.ProductItemAdapter;
@@ -153,7 +154,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if ( et_amounttt.getText().toString().matches("")){     st=calcolatyCAL(Double.parseDouble( tv_kal.getText().toString() ),0,tv_Type.getText().toString());
                 }else{
                     //   if (TextUtils. isDigitsOnly(et_amounttt.getText().toString() )) {
-                    st = calcolatyCAL( Double.parseDouble( tv_kal.getText().toString() ) , Double.parseDouble( et_amounttt.getText().toString() ),tv_Type.getText().toString() );
+                    st = calcolatyCAL( Double.parseDouble( tv_kal.getText().toString() ) ,
+                            Double.parseDouble( et_amounttt.getText().toString() ),tv_Type.getText().toString() );
                     //    }
 
                 }
@@ -169,7 +171,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         //פעולות לחיצה על איברי הרשימה
-        mRecyclerView.addOnItemTouchListener( new RecyclerItemClickListener(MainActivity.this, mRecyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
+        mRecyclerView.addOnItemTouchListener( new RecyclerItemClickListener(MainActivity.this, mRecyclerView
+                ,new RecyclerItemClickListener.OnItemClickListener() {
             @Override public void onItemClick(View view, int position) {
                 if (!(filteredExampleList.get( position ).getItemState() ==999)) {
                     temp_exampleItem=filteredExampleList.get( position );
@@ -188,7 +191,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }) );
         //פעולות לחיצה על איברי הרשימה- קלוריות מסך ראשי
-        myListRecyclerView.addOnItemTouchListener( new RecyclerItemClickListener(MainActivity.this, myListRecyclerView , new RecyclerItemClickListener.OnItemClickListener() {
+        myListRecyclerView.addOnItemTouchListener( new RecyclerItemClickListener(MainActivity.this, myListRecyclerView
+                , new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view , int position)
             {
@@ -310,6 +314,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 closeMain();
             }
         }
+
+
+
     }
 
 
@@ -580,7 +587,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (Double.parseDouble(et_newAmount.getText().toString())==0.25){ st="0.5";}
                     if (Double.parseDouble(et_newAmount.getText().toString())==0){st="0.25";}
                 }
-                if (calculationMod(consumedItem_adit.getProductItem().getUnit())==2&&Double.parseDouble(et_newAmount.getText().toString())>=0){st=""+(Double.parseDouble(et_newAmount.getText().toString())+50)+"";}
+                if (calculationMod(consumedItem_adit.getProductItem().getUnit())==2&&Double.parseDouble(et_newAmount.getText().toString())>=0){
+                    st=""+(Double.parseDouble(et_newAmount.getText().toString())+50)+"";}
             }else {st="0";}
             et_newAmount.setText(st);
         }
@@ -636,7 +644,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void selfAddActions() {
 
         String str_caloria= searchview.getQuery().toString().trim();
-        temp_exampleItem= new ProductItem(0,0,"הוספת עצמית","קלוריות" ,"0",0,"");
+        temp_exampleItem= new ProductItem(0,"הוספת עצמית","קלוריות" ,"0","");
         temp_exampleItem.setCalorieText("100");
       addToList( Integer.parseInt( str_caloria ) , Integer.parseInt( str_caloria ) );
         update_kaloriesSum_k();
@@ -781,7 +789,7 @@ finish();
             } else {//לא נמצא
                 //חפש באינטרנט
                 openNewProdact();
-                temp_exampleItem = new ProductItem( 0 , 0 , "" , "" , "" , 0 , barcode.trim() );
+                temp_exampleItem = new ProductItem(  0 , "" , "" , "" ,  barcode.trim() );
                 startWebSearchForBarcode( barcode.trim() );
             }
         }
@@ -804,18 +812,8 @@ finish();
 
         // המצב הראשוני של רשימת החיפוש כרשימת המוצרים (ברירת מחדל)
         filteredExampleList=exampleList;
-        //הגדרת המספר שמייצג את סוג המדד והתמונה המתאימה ,לפי סוג המדד השמר(כי אין לי כוח לשנות בעצמי)
-        for (int i=0; i<exampleList.size(); i++){
-            for (int j=0;j<spinner.getAdapter().getCount();j++){
-                if (exampleList.get( i ).getUnit().equals( spinner.getItemAtPosition( j ).toString() )){
-                    exampleList.get( i ).setUnitTypeValue( j );
-                    exampleList.get( i ).setUnitImageResId( typeList.get( j ));
-                }
-            }
-        }
+
 //עדכון הרשימה הפיזית במסך כרשימת המוצרים
-        //    mRecyclerView.setHasFixedSize(true);
-        // mRecyclerView.setFitsSystemWindows( false );
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ProductItemAdapter(exampleList);
@@ -828,10 +826,10 @@ finish();
         categories.add("100 מל"); typeList.add( R.drawable.t_grame );
         categories.add("כף");         typeList.add( R.drawable.t_tablespoon );
         categories.add("כפית");      typeList.add( R.drawable.t_teaspoon );
-        categories.add("כוס");        typeList.add( R.drawable.t_glass );
+        categories.add("כוס");        typeList.add( R.drawable.t_cup);
         categories.add("פרוסה");    typeList.add( R.drawable.t_slice );
-        categories.add("יחידה");     typeList.add( R.drawable.single );
-        categories.add("אחר");     typeList.add( R.drawable.single );
+        categories.add("יחידה");     typeList.add( R.drawable.t_single);
+        categories.add("אחר");     typeList.add( R.drawable.t_single);
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,   R.layout.spinner_item, categories);
         // Drop down layout style - list view with radio button
@@ -892,7 +890,7 @@ finish();
             //    sortByAB(  filteredExampleList );
         }
         //הצג הודעה במקרה של חוסר תוצאות
-        if (filteredExampleList.size()>0){ filteredExampleList.add(new ProductItem(0, 999, "לא מה שחיפשת?", "המשך בחיפוש עצמי","\uD83D\uDD0D",0,null));}
+        if (filteredExampleList.size()>0){ filteredExampleList.add(new ProductItem( 999, "לא מה שחיפשת?", "המשך בחיפוש עצמי","\uD83D\uDD0D",""));}
         //עדכן רשימה
         RecyclerView.Adapter  newAdapter = new ProductItemAdapter(filteredExampleList);
         mRecyclerView.setAdapter(newAdapter);
@@ -975,12 +973,12 @@ finish();
         //הוסף מזון לרשימת מוצרים שלי (רק אם אני בחיפוש עצמי או עורך מוצר קיים)
         ProductItem item = null;
         if (spinner.getVisibility()==View.VISIBLE) {
-            item = new ProductItem( spinner.getSelectedItemPosition() , 1 , et_food.getText().toString().trim() , spinner.getSelectedItem().toString() , et_kal.getText().toString().trim() , 0, et_d_enter_code.getText().toString() );
+            item = new ProductItem(   1 , et_food.getText().toString().trim() , spinner.getSelectedItem().toString() , et_kal.getText().toString().trim() , et_d_enter_code.getText().toString() );
             myPrivetFoodlList.add(item);
             temp_exampleItem=item;
         }
         if (llll_spinnerEdit.getVisibility()==View.VISIBLE){
-            item = new ProductItem( 0 , 1 , et_food.getText().toString().trim() , et_spinnerEditT.getText().toString().trim() , et_kal.getText().toString().trim() , 0, et_d_enter_code.getText().toString() );
+            item = new ProductItem( 1 , et_food.getText().toString().trim() , et_spinnerEditT.getText().toString().trim() , et_kal.getText().toString().trim()  , et_d_enter_code.getText().toString() );
             myPrivetFoodlList.add(item);
             temp_exampleItem=item;
         }
@@ -997,23 +995,8 @@ finish();
         myPrivetFoodlList = gson.fromJson(json, type);
         if (myPrivetFoodlList == null) {
             myPrivetFoodlList = new ArrayList<>();
-        }else {
-            for (int i = 0; i < myPrivetFoodlList.size(); i++) {
-                String unit = myPrivetFoodlList.get(i).getUnit();
-
-                for (int j = 0; j < spinner.getAdapter().getCount(); j++) {
-                    Object spinnerItem = spinner.getItemAtPosition(j);
-
-                    if (unit != null && spinnerItem != null &&
-                            unit.trim().equalsIgnoreCase(spinnerItem.toString().trim())) {
-
-                        myPrivetFoodlList.get(i).setUnitImageResId(typeList.get(j));
-                        break; // אם מצאת התאמה - אפשר לצאת מהלולאה הפנימית
-                    }
-                }
-            }
-
-        }}
+        }
+    }
     private void saveData(){
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -1554,13 +1537,8 @@ finish();
                 //תעדכן מספר סידורי
                 myList_temp.get( i ).setSerial( i );
                 //אם זה היום הנכון לפי התאריך
-                if(strDate.toString().equals(myList_temp.get( i ).getDate().toString())){
+                if(strDate.equals(myList_temp.get( i ).getDate())){
 //פה זה מתקן את התמונה של כמות, בבוא הזמן נשנה אותה לתמונות של בוקר צהריים או ערב, השוני יקבע לפי השעה שהוספנו את המזון לרשימה
-                    for (int j = 0; j < spinner.getAdapter().getCount(); j++) {
-                        if (myList_temp.get( i ).getProductItem().getUnit().equals( spinner.getItemAtPosition( j ).toString() )) {
-                            // exampleList.get( i ).setmTypePosition( j );
-                            myList_temp.get( i ).getProductItem().setUnitImageResId( typeList.get( j ) );
-                        }  }
 
                     myList.add( myList_temp.get( i ) );
                 }

@@ -78,7 +78,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:src="@drawable/sty_transperent"
-            android:background="@mipmap/icon3_v2_round"
+
             android:scaleType="centerCrop"
             android:layout_marginEnd="4dp" />
 

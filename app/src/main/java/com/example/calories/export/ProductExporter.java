@@ -41,6 +41,7 @@ public class ProductExporter {
             ProductItem itemI = tempList.get(i);
             if (itemI.getName() == null) continue;
 
+            //סדר כך שאם יש מוצרים עם אותו שם אז הכנס קודם את זה בעל המדד: יחידה
             for (int j = 0; j < tempList.size(); j++) {
                 ProductItem itemJ = tempList.get(j);
                 if (itemJ.getName() == null || itemJ.getUnit() == null) continue;
@@ -51,6 +52,7 @@ public class ProductExporter {
                 }
             }
 
+            //סדר כך שאם יש מוצרים עם אותו שם אז הכנס קודם את זה בעל המדד: 100 גרם או 100 מל
             for (int j = 0; j < tempList.size(); j++) {
                 ProductItem itemJ = tempList.get(j);
                 if (itemJ.getName() == null || itemJ.getUnit() == null) continue;
@@ -63,6 +65,7 @@ public class ProductExporter {
                 }
             }
 
+            //סדר כך שאם יש מוצרים עם אותו שם אז הכנס קודם את זה בעל המדד: 100 גרם או 100 מל
             for (int j = 0; j < tempList.size(); j++) {
                 ProductItem itemJ = tempList.get(j);
                 if (itemJ.getName() == null || itemJ.getUnit() == null) continue;
@@ -80,12 +83,11 @@ public class ProductExporter {
 
     private ProductItem copyItem(ProductItem item) {
         return new ProductItem(
-                item.getUnitTypeValue(),
+
                 item.getItemState(),
                 item.getName(),
                 item.getUnit(),
                 item.getCalorieText(),
-                item.getUnitImageResId(),
                 item.getBarcode()
         );
     }
@@ -101,12 +103,11 @@ public class ProductExporter {
             }
 
             sb.append("\nSystemProductArr.add(new ProductItem(")
-                    .append(0).append(", ")
                     .append(0).append(", \"")
                     .append(item.getName()).append("\", \"")
                     .append(item.getUnit()).append("\", \"")
                     .append(item.getCalorieText()).append("\", ")
-                    .append(0).append(", \"")
+                    .append("\"")
                     .append(barcode).append("\"));");
         }
 
