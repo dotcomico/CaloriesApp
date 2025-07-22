@@ -148,8 +148,8 @@ public class MeasurementSelectorView extends LinearLayout {
         if (TextUtils.isEmpty(customMeasurement)) {
             // אם ריק, חזרה לספינר
             hideCustomInput();
-            String DEFAULT_MEASUREMENT = measurementManager.getDefaultUnits().get(0).getName();
-            selectMeasurement(DEFAULT_MEASUREMENT);
+
+            selectDefaultMeasurement();
             return;
         }
 
@@ -171,6 +171,11 @@ public class MeasurementSelectorView extends LinearLayout {
                 listener.onMeasurementSelected(customMeasurement);
             }
         }
+    }
+
+    public void selectDefaultMeasurement() {
+        String DEFAULT_MEASUREMENT = measurementManager.getDefaultUnits().get(0).getName();
+        selectMeasurement(DEFAULT_MEASUREMENT);
     }
 
     private void refreshSpinner() {

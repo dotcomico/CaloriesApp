@@ -3,6 +3,7 @@ package com.example.calories.ui.screens;
 import static com.example.calories.utils.SystemProducts_Utils.getSystemProductsArr;
 import static com.example.calories.utils.Utility.clipData;
 import static com.example.calories.utils.Utility.isNumeric;
+import static com.example.calories.utils.Utility.makeToast;
 import static com.example.calories.utils.Utility.startNewActivity;
 
 import androidx.annotation.RequiresApi;
@@ -34,18 +35,15 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.calories.export.ProductExporter;
 import com.example.calories.ui.utils.CaptureAct;
 import com.example.calories.ui.adapters.ConsumedItemAdapter;
 import com.example.calories.ui.adapters.ProductItemAdapter;
@@ -53,6 +51,7 @@ import com.example.calories.R;
 import com.example.calories.ui.adapters.RecyclerItemClickListener;
 import com.example.calories.data.models.ConsumedItem;
 import com.example.calories.data.models.ProductItem;
+import com.example.calories.ui.views.MeasurementSelectorView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -70,14 +69,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private WebView webview;
     private Calendar cal;
     private SearchView searchview,serchview_internet;
-    private EditText et_food,et_kal,et_amounttt,et_spinnerEditT,et_newAmount, et_d_enter_code;
-    private Button btn_addNeePrivetFood,btn_addFood,btn_lastDay,btn_nextDay,btn_aditdFood;
+    private EditText newProductNameEditText, newProductCaloriesEditText,et_amounttt,et_spinnerEditT,et_newAmount, et_d_enter_code;
+    private Button saveNewProductItemButton,btn_addFood,btn_lastDay,btn_nextDay,btn_aditdFood;
     private LinearLayout ly_selfSearch_bar, ly_addNewPrivetFood,ly_addFood,ly_settings,ly_aditAmount;
     private ImageView  iv_back_SS_to_M, iv_myProdacts_SS, iv_showSelfSearchBar, iv_hideSelfSearchBar, iv_selfSearch_round ,  iv_selfAdd, iv_barcode,iv_search,
-            iv_backToMain,iv_delete1,iv_settings,iv_anther,iv_returnToSpinner,plus_z,minus_z,more_z,iv_deleteAdit,minus_adit,plus_adit, iv_barcodeSearch_round;
-    private RelativeLayout rl_selfSearch,rl_top,rl_top_ss,rl_mainInformation,llll_spinnerEdit;
-    private String foodKaloria_str="";
-    private String foodName_str="";
+            iv_backToMain,iv_delete1,iv_settings, saveAndStay,plus_z,minus_z,more_z,iv_deleteAdit,minus_adit,plus_adit, iv_barcodeSearch_round;
+    private RelativeLayout rl_selfSearch,rl_top,rl_top_ss,rl_mainInformation;
     private TextView tv_food,tv_kal,tv_Type ,text,tv_date,t_see,tv_foodname;
     private int calcolaty_mod,mainL_position=-1;
     private ProductItem temp_exampleItem=null;
@@ -97,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList<ConsumedItem> myList_temp = new ArrayList<>();
     ConsumedItem consumedItem_adit;
     ArrayList<Integer> typeList = new ArrayList<>();//רשימת תמונות סוג מדד
-    Spinner spinner;
+
     SharedPreferences sp;
     TextView textttttdtghfd,ffffffdtghfd,t_sdfdfss;
     ImageView iv_d_code_scan,iv_myProdacts;
@@ -106,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView tv_qr_information;
     ImageView iv_expend_more;
     Dialog dialog ;
+    private MeasurementSelectorView measurementSelectorView;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -116,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cal.setTime(cal.getTime());
         findViewAndMore();
         changeBarColor(rl_top);
-        makeSpinner();
         //יצירת רשימת המוצרים
         updateMainList();
         //מיון לפי א"ב
@@ -124,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-        et_kal.addTextChangedListener( new TextWatcher() {
+        newProductCaloriesEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
 
@@ -132,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
-                if ( et_kal.getText().toString().equals( "." )){ et_amounttt.setText( "" );}
+                if ( newProductCaloriesEditText.getText().toString().equals( "." )){ et_amounttt.setText( "" );}
 
             }
 
@@ -160,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 }
                 //     if (TextUtils. isDigitsOnly(et_amounttt.getText().toString() )) {
-                btn_addFood.setText( ""+st+""+""+ "\n"+" הוסף " );
+                btn_addFood.setText( st+ "\n"+" הוסף " );
                 //   }else{  btn_addFood.setText( " הוסף " );}
 
             }
@@ -202,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ly_aditAmount.setVisibility( View.VISIBLE );
                 consumedItem_adit =myList.get( position );
                 tv_foodname.setText( consumedItem_adit.getProductItem().getName() );
-                et_newAmount.setText( ""+ consumedItem_adit.getAmount()+"");
+                et_newAmount.setText( ""+ consumedItem_adit.getAmount());
                 mainL_position=position;
             }
 
@@ -301,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //      text.setText( str_caloria );
         //  }
         et_amounttt.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
-        et_kal.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
+        newProductCaloriesEditText.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
         et_newAmount.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
         getSupportActionBar().hide();
 
@@ -432,45 +429,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
-        if (view== btn_addNeePrivetFood || view==iv_anther){
-            foodName_str = et_food.getText().toString();
-            foodKaloria_str = et_kal.getText().toString();
-            if (!foodName_str.isEmpty() && !foodKaloria_str.isEmpty()&&!isContainsLetters( foodKaloria_str )) {
-                if ((llll_spinnerEdit.getVisibility()==View.VISIBLE&& !et_spinnerEditT.getText().toString().matches( "" ))||spinner.getVisibility()==View.VISIBLE){
-                    addToFoodList();
-                    saveData();
-                    et_food.setBackgroundResource( R.drawable.sty_2 );
-                    et_kal.setBackgroundResource( R.drawable.sty_2 );
-                    updateMainList();
 
-                    Toast toast = null;
-                    if (spinner.getVisibility()==View.VISIBLE)
-                        toast =   Toast.makeText(getBaseContext(), ""+"\"" +et_food.getText().toString()+"\"" +" "+spinner.getSelectedItem()+" נוסף למערכת!", Toast.LENGTH_SHORT);
-                    if (llll_spinnerEdit.getVisibility()==View.VISIBLE)
-                        toast =   Toast.makeText(getBaseContext(), ""+"\"" +et_food.getText().toString()+"\"" +" "+et_spinnerEditT.getText().toString()+" נוסף למערכת!", Toast.LENGTH_SHORT);
+        if (view == saveAndStay){
+            saveNewProduct();
+        }
+        if (view == saveNewProductItemButton){
 
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
-                    //        toast.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.START, 0, 0);
-                    toast.show();
+            saveNewProduct();
 
-                    if (view==btn_addNeePrivetFood){
-                        hideKeyboard();
-                        cancelFoodAdd();
-                        searchview.setVisibility( View.VISIBLE );
-                        searchview.setIconified(true);
-                        showFoodDitals(getLastItem());
-                        openMain();
-                    }
-                    et_kal.setText( "" );
-
-                }} else {
-                if (foodName_str.isEmpty()) {
-                    et_food.setBackgroundResource( R.drawable.sty_red );
-                }
-                if (foodKaloria_str.isEmpty()) {
-                    et_kal.setBackgroundResource( R.drawable.sty_red );
-                }
-            }
+            hideKeyboard();
+            cancelFoodAdd();
+            searchview.setVisibility( View.VISIBLE );
+            searchview.setIconified(true);
+            showFoodDitals(getLastItem());
+            openMain();
         }
         if (view == searchview){
             //  mRecyclerView.setVisibility(View.VISIBLE);
@@ -523,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String b= myPrivetFoodlList.get( i ).getBarcode();
                 if (b== null || b=="0" || b=="" ){b="";}
                 String itemT= "exampleList.add(new ExampleItem("+0+","+0+","+"\""+ myPrivetFoodlList.get( i ).getName()+"\"" +","+"\""+ myPrivetFoodlList.get( i ).getUnit()+"\""+" ,"+"\""+ myPrivetFoodlList.get( i ).getCalorieText()+"\""+","+0+"," +"\""+ b+"\"" +"));";
-                detailsString=detailsString.toString()+ "\n"+itemT;
+                detailsString= detailsString + "\n"+itemT;
             }
             clipData(detailsString , this);
             Toast.makeText( getBaseContext(), "Copied successfully"+myPrivetFoodlList.size()+" items ",Toast.LENGTH_SHORT).show();
@@ -534,21 +506,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view==iv_settings) {
             ly_settings.setVisibility( View.VISIBLE );
         }
-        if (view==iv_returnToSpinner){
-            spinner.setVisibility( View.VISIBLE );
-            spinner.setSelection( 6 );
-            llll_spinnerEdit.setVisibility( View.GONE );
-        }
         if (view==plus_z){
             String st=et_amounttt.getText().toString();
             if (!st.matches( "" )){
                 if (calculationMod(tv_Type.getText().toString())==1){
-                    if (Double.parseDouble(et_amounttt.getText().toString())>=1){   st= ""+(Double.parseDouble(et_amounttt.getText().toString())+1) +"";}
+                    if (Double.parseDouble(et_amounttt.getText().toString())>=1){   st= ""+(Double.parseDouble(et_amounttt.getText().toString())+1);}
                     if (Double.parseDouble(et_amounttt.getText().toString())==0.5){ st="1";}
                     if (Double.parseDouble(et_amounttt.getText().toString())==0.25){ st="0.5";}
                     if (Double.parseDouble(et_amounttt.getText().toString())==0){st="0.25";}
                 }
-                if (calculationMod(tv_Type.getText().toString())==2&&Double.parseDouble(et_amounttt.getText().toString())>=0){st=""+(Double.parseDouble(et_amounttt.getText().toString())+50)+"";}
+                if (calculationMod(tv_Type.getText().toString())==2&&Double.parseDouble(et_amounttt.getText().toString())>=0){st= ""+(Double.parseDouble(et_amounttt.getText().toString())+50);}
             }else {st="0";}
             et_amounttt.setText(st);
 
@@ -558,12 +525,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (!st.matches( "" )){
                 if (calculationMod(tv_Type.getText().toString())==1 ){
                     if (Double.parseDouble(et_amounttt.getText().toString())-1>=1){
-                        st= ""+(Double.parseDouble(et_amounttt.getText().toString())-1) +""; }
+                        st= ""+(Double.parseDouble(et_amounttt.getText().toString())-1); }
                     if (Double.parseDouble(et_amounttt.getText().toString())==1){ st="0.5";}
                     if (Double.parseDouble(et_amounttt.getText().toString())==0.5){ st="0.25";}
                     if (Double.parseDouble(et_amounttt.getText().toString())==0.25){st="0";}
                 }
-                if (calculationMod(tv_Type.getText().toString())==2&&Double.parseDouble(et_amounttt.getText().toString())-50>=0){st=""+(Double.parseDouble(et_amounttt.getText().toString())-50)+"";}
+                if (calculationMod(tv_Type.getText().toString())==2&&Double.parseDouble(et_amounttt.getText().toString())-50>=0){st= ""+(Double.parseDouble(et_amounttt.getText().toString())-50);}
             }else {st="0";}
             et_amounttt.setText(st);
         }
@@ -582,13 +549,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String st=et_newAmount.getText().toString();
             if (!st.matches( "" )){
                 if (calculationMod(consumedItem_adit.getProductItem().getUnit())==1){
-                    if (Double.parseDouble(et_newAmount.getText().toString())>=1){   st= ""+(Double.parseDouble(et_newAmount.getText().toString())+1) +"";}
+                    if (Double.parseDouble(et_newAmount.getText().toString())>=1){   st= ""+(Double.parseDouble(et_newAmount.getText().toString())+1);}
                     if (Double.parseDouble(et_newAmount.getText().toString())==0.5){ st="1";}
                     if (Double.parseDouble(et_newAmount.getText().toString())==0.25){ st="0.5";}
                     if (Double.parseDouble(et_newAmount.getText().toString())==0){st="0.25";}
                 }
                 if (calculationMod(consumedItem_adit.getProductItem().getUnit())==2&&Double.parseDouble(et_newAmount.getText().toString())>=0){
-                    st=""+(Double.parseDouble(et_newAmount.getText().toString())+50)+"";}
+                    st= ""+(Double.parseDouble(et_newAmount.getText().toString())+50);}
             }else {st="0";}
             et_newAmount.setText(st);
         }
@@ -597,13 +564,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (!st.matches( "" )){
                 if (calculationMod(consumedItem_adit.getProductItem().getUnit())==1 ){
                     if (Double.parseDouble(et_newAmount.getText().toString())-1>=1){
-                        st= ""+(Double.parseDouble(et_newAmount.getText().toString())-1) +""; }
+                        st= ""+(Double.parseDouble(et_newAmount.getText().toString())-1); }
                     if (Double.parseDouble(et_newAmount.getText().toString())==1){ st="0.5";}
                     if (Double.parseDouble(et_newAmount.getText().toString())==0.5){ st="0.25";}
                     if (Double.parseDouble(et_newAmount.getText().toString())==0.25){st="0";}
                 }
                 if (calculationMod(consumedItem_adit.getProductItem().getUnit())==2&&Double.parseDouble(et_newAmount.getText().toString())-50>=0){
-                    st=""+(Double.parseDouble(et_newAmount.getText().toString())-50)+"";}
+                    st= ""+(Double.parseDouble(et_newAmount.getText().toString())-50);}
             }else {st="0";}
             et_newAmount.setText(st);
         }
@@ -612,7 +579,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             clipData(tv_food.getText().toString() , this);
             Toast.makeText( getBaseContext(), "הועתק שם מוצר",Toast.LENGTH_SHORT).show();
         }
-        if (view==et_kal||view==et_amounttt||view==et_spinnerEditT||view==et_newAmount){
+        if (view== newProductCaloriesEditText ||view==et_amounttt||view==et_spinnerEditT||view==et_newAmount){
             EditText  et_temp= (EditText) view;
             et_temp.setText("");
         }
@@ -639,6 +606,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
      */
+    }
+
+    private void saveNewProduct() {
+
+        String newProductName = newProductNameEditText.getText().toString();
+        String newProductCalories = newProductCaloriesEditText.getText().toString();
+        String newProductMeasurement = measurementSelectorView.getMeasurement(this);
+
+        if (newProductName.isEmpty()) {
+            newProductNameEditText.setBackgroundResource( R.drawable.sty_red );
+            return;
+        }
+        if (newProductCalories.isEmpty()) {
+            newProductCaloriesEditText.setBackgroundResource( R.drawable.sty_red );
+            return;
+        }
+
+        if ( isContainsLetters(newProductCalories)){
+            newProductCaloriesEditText.setBackgroundResource( R.drawable.sty_red );
+            return;
+        }
+
+        addToFoodList();
+        saveData();
+
+        newProductNameEditText.setBackgroundResource( R.drawable.sty_2 );
+        newProductCaloriesEditText.setBackgroundResource( R.drawable.sty_2 );
+
+        newProductCaloriesEditText.setText( "" );
+
+        updateMainList();
+
+        makeToast( "\"" + newProductName +"\"" +" "+ newProductMeasurement +" נוסף למערכת!", getBaseContext());
+
     }
 
     private void selfAddActions() {
@@ -710,9 +711,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(result != null){
             if (result.getContents() != null){
                 //     searchview.setQuery( ""+result.getContents() ,false);
-                if (QrCode_dialog.isShowing()){  serchByBC(""+result.getContents(),1);}
+                if (QrCode_dialog.isShowing()){  serchByBC(result.getContents(),1);}
                 else{
-                    serchByBC(""+result.getContents(),0);}
+                    serchByBC(result.getContents(),0);}
                 /*
                 AlertDialog.Builder builder =new AlertDialog.Builder(this);
                 builder.setMessage( result.getContents() );
@@ -754,7 +755,7 @@ finish();
             ProductItem examplel = new ProductItem();
             boolean temp = false;
             int j = 0;
-            while (temp == false && j < exampleList.size()) {
+            while (!temp && j < exampleList.size()) {
                 examplel = exampleList.get( j );
                 //אם מוצא התאמה ברקוד
                 if (examplel.getBarcode() != null && !examplel.getBarcode().isEmpty() && !examplel.getBarcode().equals( "null" )) {//אם לא ריק
@@ -780,7 +781,7 @@ finish();
                 }
                 j++;
             }
-            if (temp == true) { //נמצאה התאמה
+            if (temp) { //נמצאה התאמה
                 hideKeyboard();
                 showFoodDitals( examplel );
                 if (filteredExampleList.size() == 2) {
@@ -796,7 +797,7 @@ finish();
         if(mode==1) {
             String temp= et_d_enter_code.getText().toString();
             if (temp.isEmpty()){
-            et_d_enter_code.setText( ""+barcode );
+            et_d_enter_code.setText(barcode);
             } else {
                 et_d_enter_code.setText( temp + " , " +barcode  );
             }
@@ -806,7 +807,7 @@ finish();
     }
 
     //פעולות עדכון רשימות בסיס
-    private void apdateFoodList()   {
+    private void updateFoodList()   {
         exampleList = new ArrayList<>();
         exampleList=getSystemProductsArr();
 
@@ -818,41 +819,6 @@ finish();
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ProductItemAdapter(exampleList);
         mRecyclerView.setAdapter(mAdapter);
-    }
-    private void makeSpinner() {
-
-        categories = new ArrayList<String>();
-        categories.add("100 גרם"); typeList.add( R.drawable.t_grame );
-        categories.add("100 מל"); typeList.add( R.drawable.t_grame );
-        categories.add("כף");         typeList.add( R.drawable.t_tablespoon );
-        categories.add("כפית");      typeList.add( R.drawable.t_teaspoon );
-        categories.add("כוס");        typeList.add( R.drawable.t_cup);
-        categories.add("פרוסה");    typeList.add( R.drawable.t_slice );
-        categories.add("יחידה");     typeList.add( R.drawable.t_single);
-        categories.add("אחר");     typeList.add( R.drawable.t_single);
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,   R.layout.spinner_item, categories);
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
-        spinner.setOnItemSelectedListener( new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView , View view , int position , long l) {
-                String str;
-                str= categories.get(position);
-                if (position==7){
-                    spinner.setVisibility( View.GONE );
-                    llll_spinnerEdit.setVisibility( View.VISIBLE );
-                    //      et_spinnerEditT.setFocusable( 0 );
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        } );
     }
     private void addPrivetFoodListToFoodList() {
         if (myPrivetFoodlList == null) {
@@ -926,8 +892,8 @@ finish();
         ly_addNewPrivetFood.setVisibility( View.GONE );
         ly_addFood.setVisibility( View.VISIBLE );
         searchview.setVisibility( View.GONE );
-        tv_food.setText( exampleItem.getName() + "" );
-        tv_kal.setText( exampleItem.getCalorieText() + "" );
+        tv_food.setText(exampleItem.getName());
+        tv_kal.setText(exampleItem.getCalorieText());
         tv_Type.setText(  exampleItem.getUnit());
 
         tv_qr_information.setVisibility(  View.GONE );
@@ -971,21 +937,11 @@ finish();
     //פעולות שרדפרפרנס רשימת מזון פרטית
     private void addToFoodList(){
         //הוסף מזון לרשימת מוצרים שלי (רק אם אני בחיפוש עצמי או עורך מוצר קיים)
-        ProductItem item = null;
-        if (spinner.getVisibility()==View.VISIBLE) {
-            item = new ProductItem(   1 , et_food.getText().toString().trim() , spinner.getSelectedItem().toString() , et_kal.getText().toString().trim() , et_d_enter_code.getText().toString() );
+        ProductItem item;
+        String measurement = measurementSelectorView.getMeasurement(this);
+            item = new ProductItem(   1 , newProductNameEditText.getText().toString().trim() , measurement , newProductCaloriesEditText.getText().toString().trim() , et_d_enter_code.getText().toString() );
             myPrivetFoodlList.add(item);
             temp_exampleItem=item;
-        }
-        if (llll_spinnerEdit.getVisibility()==View.VISIBLE){
-            item = new ProductItem( 1 , et_food.getText().toString().trim() , et_spinnerEditT.getText().toString().trim() , et_kal.getText().toString().trim()  , et_d_enter_code.getText().toString() );
-            myPrivetFoodlList.add(item);
-            temp_exampleItem=item;
-        }
-        ProductItem exampleItem;
-        //exampleItem.getClass()
-        //ככה נבדוק תקינות לפני שסורקים את הרשימה של המוצרים שלי. כאשר אנחנו פותחים את האפליקציה יש את הפעולה מקבלת את רשימת המוצרים הפרטית שלי מהשרד פרפרנס. אם במקרה הוספתי תכונה ללמחלקת מוצר, ואני נכנס לאפליקציה לאחר העדכון. אז בזמן שמוסיפים לרשימה הראשית את הרשימה השמורה בעצם מכניסים איברים ממחלקה ישנה לרשימה ממחלקה עדכנית
-        //לכן אנחנו נבדוק אם הקלאסים שלהם שווים ואם לא אז ניצור אותם מחדש
     }
     private void loadPrivetFoodListData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
@@ -1108,6 +1064,9 @@ finish();
     }
     //פעולות קטנות
     private void findViewAndMore() {
+
+        measurementSelectorView = findViewById(R.id.measurement_selector);
+
         dialog= new Dialog(this);
         dialog.setContentView(R.layout.new_privet_prodact_sheet);
 
@@ -1176,12 +1135,9 @@ finish();
         plus_z=findViewById( R.id.plus_z );
         plus_z.setOnClickListener( this );
         plus_z.getViewTreeObserver().addOnGlobalLayoutListener(this);
-        llll_spinnerEdit=findViewById( R.id.layoutSpinnerEdit);
-        iv_returnToSpinner=findViewById( R.id.iv_returnToSpinner );
-        iv_returnToSpinner.setOnClickListener( this );
         et_spinnerEditT=findViewById( R.id.et_spinnerEditT );
-        iv_anther=findViewById( R.id.iv_anther);
-        iv_anther.setOnClickListener( this );
+        saveAndStay =findViewById( R.id.saveAndStay);
+        saveAndStay.setOnClickListener( this );
         t_sdfdfss=findViewById( R.id.t_sdfdfss);
         t_sdfdfss.setOnClickListener( this );
         t_see=findViewById( R.id.t_see);
@@ -1208,33 +1164,28 @@ finish();
         textttttdtghfd.setOnClickListener( this );
         et_amounttt=findViewById( R.id.et_amounttt );
         et_amounttt.getViewTreeObserver().addOnGlobalLayoutListener(this);
-
-        spinner = (Spinner) findViewById(R.id.spinner);
-        spinner.setOnItemSelectedListener(this);
-        spinner.getViewTreeObserver().addOnGlobalLayoutListener(this);
-
         iv_backToMain =findViewById( R.id.iv_backToMain );
         iv_backToMain.setOnClickListener( this );
         rl_selfSearch=findViewById(R.id.rl_selfSearch);
         iv_search=findViewById( R.id.iv_search );
         iv_search.setOnClickListener( this );
-        et_food= findViewById( R.id.et_food );
-        et_food.addTextChangedListener( new TextWatcher() {
+        newProductNameEditText = findViewById( R.id.et_food );
+        newProductNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
 
             }
             @Override
             public void onTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
-                et_food.setBackgroundResource( R.drawable.sty_2 );
+                newProductNameEditText.setBackgroundResource( R.drawable.sty_2 );
 
             }
             @Override
             public void afterTextChanged(Editable editable) {
-                moreSerch.setText( et_food.getText().toString() + "" );
-                if(!et_food.getText().toString().equals( "" )){
+                moreSerch.setText(newProductNameEditText.getText().toString());
+                if(!newProductNameEditText.getText().toString().equals( "" )){
                     moreSerch.setVisibility( View.VISIBLE );
-                    moreSerch.setText( et_food.getText().toString() + " " + "קלוריות" );
+                    moreSerch.setText( newProductNameEditText.getText().toString() + " " + "קלוריות" );
                 }else{
                     moreSerch.setVisibility( View.GONE );
                 }
@@ -1246,15 +1197,15 @@ finish();
 
             }
         });
-        et_kal= findViewById( R.id.et_kal );
-        et_kal.addTextChangedListener( new TextWatcher() {
+        newProductCaloriesEditText = findViewById( R.id.et_kal );
+        newProductCaloriesEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
 
             }
             @Override
             public void onTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
-                et_kal.setBackgroundResource( R.drawable.sty_2 );
+                newProductCaloriesEditText.setBackgroundResource( R.drawable.sty_2 );
             }
             @Override
             public void afterTextChanged(Editable editable) {
@@ -1267,8 +1218,8 @@ finish();
         tv_kal= findViewById( R.id.tv_kal );
         tv_Type=findViewById( R.id.tv_Type);
         tv_Type.getViewTreeObserver().addOnGlobalLayoutListener(this);
-        btn_addNeePrivetFood =findViewById( R.id.btn_addNewPrivetFood );
-        btn_addNeePrivetFood.setOnClickListener( this );
+        saveNewProductItemButton =findViewById( R.id.saveNewProductItemButton);
+        saveNewProductItemButton.setOnClickListener( this );
         btn_addFood =findViewById( R.id.btn_addFood );
         btn_addFood.setOnClickListener( this );
         ly_addNewPrivetFood =findViewById( R.id.ly_addNewPrivetFood );
@@ -1291,12 +1242,14 @@ finish();
         searchview.setOnClickListener( this );
         serchview_internet = findViewById( R.id.serchview_internet );
         serchview_internet.setOnClickListener( this );
-        et_kal.setOnTouchListener( this );et_amounttt.setOnTouchListener( this );et_spinnerEditT.setOnTouchListener( this );et_newAmount.setOnTouchListener( this );;
+        newProductCaloriesEditText.setOnTouchListener( this );
+        et_amounttt.setOnTouchListener( this );
+        ;et_newAmount.setOnTouchListener( this );
         //   et_kal.setOnClickListener( this );et_amounttt.setOnClickListener( this );et_spinnerEditT.setOnClickListener( this );et_newAmount.setOnClickListener( this );;
 //
     }
     private void updateMainList() {
-        apdateFoodList();
+        updateFoodList();
         loadPrivetFoodListData();
         addPrivetFoodListToFoodList();
         updateKlist();
@@ -1326,9 +1279,11 @@ finish();
         iv_barcodeSearch_round.setVisibility( View.VISIBLE );
 
         searchview.setQuery( "" , false );
-        et_food.setText( "" );
-        et_kal.setText( "" );
-        spinner.setSelection( 6 );
+        newProductNameEditText.setText( "" );
+        newProductCaloriesEditText.setText( "" );
+
+        measurementSelectorView.selectDefaultMeasurement();
+
         searchview.setBackgroundResource( R.drawable.sty_3 );
         updateMainList();
 
@@ -1360,12 +1315,12 @@ finish();
 
 
         et_d_enter_code = QrCode_dialog.findViewById( R.id.et_d_enter_code );
-        et_d_enter_code.setText(""+bCod.toString()+"");
+        et_d_enter_code.setText(bCod);
 
         if (Build.VERSION.SDK_INT >= 19) {
             webview.getSettings().setCacheMode( WebSettings.LOAD_CACHE_ELSE_NETWORK);
         }
-        webview.loadUrl("https://www.google.com/search?q=" + bCod.toString());
+        webview.loadUrl("https://www.google.com/search?q=" + bCod);
 
         //העלם עמודת חיפוש והצג אפשרות ביטול
         searchview.setVisibility(View.GONE);
@@ -1395,7 +1350,7 @@ finish();
             webview.getSettings().setCacheMode( WebSettings.LOAD_CACHE_ELSE_NETWORK);
         }
         webview.loadUrl("https://www.google.com/search?q=" + searchview.getQuery().toString() +" "+ "קלוריות");
-        et_food.setText( searchview.getQuery().toString() );
+        newProductNameEditText.setText( searchview.getQuery().toString() );
         moreSerch.setVisibility( View.GONE ); //זה בכוונה אחרי חיפוש המוצר ואחרי עדעון האדיט טקסט של שם המוצר.
         //העלם עמודת חיפוש והצג אפשרות ביטול
         searchview.setVisibility(View.GONE);
@@ -1493,11 +1448,11 @@ finish();
         finish();
     }
     private void clipExampleListAsCode(String labal){
-        String detailsString=""+labal+"";
+        String detailsString= labal;
         detailsString=detailsString+" "+exampleList.size()+" items ";
         for(int i=0; i <exampleList.size();i++){
             String itemT= "exampleList.add(new ExampleItem("+0+","+0+","+"\""+ exampleList.get( i ).getName()+"\"" +","+"\""+ exampleList.get( i ).getUnit()+"\""+" ,"+"\""+ exampleList.get( i ).getCalorieText()+"\""+","+0+","+"null"+"));";
-            detailsString=detailsString.toString()+ "\n"+itemT;
+            detailsString= detailsString + "\n"+itemT;
         }
         clipData(detailsString , this);
         Toast.makeText( getBaseContext(), "Copied successfully"+exampleList.size()+" items ",Toast.LENGTH_SHORT).show();
@@ -1510,7 +1465,7 @@ finish();
 
         //עדכון רשימת מסך ראשי
 
-        ConsumedItem listItem=new ConsumedItem(amount,temp_exampleItem,date.format(cal.getTime()).toString() , 0);
+        ConsumedItem listItem=new ConsumedItem(amount,temp_exampleItem, date.format(cal.getTime()), 0);
         myList_temp.add(listItem );
         // שמירה בטלפון
         saveData_K();
@@ -1576,7 +1531,7 @@ finish();
 
         if (kaloriesSum!=0){
             //  text.setText( "  "+kaloriesSum+"  " );
-            text.setText( ""+kaloriesSum+"" );
+            text.setText( ""+kaloriesSum );
             text.setBackgroundResource( R.drawable.sty_blue_r ); }
         else{    text.setText( "");
             text.setBackgroundResource( R.drawable.sty_blue_r_sercle ); }
@@ -1584,7 +1539,7 @@ finish();
     private void deleteFromCalList(int position){
         boolean finished = false;
         int q=0;
-        while (finished==false){
+        while (!finished){
             //אם המספר הסידורי של איבר ברשימה הגדולה שווה למספר הסידורי של האיבר שרציתי למחוק מהרשימה של היום הכללי (כלומר אם זה האיבר שאני רוצה למחוק)
             if (myList_temp.get( q ).getSerial()==myList.get( position).getSerial()){
                 //מחק אותו וסיים
@@ -1605,7 +1560,7 @@ finish();
     private void aditItemFromCalList(int position,double newAmount){
         boolean finished = false;
         int q=0;
-        while (finished==false){
+        while (!finished){
             //אם המספר הסידורי של איבר ברשימה הגדולה שווה למספר הסידורי של האיבר שרציתי למחוק מהרשימה של היום הכללי (כלומר אם זה האיבר שאני רוצה לשנוצ)
             if (myList_temp.get( q ).getSerial()==myList.get( position).getSerial()){
                 //שנה כמות
@@ -1650,7 +1605,6 @@ finish();
     @Override
     public void onBackPressed() {
 
-
         if (webview.canGoBack() && webview.getVisibility() == View.VISIBLE) {
             webview.goBack();
         } else {
@@ -1683,7 +1637,7 @@ finish();
     }
     @Override
     public boolean onTouch(View view , MotionEvent motionEvent) {
-        if (view==et_kal||view==et_amounttt||view==et_spinnerEditT||view==et_newAmount){
+        if (view== newProductCaloriesEditText ||view==et_amounttt||view==et_spinnerEditT||view==et_newAmount){
             EditText  et_temp= (EditText) view;
             et_temp.setText("");
             return false;}

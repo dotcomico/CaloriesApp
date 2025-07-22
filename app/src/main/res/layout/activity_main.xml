@@ -393,44 +393,14 @@
                         android:background="@drawable/sty_2"
                         />
 
-                    <Spinner
-                        android:id="@+id/spinner"
-                        android:layout_marginHorizontal="3dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="3dp"
-                        android:background="@drawable/sty_2"
-                        />
 
-                    <RelativeLayout
-                        android:visibility="gone"
-                        android:id="@+id/layoutSpinnerEdit"
-                        android:layout_marginHorizontal="3dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
+                    <com.example.calories.ui.views.MeasurementSelectorView
+                        android:id="@+id/measurement_selector"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingVertical="3dp">
-                        <EditText
-                            android:id="@+id/et_spinnerEditT"
-                            android:inputType="text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="#000000"
-                            android:hint="כתוב סוג מדד.."
-                            android:textColorHint="#CCCCCC"
-                            android:background="@drawable/sty_2"
-                            />
-                        <ImageView
-                            android:id="@+id/iv_returnToSpinner"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/ic_baseline_expand_more_24"
-                            android:layout_alignParentLeft="true"
-                            />
-                    </RelativeLayout>
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp" />
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -440,7 +410,7 @@
                         android:layout_marginHorizontal="15dp"
                         android:layout_marginVertical="13dp">
                         <Button
-                            android:id="@+id/btn_addNewPrivetFood"
+                            android:id="@+id/saveNewProductItemButton"
                             android:layout_weight="1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -449,7 +419,7 @@
                             android:textColor="@color/black"
                             />
                         <ImageView
-                            android:id="@+id/iv_anther"
+                            android:id="@+id/saveAndStay"
                             android:layout_weight="8"
                             android:layout_marginHorizontal="5dp"
                             android:layout_width="match_parent"
