@@ -109,7 +109,7 @@
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginVertical="13dp">
                 <Button
-                    android:id="@+id/btn_addNewPrivetFood"
+                    android:id="@+id/saveNewProductItemButton"
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -118,7 +118,7 @@
                     android:textColor="@color/black"
                     />
                 <ImageView
-                    android:id="@+id/iv_anther"
+                    android:id="@+id/saveAndStay"
                     android:layout_weight="8"
                     android:layout_marginHorizontal="5dp"
                     android:layout_width="match_parent"
