@@ -107,12 +107,15 @@ setRecyclerView();
                         } else {
                             // מצב רגיל - עריכת פריט
                             productItem = customProducts.get(position);
+
                             lastClickedItemPosition = position;
 
                             editProductLayout.setVisibility(View.VISIBLE);
 
                             productNameEditText.setText(productItem.getName());
                             productCaloriesEditText.setText(productItem.getCalorieText());
+                            measurementSelectorView.setSelectedMeasurement(productItem.getUnit());
+
                             barcodeDialogHandler.getBarcodeEditText().setText(
                                     productItem.getBarcode() != null ? productItem.getBarcode() : ""
                             );
