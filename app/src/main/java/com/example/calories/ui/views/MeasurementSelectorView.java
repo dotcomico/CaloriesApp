@@ -82,13 +82,15 @@ public class MeasurementSelectorView extends LinearLayout {
                     showCustomInput();
                 } else {
                     if (listener != null && !isInCustomMode) {
+                        //להוסיף יחידת מידה -> לרפרש מידע -> לסמן את המוצר החדש
                         listener.onMeasurementSelected(selected);
                     }
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
     }
 
@@ -138,38 +140,36 @@ public class MeasurementSelectorView extends LinearLayout {
     }
 
     public void handleCustomMeasurement() {
-        String customMeasurement = editCustomMeasurement.getText().toString().trim();
-Utility.makeToast("1" , this.getContext());
+        //צור והוסף יחידת מידה -> לרפרש מידע -> לסמן את המוצר החדש
 
+        String customMeasurement = getEditCustomMeasurementText();
+
+        //אם הטקסט ריק
         if (TextUtils.isEmpty(customMeasurement)) {
-            Utility.makeToast("2" , this.getContext());
             // אם ריק, חזרה לספינר
             hideCustomInput();
-
-            String DEFAULT_MEASUREMENT= measurementManager.getDefaultUnits().get(0).getName();
+            String DEFAULT_MEASUREMENT = measurementManager.getDefaultUnits().get(0).getName();
             selectMeasurement(DEFAULT_MEASUREMENT);
-
             return;
         }
 
+        // צור והוסף יחידת מידה
         if (!measurementManager.isUnitNameExists(customMeasurement)) {
-            Utility.makeToast("3" , this.getContext());
             // שמירת המדד החדש
             MeasurementUnit newUnit = new MeasurementUnit(customMeasurement, true);
             measurementManager.saveCustomUnit(newUnit);
             // עדכון הספינר
             refreshSpinner();
-        }
-        Utility.makeToast("4" , this.getContext());
-        // בחירת המדד החדש
-        selectMeasurement(customMeasurement);
+            // בחירת המדד החדש
+            selectMeasurement(customMeasurement);
 
-        // חזרה למצב רגיל
-        hideCustomInput();
+            // חזרה למצב רגיל
+            hideCustomInput();
 
-        // הודעה למאזין
-        if (listener != null) {
-            listener.onMeasurementSelected(customMeasurement);
+            // הודעה למאזין
+            if (listener != null) {
+                listener.onMeasurementSelected(customMeasurement);
+            }
         }
     }
 
@@ -229,14 +229,12 @@ Utility.makeToast("1" , this.getContext());
         this.listener = listener;
     }
 
-    public String getSelectedMeasurement() {
-        if (editCustomMeasurement.getVisibility() == View.VISIBLE) {
-            return editCustomMeasurement.getText().toString().trim();
-        } else {
-            Object selectedItem = spinnerMeasurement.getSelectedItem();
-            if (selectedItem != null && !selectedItem.toString().equals(ADD_NEW_OPTION)) {
-                return selectedItem.toString();
-            }
+    public String getSelectedMeasurement(Context context) {
+
+        Object selectedItem = spinnerMeasurement.getSelectedItem(); //למה מחזיר  "100 גרם" ?
+        Utility.makeToast(spinnerMeasurement.getSelectedItem().toString(), context);
+        if (selectedItem != null && !selectedItem.toString().equals(ADD_NEW_OPTION)) {
+            return selectedItem.toString();
         }
         return "";
     }
@@ -251,5 +249,17 @@ Utility.makeToast("1" , this.getContext());
         void onMeasurementSelected(String measurement);
     }
 
+    public String getEditCustomMeasurementText() {
+        return editCustomMeasurement.getText().toString().trim();
+    }
 
+    public String getMeasurement(Context context) {
+
+        if (isInCustomMode) {
+            handleCustomMeasurement();
+        }
+
+        return getSelectedMeasurement(context);
+
+    }
 }
