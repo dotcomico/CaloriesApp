@@ -151,9 +151,8 @@ public class MeasurementSelectorView extends LinearLayout {
 
         String customMeasurement = getEditCustomMeasurementText();
 
-        //אם הטקסט ריק
-        if (TextUtils.isEmpty(customMeasurement)) {
-            // אם ריק, חזרה לספינר
+        if (customMeasurement.isEmpty()) {
+
             hideCustomInput();
 
             selectDefaultMeasurement();
