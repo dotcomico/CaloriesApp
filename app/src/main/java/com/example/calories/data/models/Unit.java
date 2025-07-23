@@ -2,20 +2,20 @@ package com.example.calories.data.models;
 
 import androidx.annotation.NonNull;
 
-public class MeasurementUnit {
+public class Unit {
     private String id;
     private String name;
     private boolean isCustom;
     private int position;
 
-    public MeasurementUnit(String id, String name, boolean isCustom, int position) {
+    public Unit(String id, String name, boolean isCustom, int position) {
         this.id = id;
         this.name = name;
         this.isCustom = isCustom;
         this.position = position;
     }
 
-    public MeasurementUnit(String name, boolean isCustom) {
+    public Unit(String name, boolean isCustom) {
         this.id = generateId();
         this.name = name;
         this.isCustom = isCustom;
@@ -69,7 +69,7 @@ public class MeasurementUnit {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        MeasurementUnit that = (MeasurementUnit) obj;
+        Unit that = (Unit) obj;
         return id.equals(that.id);
     }
 

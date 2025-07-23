@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import com.example.calories.ui.dialogs.BarcodeDialogHandler;
-import com.example.calories.ui.views.MeasurementSelectorView;
+import com.example.calories.ui.views.UnitSelectorView;
 import com.example.calories.export.ProductExporter;
 import com.example.calories.ui.adapters.ProductItemAdapter;
 import com.example.calories.ui.adapters.ProductItemDeletionHelper;
@@ -45,7 +45,7 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
     private ProductStorageManager productStorageManager;
     private BarcodeDialogHandler barcodeDialogHandler;
     private ProductItemDeletionHelper deletionHelper;
-    private MeasurementSelectorView measurementSelectorView;
+    private UnitSelectorView unitSelectorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
         scanBarcodeImageView = findViewById( R.id.iv_barcode );
         productNameEditText = findViewById( R.id.et_food );
         productCaloriesEditText = findViewById( R.id.et_kal );
-        measurementSelectorView = findViewById(R.id.measurement_selector);
+        unitSelectorView = findViewById(R.id.unit_selector);
         updateProductButton = findViewById( R.id.btn_save );
 
         scanBarcodeImageView.setOnClickListener( this );
@@ -114,7 +114,7 @@ setRecyclerView();
 
                             productNameEditText.setText(productItem.getName());
                             productCaloriesEditText.setText(productItem.getCalorieText());
-                            measurementSelectorView.setSelectedMeasurement(productItem.getUnit());
+                            unitSelectorView.setSelectedUnit(productItem.getUnit());
 
                             barcodeDialogHandler.getBarcodeEditText().setText(
                                     productItem.getBarcode() != null ? productItem.getBarcode() : ""
@@ -174,7 +174,7 @@ setRecyclerView();
             updatedProduct.setName( productNameEditText.getText().toString().trim() );
             updatedProduct.setBarcode( barcodeDialogHandler.getBarcodeEditText().getText().toString().trim() );
 
-           String measurement = measurementSelectorView.getMeasurement(this);
+           String measurement = unitSelectorView.getUnit(this);
             updatedProduct.setUnit(measurement);
 
             productItemAdapter = new ProductItemAdapter(customProducts);

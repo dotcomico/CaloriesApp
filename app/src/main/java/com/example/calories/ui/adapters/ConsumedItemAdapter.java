@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.calories.R;
 import com.example.calories.data.models.ConsumedItem;
 import com.example.calories.data.models.ProductItem;
-import com.example.calories.data.storage.MeasurementManager;
+import com.example.calories.data.storage.UnitManager;
 
 import java.util.ArrayList;
 
@@ -68,7 +68,7 @@ public class ConsumedItemAdapter extends RecyclerView.Adapter<ConsumedItemAdapte
     private void bindProductInfo(ConsumedItemViewHolder holder, ConsumedItem item) {
         ProductItem product = item.getProductItem();
 
-        holder.unitImageView.setImageResource(MeasurementManager.getUnitImageResId(product.getUnit()));
+        holder.unitImageView.setImageResource(UnitManager.getUnitImageResId(product.getUnit()));
         holder.productNameTextView.setText(product.getName());
     }
 

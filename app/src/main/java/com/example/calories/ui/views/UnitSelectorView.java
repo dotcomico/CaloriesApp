@@ -16,58 +16,58 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.calories.data.storage.MeasurementManager;
+import com.example.calories.data.storage.UnitManager;
 import com.example.calories.R;
-import com.example.calories.data.models.MeasurementUnit;
+import com.example.calories.data.models.Unit;
 import com.example.calories.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
 /**
- * A custom view that allows the user to select a predefined unit of measurement
+ * A custom view that allows the user to select a predefined unit
  * from a Spinner, or enter a custom unit using an EditText field.
  * <p>
- * Typically used when entering product details with flexible measurement units
+ * Typically used when entering product details with flexible units
  * like "gram", "cup", or "custom unit".
  */
 
-public class MeasurementSelectorView extends LinearLayout {
+public class UnitSelectorView extends LinearLayout {
 
     private static final String ADD_NEW_OPTION = "הוסף מדד חדש...";
-
-    private Spinner spinnerMeasurement;
-    private EditText editCustomMeasurement;
+    private Spinner spinnerUnit;
+    private EditText editCustomUnit;
     private ImageView iconEdit;
     private ArrayAdapter<String> adapter;
     private List<String> displayItems;
-    private List<MeasurementUnit> allUnits;
-    private MeasurementManager measurementManager;
-    private OnMeasurementSelectedListener listener;
+    private UnitManager unitManager;
+    private OnUnitSelectedListener listener;
     private boolean isInCustomMode = false;
 
-    public MeasurementSelectorView(Context context) {
+    public UnitSelectorView(Context context) {
         super(context);
         init();
     }
 
-    public MeasurementSelectorView(Context context, AttributeSet attrs) {
+    public UnitSelectorView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public MeasurementSelectorView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public UnitSelectorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     private void init() {
-        LayoutInflater.from(getContext()).inflate(R.layout.custom_measurement_selector, this, true);
 
-        spinnerMeasurement = findViewById(R.id.spinner_measurement);
-        editCustomMeasurement = findViewById(R.id.edit_custom_measurement);
+        int layoutRid = R.layout.custom_unit_selector;
+        LayoutInflater.from(getContext()).inflate(layoutRid, this, true);
+
+        spinnerUnit = findViewById(R.id.spinner_unit);
+        editCustomUnit = findViewById(R.id.edit_custom_unit);
         iconEdit = findViewById(R.id.icon_edit);
 
-        measurementManager = MeasurementManager.getInstance(getContext());
+        unitManager = UnitManager.getInstance(getContext());
 
         setupSpinner();
         setupEditText();
@@ -75,13 +75,14 @@ public class MeasurementSelectorView extends LinearLayout {
     }
 
     private void setupSpinner() {
-        loadMeasurementUnits();
+
+        loadUnits();
 
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, displayItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerMeasurement.setAdapter(adapter);
+        spinnerUnit.setAdapter(adapter);
 
-        spinnerMeasurement.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selected = displayItems.get(position);
@@ -90,7 +91,7 @@ public class MeasurementSelectorView extends LinearLayout {
                 } else {
                     if (listener != null && !isInCustomMode) {
                         //להוסיף יחידת מידה -> לרפרש מידע -> לסמן את המוצר החדש
-                        listener.onMeasurementSelected(selected);
+                        listener.onUnitSelected(selected);
                     }
                 }
             }
@@ -102,10 +103,10 @@ public class MeasurementSelectorView extends LinearLayout {
     }
 
     private void setupEditText() {
-        editCustomMeasurement.setOnEditorActionListener((v, actionId, event) -> {
+        editCustomUnit.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE ||
                     (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                handleCustomMeasurement();
+                handleCustomUnit();
                 return true;
             }
             return false;
@@ -117,11 +118,11 @@ public class MeasurementSelectorView extends LinearLayout {
         iconEdit.setOnClickListener(v -> showEditDialog());
     }
 
-    private void loadMeasurementUnits() {
-        allUnits = measurementManager.getAllUnits();
+    private void loadUnits() {
+        List<Unit> allUnits = unitManager.getAllUnits();
         displayItems = new ArrayList<>();
 
-        for (MeasurementUnit unit : allUnits) {
+        for (Unit unit : allUnits) {
             displayItems.add(unit.getName());
         }
 
@@ -130,77 +131,74 @@ public class MeasurementSelectorView extends LinearLayout {
 
     private void showCustomInput() {
         isInCustomMode = true;
-        spinnerMeasurement.setVisibility(View.GONE);
-        editCustomMeasurement.setVisibility(View.VISIBLE);
+        spinnerUnit.setVisibility(View.GONE);
+        editCustomUnit.setVisibility(View.VISIBLE);
         iconEdit.setVisibility(View.VISIBLE);
-        editCustomMeasurement.requestFocus();
-// add this line to show the keyboard automatically
+        editCustomUnit.requestFocus();
     }
 
     private void hideCustomInput() {
         isInCustomMode = false;
-        spinnerMeasurement.setVisibility(View.VISIBLE);
-        editCustomMeasurement.setVisibility(View.GONE);
+        spinnerUnit.setVisibility(View.VISIBLE);
+        editCustomUnit.setVisibility(View.GONE);
         iconEdit.setVisibility(View.GONE);
-        editCustomMeasurement.setText("");
-        //add this line to close the keyboard
+        editCustomUnit.setText("");
     }
 
-    public void handleCustomMeasurement() {
-        //צור והוסף יחידת מידה -> לרפרש מידע -> לסמן את המוצר החדש
-
-        String customMeasurement = getEditCustomMeasurementText();
+    public void handleCustomUnit() {
+        String customMeasurement = getEditCustomUnitText();
 
         if (customMeasurement.isEmpty()) {
 
             hideCustomInput();
 
-            selectDefaultMeasurement();
+            selectDefaultUnit();
+
             return;
         }
 
         // צור והוסף יחידת מידה
-        if (!measurementManager.isUnitNameExists(customMeasurement)) {
+        if (!unitManager.isUnitNameExists(customMeasurement)) {
             // שמירת המדד החדש
-            MeasurementUnit newUnit = new MeasurementUnit(customMeasurement, true);
-            measurementManager.saveCustomUnit(newUnit);
+            Unit newUnit = new Unit(customMeasurement, true);
+            unitManager.saveCustomUnit(newUnit);
             // עדכון הספינר
             refreshSpinner();
             // בחירת המדד החדש
-            selectMeasurement(customMeasurement);
+            selectUnit(customMeasurement);
 
             // חזרה למצב רגיל
             hideCustomInput();
 
             // הודעה למאזין
             if (listener != null) {
-                listener.onMeasurementSelected(customMeasurement);
+                listener.onUnitSelected(customMeasurement);
             }
         }
     }
 
-    public void selectDefaultMeasurement() {
-        String DEFAULT_MEASUREMENT = measurementManager.getDefaultUnits().get(0).getName();
-        selectMeasurement(DEFAULT_MEASUREMENT);
+    public void selectDefaultUnit() {
+        String DEFAULT_UNIT = unitManager.getDefaultUnits().get(0).getName();
+        selectUnit(DEFAULT_UNIT);
     }
 
     private void refreshSpinner() {
-        loadMeasurementUnits();
+        loadUnits();
         adapter.notifyDataSetChanged();
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, displayItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerMeasurement.setAdapter(adapter);
+        spinnerUnit.setAdapter(adapter);
     }
 
-    private void selectMeasurement(String measurement) {
+    private void selectUnit(String measurement) {
         int position = displayItems.indexOf(measurement);
         if (position >= 0) {
-            spinnerMeasurement.setSelection(position);
+            spinnerUnit.setSelection(position);
         }
     }
 
     private void showEditDialog() {
-        List<MeasurementUnit> customUnits = measurementManager.getCustomUnits();
+        List<Unit> customUnits = unitManager.getCustomUnits();
 
         if (customUnits.isEmpty()) {
             Toast.makeText(getContext(), "אין מדדים מותאמים אישית", Toast.LENGTH_SHORT).show();
@@ -215,19 +213,19 @@ public class MeasurementSelectorView extends LinearLayout {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("מדדים מותאמים אישית");
         builder.setItems(items, (dialog, which) -> {
-            MeasurementUnit unitToDelete = customUnits.get(which);
+            Unit unitToDelete = customUnits.get(which);
             showDeleteConfirmation(unitToDelete);
         });
         builder.setNegativeButton("סגור", null);
         builder.show();
     }
 
-    private void showDeleteConfirmation(MeasurementUnit unit) {
+    private void showDeleteConfirmation(Unit unit) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("מחיקת מדד");
         builder.setMessage("האם אתה בטוח שברצונך למחוק את המדד \"" + unit.getName() + "\"?");
         builder.setPositiveButton("מחק", (dialog, which) -> {
-            measurementManager.removeCustomUnit(unit);
+            unitManager.removeCustomUnit(unit);
             refreshSpinner();
             Toast.makeText(getContext(), "המדד נמחק", Toast.LENGTH_SHORT).show();
         });
@@ -236,41 +234,41 @@ public class MeasurementSelectorView extends LinearLayout {
     }
 
     // Public methods
-    public void setOnMeasurementSelectedListener(OnMeasurementSelectedListener listener) {
+    public void setOnUnitSelectedListener(OnUnitSelectedListener listener) {
         this.listener = listener;
     }
 
-    public String getSelectedMeasurement(Context context) {
+    public String getSelectedUnit(Context context) {
 
-        Object selectedItem = spinnerMeasurement.getSelectedItem(); //למה מחזיר  "100 גרם" ?
-        Utility.makeToast(spinnerMeasurement.getSelectedItem().toString(), context);
+        Object selectedItem = spinnerUnit.getSelectedItem(); //למה מחזיר  "100 גרם" ?
+        Utility.makeToast(spinnerUnit.getSelectedItem().toString(), context);
         if (selectedItem != null && !selectedItem.toString().equals(ADD_NEW_OPTION)) {
             return selectedItem.toString();
         }
         return "";
     }
 
-    public void setSelectedMeasurement(String measurement) {
-        if (!TextUtils.isEmpty(measurement)) {
-            selectMeasurement(measurement);
+    public void setSelectedUnit(String unitName) {
+        if (!TextUtils.isEmpty(unitName)) {
+            selectUnit(unitName);
         }
     }
 
-    public interface OnMeasurementSelectedListener {
-        void onMeasurementSelected(String measurement);
+    public interface OnUnitSelectedListener {
+        void onUnitSelected(String unitName);
     }
 
-    public String getEditCustomMeasurementText() {
-        return editCustomMeasurement.getText().toString().trim();
+    public String getEditCustomUnitText() {
+        return editCustomUnit.getText().toString().trim();
     }
 
-    public String getMeasurement(Context context) {
+    public String getUnit(Context context) {
 
         if (isInCustomMode) {
-            handleCustomMeasurement();
+            handleCustomUnit();
         }
 
-        return getSelectedMeasurement(context);
+        return getSelectedUnit(context);
 
     }
 }

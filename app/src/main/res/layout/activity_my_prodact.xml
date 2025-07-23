@@ -93,8 +93,8 @@
             android:maxLines="1"
             android:inputType="number" />
 
-        <com.example.calories.ui.views.MeasurementSelectorView
-            android:id="@+id/measurement_selector"
+        <com.example.calories.ui.views.UnitSelectorView
+            android:id="@+id/unit_selector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

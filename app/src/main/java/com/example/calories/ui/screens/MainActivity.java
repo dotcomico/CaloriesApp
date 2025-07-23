@@ -51,7 +51,7 @@ import com.example.calories.R;
 import com.example.calories.ui.adapters.RecyclerItemClickListener;
 import com.example.calories.data.models.ConsumedItem;
 import com.example.calories.data.models.ProductItem;
-import com.example.calories.ui.views.MeasurementSelectorView;
+import com.example.calories.ui.views.UnitSelectorView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView tv_qr_information;
     ImageView iv_expend_more;
     Dialog dialog ;
-    private MeasurementSelectorView measurementSelectorView;
+    private UnitSelectorView unitSelectorView;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -612,7 +612,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         String newProductName = newProductNameEditText.getText().toString();
         String newProductCalories = newProductCaloriesEditText.getText().toString();
-        String newProductMeasurement = measurementSelectorView.getMeasurement(this);
+        String newProductUnit = unitSelectorView.getUnit(this);
 
         if (newProductName.isEmpty()) {
             newProductNameEditText.setBackgroundResource( R.drawable.sty_red );
@@ -638,7 +638,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         updateMainList();
 
-        makeToast( "\"" + newProductName +"\"" +" "+ newProductMeasurement +" נוסף למערכת!", getBaseContext());
+        makeToast( "\"" + newProductName +"\"" +" "+ newProductUnit +" נוסף למערכת!", getBaseContext());
 
     }
 
@@ -938,8 +938,8 @@ finish();
     private void addToFoodList(){
         //הוסף מזון לרשימת מוצרים שלי (רק אם אני בחיפוש עצמי או עורך מוצר קיים)
         ProductItem item;
-        String measurement = measurementSelectorView.getMeasurement(this);
-            item = new ProductItem(   1 , newProductNameEditText.getText().toString().trim() , measurement , newProductCaloriesEditText.getText().toString().trim() , et_d_enter_code.getText().toString() );
+        String unit = unitSelectorView.getUnit(this);
+            item = new ProductItem(   1 , newProductNameEditText.getText().toString().trim() , unit , newProductCaloriesEditText.getText().toString().trim() , et_d_enter_code.getText().toString() );
             myPrivetFoodlList.add(item);
             temp_exampleItem=item;
     }
@@ -1065,7 +1065,7 @@ finish();
     //פעולות קטנות
     private void findViewAndMore() {
 
-        measurementSelectorView = findViewById(R.id.measurement_selector);
+        unitSelectorView = findViewById(R.id.unit_selector);
 
         dialog= new Dialog(this);
         dialog.setContentView(R.layout.new_privet_prodact_sheet);
@@ -1282,7 +1282,7 @@ finish();
         newProductNameEditText.setText( "" );
         newProductCaloriesEditText.setText( "" );
 
-        measurementSelectorView.selectDefaultMeasurement();
+        unitSelectorView.selectDefaultUnit();
 
         searchview.setBackgroundResource( R.drawable.sty_3 );
         updateMainList();

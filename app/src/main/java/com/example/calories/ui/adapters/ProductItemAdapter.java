@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calories.R;
 import com.example.calories.data.models.ProductItem;
-import com.example.calories.data.storage.MeasurementManager;
+import com.example.calories.data.storage.UnitManager;
 
 import java.util.ArrayList;
 
@@ -25,7 +25,6 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
     private static final int STATE_MARKED_FOR_DELETE = 100;
     private static final int STATE_HIGHLIGHTED = 999;
 
-    MeasurementManager measurementManager;
 
     private final ArrayList<ProductItem> customProducts;
 
@@ -63,7 +62,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
     public void onBindViewHolder(ProductItemViewHolder holder, int position) {
         ProductItem currentItem = customProducts.get(position);
 
-        holder.productUnitImageView.setImageResource(MeasurementManager.getUnitImageResId(currentItem.getUnit()));
+        holder.productUnitImageView.setImageResource(UnitManager.getUnitImageResId(currentItem.getUnit()));
         holder.productNameTextView.setText(currentItem.getName());
         holder.productUnitTextView.setText(currentItem.getUnit());
         holder.productCalorieValueTextView.setText(currentItem.getCalorieText());
