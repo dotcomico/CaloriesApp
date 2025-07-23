@@ -23,6 +23,13 @@ import com.example.calories.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
+/**
+ * A custom view that allows the user to select a predefined unit of measurement
+ * from a Spinner, or enter a custom unit using an EditText field.
+ *
+ * Typically used when entering product details with flexible measurement units
+ * like "gram", "cup", or "custom unit".
+ */
 
 public class MeasurementSelectorView extends LinearLayout {
 
