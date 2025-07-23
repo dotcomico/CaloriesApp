@@ -31,6 +31,10 @@ import java.util.List;
  * like "gram", "cup", or "custom unit".
  */
 
+// כדאי לבדוק שלא יכניסו תווים אסורים או מדדים באורך לא תקין (למשל " ", או רק סימנים).
+// אפשר להוסיף בדיקה פשוטה על אורך או Regex.
+
+
 public class UnitSelectorView extends LinearLayout {
 
     private static final String ADD_NEW_OPTION = "הוסף מדד חדש...";
@@ -45,23 +49,21 @@ public class UnitSelectorView extends LinearLayout {
 
     public UnitSelectorView(Context context) {
         super(context);
-        init();
+        initializeViews();
     }
 
     public UnitSelectorView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        initializeViews();
     }
 
     public UnitSelectorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        initializeViews();
     }
 
-    private void init() {
-
-        int layoutRid = R.layout.custom_unit_selector;
-        LayoutInflater.from(getContext()).inflate(layoutRid, this, true);
+    private void initializeViews() {
+        LayoutInflater.from(getContext()).inflate(R.layout.custom_unit_selector, this, true);
 
         spinnerUnit = findViewById(R.id.spinner_unit);
         editCustomUnit = findViewById(R.id.edit_custom_unit);
@@ -74,34 +76,14 @@ public class UnitSelectorView extends LinearLayout {
         setupEditIcon();
     }
 
+    /**
+     * Initializes the UnitSelectorView by inflating the layout and setting up internal components.
+     */
     private void setupSpinner() {
-
         loadUnits();
-
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, displayItems);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerUnit.setAdapter(adapter);
-
-        spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selected = displayItems.get(position);
-                if (selected.equals(ADD_NEW_OPTION)) {
-                    showCustomInput();
-                } else {
-                    if (listener != null && !isInCustomMode) {
-                        //להוסיף יחידת מידה -> לרפרש מידע -> לסמן את המוצר החדש
-                        listener.onUnitSelected(selected);
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        setUpAdapter();
+        setupItemSelectedListener();
     }
-
     private void setupEditText() {
         editCustomUnit.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE ||
@@ -113,11 +95,37 @@ public class UnitSelectorView extends LinearLayout {
         });
 
     }
+    private void setupItemSelectedListener() {
+        spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                handleUnitSelection(position);
+            }
 
-    private void setupEditIcon() {
-        iconEdit.setOnClickListener(v -> showEditDialog());
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // No action needed
+            }
+        });
     }
+    private void handleUnitSelection(int position) {
+        String selectedUnitName  = displayItems.get(position);
+        if (selectedUnitName .equals(ADD_NEW_OPTION)) {
+            showCustomInput();
+            return;
+        }
 
+        if (listener != null && !isInCustomMode) {
+            listener.onUnitSelected(selectedUnitName );
+        }
+    }
+    private void setUpAdapter() {
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, displayItems);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerUnit.setAdapter(adapter);
+    }
     private void loadUnits() {
         List<Unit> allUnits = unitManager.getAllUnits();
         displayItems = new ArrayList<>();
@@ -128,7 +136,9 @@ public class UnitSelectorView extends LinearLayout {
 
         displayItems.add(ADD_NEW_OPTION);
     }
-
+    private void setupEditIcon() {
+        iconEdit.setOnClickListener(v -> showEditDialog());
+    }
     private void showCustomInput() {
         isInCustomMode = true;
         spinnerUnit.setVisibility(View.GONE);
@@ -146,34 +156,40 @@ public class UnitSelectorView extends LinearLayout {
     }
 
     public void handleCustomUnit() {
-        String customMeasurement = getEditCustomUnitText();
+        String customUnit = getEditCustomUnitText();
 
-        if (customMeasurement.isEmpty()) {
-
-            hideCustomInput();
-
-            selectDefaultUnit();
-
+        if (customUnit.isEmpty()) {
+            revertToDefaultUnit();
             return;
         }
 
-        // צור והוסף יחידת מידה
-        if (!unitManager.isUnitNameExists(customMeasurement)) {
-            // שמירת המדד החדש
-            Unit newUnit = new Unit(customMeasurement, true);
-            unitManager.saveCustomUnit(newUnit);
-            // עדכון הספינר
-            refreshSpinner();
-            // בחירת המדד החדש
-            selectUnit(customMeasurement);
+        if (unitManager.isUnitNameExists(customUnit)) {
+            selectExistingUnit(customUnit);
+           return;
+        }
 
-            // חזרה למצב רגיל
-            hideCustomInput();
+        addNewCustomUnit(customUnit);
+    }
+    private void revertToDefaultUnit() {
+        hideCustomInput();
+        selectDefaultUnit();
+    }
 
-            // הודעה למאזין
-            if (listener != null) {
-                listener.onUnitSelected(customMeasurement);
-            }
+    private void selectExistingUnit(String unitName) {
+        hideCustomInput();
+        selectUnit(unitName);
+    }
+
+    private void addNewCustomUnit(String unitName) {
+        Unit newUnit = new Unit(unitName, true);
+        unitManager.saveCustomUnit(newUnit);
+
+        refreshSpinner();
+        selectUnit(unitName);
+        hideCustomInput();
+
+        if (listener != null) {
+            listener.onUnitSelected(unitName);
         }
     }
 
@@ -185,9 +201,7 @@ public class UnitSelectorView extends LinearLayout {
     private void refreshSpinner() {
         loadUnits();
         adapter.notifyDataSetChanged();
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, displayItems);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerUnit.setAdapter(adapter);
+        setUpAdapter();
     }
 
     private void selectUnit(String measurement) {
@@ -201,50 +215,59 @@ public class UnitSelectorView extends LinearLayout {
         List<Unit> customUnits = unitManager.getCustomUnits();
 
         if (customUnits.isEmpty()) {
-            Toast.makeText(getContext(), "אין מדדים מותאמים אישית", Toast.LENGTH_SHORT).show();
+            Utility.makeToast( "אין מדדים מותאמים אישית", getContext());
             return;
         }
 
-        String[] items = new String[customUnits.size()];
-        for (int i = 0; i < customUnits.size(); i++) {
-            items[i] = customUnits.get(i).getName();
-        }
+        String[] unitNames = extractUnitNames(customUnits);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("מדדים מותאמים אישית");
-        builder.setItems(items, (dialog, which) -> {
-            Unit unitToDelete = customUnits.get(which);
-            showDeleteConfirmation(unitToDelete);
-        });
-        builder.setNegativeButton("סגור", null);
-        builder.show();
+        new AlertDialog.Builder(getContext())
+                .setTitle("מדדים מותאמים אישית")
+                .setItems(unitNames, (dialog, which) -> {
+                    Unit selectedUnit = customUnits.get(which);
+                    showDeleteConfirmation(selectedUnit);
+                })
+                .setNegativeButton("סגור", null)
+                .show();
+    }
+
+    private String[] extractUnitNames(List<Unit> units) {
+        String[] names = new String[units.size()];
+        for (int i = 0; i < units.size(); i++) {
+            names[i] = units.get(i).getName();
+        }
+        return names;
     }
 
     private void showDeleteConfirmation(Unit unit) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("מחיקת מדד");
-        builder.setMessage("האם אתה בטוח שברצונך למחוק את המדד \"" + unit.getName() + "\"?");
-        builder.setPositiveButton("מחק", (dialog, which) -> {
-            unitManager.removeCustomUnit(unit);
-            refreshSpinner();
-            Toast.makeText(getContext(), "המדד נמחק", Toast.LENGTH_SHORT).show();
-        });
-        builder.setNegativeButton("בטל", null);
-        builder.show();
+        String unitName = unit.getName();
+        String message = "האם אתה בטוח שברצונך למחוק את המדד \"" + unitName + "\"?";
+
+        new AlertDialog.Builder(getContext())
+                .setTitle("מחיקת מדד")
+                .setMessage(message)
+                .setPositiveButton("מחק", (dialog, which) -> {
+                    unitManager.removeCustomUnit(unit);
+                    refreshSpinner();
+                    Toast.makeText(getContext(), "המדד \"" + unitName + "\" נמחק", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("בטל", null)
+                .show();
     }
+
 
     // Public methods
     public void setOnUnitSelectedListener(OnUnitSelectedListener listener) {
         this.listener = listener;
     }
 
-    public String getSelectedUnit(Context context) {
+    public String getSelectedUnit() {
+        Object selectedItem = spinnerUnit.getSelectedItem();
 
-        Object selectedItem = spinnerUnit.getSelectedItem(); //למה מחזיר  "100 גרם" ?
-        Utility.makeToast(spinnerUnit.getSelectedItem().toString(), context);
         if (selectedItem != null && !selectedItem.toString().equals(ADD_NEW_OPTION)) {
             return selectedItem.toString();
         }
+
         return "";
     }
 
@@ -262,13 +285,13 @@ public class UnitSelectorView extends LinearLayout {
         return editCustomUnit.getText().toString().trim();
     }
 
-    public String getUnit(Context context) {
+    public String getUnit() {
 
         if (isInCustomMode) {
             handleCustomUnit();
         }
 
-        return getSelectedUnit(context);
+        return getSelectedUnit();
 
     }
 }

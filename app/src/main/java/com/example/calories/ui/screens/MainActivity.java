@@ -612,7 +612,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         String newProductName = newProductNameEditText.getText().toString();
         String newProductCalories = newProductCaloriesEditText.getText().toString();
-        String newProductUnit = unitSelectorView.getUnit(this);
+        String newProductUnit = unitSelectorView.getUnit();
 
         if (newProductName.isEmpty()) {
             newProductNameEditText.setBackgroundResource( R.drawable.sty_red );
@@ -938,7 +938,7 @@ finish();
     private void addToFoodList(){
         //הוסף מזון לרשימת מוצרים שלי (רק אם אני בחיפוש עצמי או עורך מוצר קיים)
         ProductItem item;
-        String unit = unitSelectorView.getUnit(this);
+        String unit = unitSelectorView.getUnit();
             item = new ProductItem(   1 , newProductNameEditText.getText().toString().trim() , unit , newProductCaloriesEditText.getText().toString().trim() , et_d_enter_code.getText().toString() );
             myPrivetFoodlList.add(item);
             temp_exampleItem=item;
