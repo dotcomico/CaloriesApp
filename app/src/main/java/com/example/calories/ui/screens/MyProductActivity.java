@@ -175,7 +175,8 @@ setRecyclerView();
             updatedProduct.setBarcode( barcodeDialogHandler.getBarcodeEditText().getText().toString().trim() );
 
            String measurement = unitSelectorView.getUnit();
-            updatedProduct.setUnit(measurement);
+           if(!measurement.isEmpty()){
+            updatedProduct.setUnit(measurement);}
 
             productItemAdapter = new ProductItemAdapter(customProducts);
 
