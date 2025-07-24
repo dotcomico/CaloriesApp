@@ -184,8 +184,8 @@ public class UnitSelectorView extends LinearLayout {
     }
 
 
-// ================== Event Handlers ==================
-private void handleUnitSelection(int position) {
+    // ================== Event Handlers ==================
+    private void handleUnitSelection(int position) {
     String selectedUnitName  = displayItems.get(position);
     if (selectedUnitName .equals(ADD_NEW_OPTION)) {
         showCustomInput();
