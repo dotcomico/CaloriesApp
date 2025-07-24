@@ -1,5 +1,7 @@
 package com.example.calories.ui.views;
 
+import static com.example.calories.utils.Utility.makeToast;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.text.TextUtils;
@@ -19,7 +21,6 @@ import android.widget.Toast;
 import com.example.calories.data.storage.UnitManager;
 import com.example.calories.R;
 import com.example.calories.data.models.Unit;
-import com.example.calories.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +31,6 @@ import java.util.List;
  * Typically used when entering product details with flexible units
  * like "gram", "cup", or "custom unit".
  */
-
-// כדאי לבדוק שלא יכניסו תווים אסורים או מדדים באורך לא תקין (למשל " ", או רק סימנים).
-// אפשר להוסיף בדיקה פשוטה על אורך או Regex.
-
 
 public class UnitSelectorView extends LinearLayout {
 
@@ -46,6 +43,8 @@ public class UnitSelectorView extends LinearLayout {
     private UnitManager unitManager;
     private OnUnitSelectedListener listener;
     private boolean isInCustomMode = false;
+
+    // ================== Constructors ==================
 
     public UnitSelectorView(Context context) {
         super(context);
@@ -62,6 +61,67 @@ public class UnitSelectorView extends LinearLayout {
         initializeViews();
     }
 
+    // ================== Public API Methods ==================
+    public void setOnUnitSelectedListener(OnUnitSelectedListener listener) {
+        this.listener = listener;
+    }
+    public void setSelectedUnit(String unitName) {
+        if (!TextUtils.isEmpty(unitName)) {
+            selectUnit(unitName);
+        }
+    }
+    public String getSelectedUnit() {
+        Object selectedItem = spinnerUnit.getSelectedItem();
+
+        if (selectedItem != null && !selectedItem.toString().equals(ADD_NEW_OPTION)) {
+            return selectedItem.toString();
+        }
+
+        return "";
+    }
+    public String getUnit() {
+
+        if (isInCustomMode) {
+            handleCustomUnit();
+        }
+
+        return getSelectedUnit();
+
+    }
+    public void reset() {
+        revertToDefaultUnitSelection();
+    }
+    public void selectDefaultUnit() {
+        String DEFAULT_UNIT = unitManager.getDefaultUnits().get(0).getName();
+        selectUnit(DEFAULT_UNIT);
+    }
+    public String getEditCustomUnitText() {
+        return editCustomUnit.getText().toString().trim();
+    }
+    public void handleCustomUnit() {
+        String customUnit = getEditCustomUnitText();
+
+        if (customUnit.isEmpty()) {
+            makeToast( "לא נבחר מדד",getContext());
+            return;
+        }
+
+        if (unitManager.isUnitNameExists(customUnit)) {
+            selectExistingUnit(customUnit);
+            return;
+        }
+
+        if (!customUnit.matches("^[\\p{L}\\p{N} .\\-]{1,20}$")) {
+            makeToast( "שם מדד לא תקין",getContext());
+            return;
+        }
+
+        addNewCustomUnit(customUnit);
+
+    }
+
+
+    // ================== Private Setup Methods ==================
     private void initializeViews() {
         LayoutInflater.from(getContext()).inflate(R.layout.custom_unit_selector, this, true);
 
@@ -75,10 +135,6 @@ public class UnitSelectorView extends LinearLayout {
         setupEditText();
         setupEditIcon();
     }
-
-    /**
-     * Initializes the UnitSelectorView by inflating the layout and setting up internal components.
-     */
     private void setupSpinner() {
         loadUnits();
         setUpAdapter();
@@ -86,14 +142,25 @@ public class UnitSelectorView extends LinearLayout {
     }
     private void setupEditText() {
         editCustomUnit.setOnEditorActionListener((v, actionId, event) -> {
+            String customUnit = editCustomUnit.getText().toString();
+
             if (actionId == EditorInfo.IME_ACTION_DONE ||
                     (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+
+                if (customUnit.isEmpty()) {
+                    revertToDefaultUnitSelection();
+                    return true;
+                }
+
                 handleCustomUnit();
                 return true;
             }
             return false;
         });
 
+    }
+    private void setupEditIcon() {
+        iconEdit.setOnClickListener(v -> showEditDialog());
     }
     private void setupItemSelectedListener() {
         spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -110,22 +177,28 @@ public class UnitSelectorView extends LinearLayout {
             }
         });
     }
-    private void handleUnitSelection(int position) {
-        String selectedUnitName  = displayItems.get(position);
-        if (selectedUnitName .equals(ADD_NEW_OPTION)) {
-            showCustomInput();
-            return;
-        }
-
-        if (listener != null && !isInCustomMode) {
-            listener.onUnitSelected(selectedUnitName );
-        }
-    }
     private void setUpAdapter() {
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, displayItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerUnit.setAdapter(adapter);
     }
+
+
+// ================== Event Handlers ==================
+private void handleUnitSelection(int position) {
+    String selectedUnitName  = displayItems.get(position);
+    if (selectedUnitName .equals(ADD_NEW_OPTION)) {
+        showCustomInput();
+        return;
+    }
+
+    if (listener != null && !isInCustomMode) {
+        listener.onUnitSelected(selectedUnitName );
+    }
+}
+
+
+    // ================== Helper Methods ==================
     private void loadUnits() {
         List<Unit> allUnits = unitManager.getAllUnits();
         displayItems = new ArrayList<>();
@@ -136,50 +209,26 @@ public class UnitSelectorView extends LinearLayout {
 
         displayItems.add(ADD_NEW_OPTION);
     }
-    private void setupEditIcon() {
-        iconEdit.setOnClickListener(v -> showEditDialog());
+    private void refreshSpinner() {
+        loadUnits();
+        adapter.clear();
+        adapter.addAll(displayItems);
+        adapter.notifyDataSetChanged();
     }
-    private void showCustomInput() {
-        isInCustomMode = true;
-        spinnerUnit.setVisibility(View.GONE);
-        editCustomUnit.setVisibility(View.VISIBLE);
-        iconEdit.setVisibility(View.VISIBLE);
-        editCustomUnit.requestFocus();
-    }
-
-    private void hideCustomInput() {
-        isInCustomMode = false;
-        spinnerUnit.setVisibility(View.VISIBLE);
-        editCustomUnit.setVisibility(View.GONE);
-        iconEdit.setVisibility(View.GONE);
-        editCustomUnit.setText("");
-    }
-
-    public void handleCustomUnit() {
-        String customUnit = getEditCustomUnitText();
-
-        if (customUnit.isEmpty()) {
-            revertToDefaultUnit();
-            return;
+    private void selectUnit(String measurement) {
+        int position = displayItems.indexOf(measurement);
+        if (position >= 0) {
+            spinnerUnit.setSelection(position);
         }
-
-        if (unitManager.isUnitNameExists(customUnit)) {
-            selectExistingUnit(customUnit);
-           return;
-        }
-
-        addNewCustomUnit(customUnit);
     }
-    private void revertToDefaultUnit() {
+    private void revertToDefaultUnitSelection() {
         hideCustomInput();
         selectDefaultUnit();
     }
-
     private void selectExistingUnit(String unitName) {
         hideCustomInput();
         selectUnit(unitName);
     }
-
     private void addNewCustomUnit(String unitName) {
         Unit newUnit = new Unit(unitName, true);
         unitManager.saveCustomUnit(newUnit);
@@ -192,30 +241,25 @@ public class UnitSelectorView extends LinearLayout {
             listener.onUnitSelected(unitName);
         }
     }
-
-    public void selectDefaultUnit() {
-        String DEFAULT_UNIT = unitManager.getDefaultUnits().get(0).getName();
-        selectUnit(DEFAULT_UNIT);
+    private void showCustomInput() {
+        isInCustomMode = true;
+        spinnerUnit.setVisibility(View.GONE);
+        editCustomUnit.setVisibility(View.VISIBLE);
+        iconEdit.setVisibility(View.VISIBLE);
+        editCustomUnit.requestFocus();
     }
-
-    private void refreshSpinner() {
-        loadUnits();
-        adapter.notifyDataSetChanged();
-        setUpAdapter();
+    private void hideCustomInput() {
+        isInCustomMode = false;
+        spinnerUnit.setVisibility(View.VISIBLE);
+        editCustomUnit.setVisibility(View.GONE);
+        iconEdit.setVisibility(View.GONE);
+        editCustomUnit.setText("");
     }
-
-    private void selectUnit(String measurement) {
-        int position = displayItems.indexOf(measurement);
-        if (position >= 0) {
-            spinnerUnit.setSelection(position);
-        }
-    }
-
     private void showEditDialog() {
         List<Unit> customUnits = unitManager.getCustomUnits();
 
         if (customUnits.isEmpty()) {
-            Utility.makeToast( "אין מדדים מותאמים אישית", getContext());
+            makeToast( "אין מדדים מותאמים אישית", getContext());
             return;
         }
 
@@ -230,7 +274,6 @@ public class UnitSelectorView extends LinearLayout {
                 .setNegativeButton("סגור", null)
                 .show();
     }
-
     private String[] extractUnitNames(List<Unit> units) {
         String[] names = new String[units.size()];
         for (int i = 0; i < units.size(); i++) {
@@ -238,7 +281,6 @@ public class UnitSelectorView extends LinearLayout {
         }
         return names;
     }
-
     private void showDeleteConfirmation(Unit unit) {
         String unitName = unit.getName();
         String message = "האם אתה בטוח שברצונך למחוק את המדד \"" + unitName + "\"?";
@@ -255,43 +297,9 @@ public class UnitSelectorView extends LinearLayout {
                 .show();
     }
 
-
-    // Public methods
-    public void setOnUnitSelectedListener(OnUnitSelectedListener listener) {
-        this.listener = listener;
-    }
-
-    public String getSelectedUnit() {
-        Object selectedItem = spinnerUnit.getSelectedItem();
-
-        if (selectedItem != null && !selectedItem.toString().equals(ADD_NEW_OPTION)) {
-            return selectedItem.toString();
-        }
-
-        return "";
-    }
-
-    public void setSelectedUnit(String unitName) {
-        if (!TextUtils.isEmpty(unitName)) {
-            selectUnit(unitName);
-        }
-    }
-
+    // ================== Inner Interface ==================
     public interface OnUnitSelectedListener {
         void onUnitSelected(String unitName);
     }
 
-    public String getEditCustomUnitText() {
-        return editCustomUnit.getText().toString().trim();
-    }
-
-    public String getUnit() {
-
-        if (isInCustomMode) {
-            handleCustomUnit();
-        }
-
-        return getSelectedUnit();
-
-    }
 }
