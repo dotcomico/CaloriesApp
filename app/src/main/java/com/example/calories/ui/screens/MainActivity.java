@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main );
+
         cal = Calendar.getInstance();
         cal.setTime(cal.getTime());
         findViewAndMore();
@@ -288,15 +289,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rl_selfSearch.setVisibility(View.GONE);
         ly_aditAmount.setVisibility(View.GONE);
         rl_mainInformation.setVisibility(View.VISIBLE);
-        //  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        //  String strDate = sdf.format(c.getTime());
 
-        //    sp = getSharedPreferences( "MyUserPref" , Context.MODE_PRIVATE );//צור שמירת נתונים פרטית
-        //אם הקוד כבר נשמר במכשיר תעדכן את טקסט הקוד במסך
-        //   if (!sp.getString( "caloria" , "" ).equals( "" )) {
-        //    str_caloria = sp.getString( "caloria" , "" );
-        //      text.setText( str_caloria );
-        //  }
         et_amounttt.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
         newProductCaloriesEditText.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
         et_newAmount.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
