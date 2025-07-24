@@ -18,7 +18,6 @@ public class Utility {
 
     public  static void makeToast(String string ,Context context){
         //      makeToast("ההעתקה בוצעה בהצלחה" ,  this );
-
         Toast.makeText( context, string ,Toast.LENGTH_SHORT).show();
     }
 
