@@ -1,0 +1,91 @@
+<!-- main_screen.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- מסך "יצירת מוצר חדש" (אתר) -->
+    <WebView
+        android:id="@+id/webview"
+        android:background="#FDB72A"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- רשימת מוצרים כללית (חיפוש) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/productsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:scrollbars="vertical"
+        android:scrollbarSize="5dp"
+        app:stackFromEnd="false"
+        android:transcriptMode="alwaysScroll" />
+
+    <!-- מידע יומי ורשימת מוצרים שנצרכו -->
+    <RelativeLayout
+        android:id="@+id/rl_mainInformation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- סך הקלוריות היומי -->
+        <RelativeLayout
+            android:id="@+id/rl_mainCal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_totalCalories"
+                app:drawableLeftCompat="@drawable/ic_baseline_local_fire_department_24_w"
+                app:drawableStartCompat="@drawable/ic_baseline_local_fire_department_24_w"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="cl"
+                android:textSize="28sp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="3dp"
+                android:paddingVertical="3dp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/sty_blue_r"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <!-- רשימת מוצרים שנצרכו -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/myListRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rl_mainCal"
+            android:background="#00CCD7FF"
+            android:scrollbars="vertical"
+            android:scrollbarSize="5dp"
+            app:stackFromEnd="false"
+            android:transcriptMode="alwaysScroll" />
+    </RelativeLayout>
+
+    <!-- הודעה: מוצר לא קיים במערכת -->
+    <RelativeLayout
+        android:id="@+id/rl_selfSearch"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="25sp"
+            android:textColor="#8E8D8D"
+            android:text="אופס! \n ~מוצר זה לא קיים במערכת~   \n ↓ המשך בחיפוש עצמי ↓ " />
+
+        <ImageView
+            android:id="@+id/iv_goToSelfSearch"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/search_oreng_icon" />
+    </RelativeLayout>
+</RelativeLayout>
