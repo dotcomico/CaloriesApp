@@ -3,7 +3,7 @@ package com.example.calories.data.storage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.calories.data.models.ProductItem;
+import com.example.calories.data.models.Product;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -22,15 +22,15 @@ public class ProductStorageManager {
         this.gson = new Gson();
     }
 
-    public void save(ArrayList<ProductItem> productList) {
+    public void save(ArrayList<Product> productList) {
         String json = gson.toJson(productList);
         sharedPreferences.edit().putString(KEY_PRODUCT_LIST, json).apply();
     }
 
-    public ArrayList<ProductItem> load() {
+    public ArrayList<Product> load() {
         String json = sharedPreferences.getString(KEY_PRODUCT_LIST, null);
-        Type type = new TypeToken<ArrayList<ProductItem>>() {}.getType();
-        ArrayList<ProductItem> list = gson.fromJson(json, type);
+        Type type = new TypeToken<ArrayList<Product>>() {}.getType();
+        ArrayList<Product> list = gson.fromJson(json, type);
         return (list != null) ? list : new ArrayList<>();
     }
 
@@ -38,8 +38,8 @@ public class ProductStorageManager {
         sharedPreferences.edit().remove(KEY_PRODUCT_LIST).apply();
     }
 
-    public ProductItem getLastItem() {
-        ArrayList<ProductItem> list = load();
+    public Product getLastItem() {
+        ArrayList<Product> list = load();
         if (!list.isEmpty()) {
             return list.get(list.size() - 1);
         }
