@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.example.calories.data.models.ProductItem;
+import com.example.calories.data.models.Product;
 
 import java.util.ArrayList;
 
@@ -12,11 +12,11 @@ public class ProductItemDeletionHelper {
 
     private final Context context;
     private final ProductItemAdapter adapter;
-    private final ArrayList<ProductItem> productList;
+    private final ArrayList<Product> productList;
     private boolean isInDeleteMode = false;
     private final Runnable onStateChanged; // עדכון UI (למשל שינוי תפריט)
 
-    public ProductItemDeletionHelper(Context context, ArrayList<ProductItem> productList, ProductItemAdapter adapter, Runnable onStateChanged) {
+    public ProductItemDeletionHelper(Context context, ArrayList<Product> productList, ProductItemAdapter adapter, Runnable onStateChanged) {
         this.context = context;
         this.adapter = adapter;
         this.productList = productList;
