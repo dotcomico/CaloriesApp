@@ -12,7 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calories.R;
-import com.example.calories.data.models.ProductItem;
+import com.example.calories.data.models.Product;
 import com.example.calories.data.storage.UnitManager;
 
 import java.util.ArrayList;
@@ -26,9 +26,9 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
     private static final int STATE_HIGHLIGHTED = 999;
 
 
-    private final ArrayList<ProductItem> customProducts;
+    private final ArrayList<Product> customProducts;
 
-    public ProductItemAdapter(ArrayList<ProductItem> productList) {
+    public ProductItemAdapter(ArrayList<Product> productList) {
         this.customProducts = productList;
     }
 
@@ -60,7 +60,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
 
     @Override
     public void onBindViewHolder(ProductItemViewHolder holder, int position) {
-        ProductItem currentItem = customProducts.get(position);
+        Product currentItem = customProducts.get(position);
 
         holder.productUnitImageView.setImageResource(UnitManager.getUnitImageResId(currentItem.getUnit()));
         holder.productNameTextView.setText(currentItem.getName());
@@ -130,7 +130,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
 
     public int getDeleteMarkCount() {
         int count = 0;
-        for (ProductItem item : customProducts) {
+        for (Product item : customProducts) {
             if (item.getItemState() == STATE_MARKED_FOR_DELETE) {
                 count++;
             }
