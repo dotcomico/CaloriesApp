@@ -59,7 +59,7 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
         recyclerView = findViewById( R.id.productsRecyclerView);
         editProductLayout = findViewById( R.id.layoutEditProduct);
         cancelEditImageView = findViewById( R.id.iv_delete );
-        scanBarcodeImageView = findViewById( R.id.iv_barcode );
+        scanBarcodeImageView = findViewById( R.id.iv_barcodeScan);
         productNameEditText = findViewById( R.id.et_food );
         productCaloriesEditText = findViewById( R.id.et_kal );
         unitSelectorView = findViewById(R.id.unit_selector);
