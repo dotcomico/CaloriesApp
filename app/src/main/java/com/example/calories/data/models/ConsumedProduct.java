@@ -2,7 +2,7 @@ package com.example.calories.data.models;
 
 import java.time.LocalDateTime;
 
-public class ConsumedItem {
+public class ConsumedProduct {
 
     // Constants for unit types
     private static final String UNIT_100_GRAM = "100 גרם";
@@ -11,17 +11,17 @@ public class ConsumedItem {
     private static final int STANDARD_UNIT_BASE = 100;
 
     private double amount; // כמות שנצרכה
-    private ProductItem productItem; // המוצר שנצרך
+    private Product product; // המוצר שנצרך
     private String date; // תאריך כטקסט (לצורך תאימות לאחור)
     private int serial; // מזהה פנימי (למשל לשמירה במסד נתונים)
     private LocalDateTime dateTime; // מתי נאכל
 
-    public ConsumedItem() {
+    public ConsumedProduct() {
     }
 
-    public ConsumedItem(double amount, ProductItem productItem, String date, int serial) {
+    public ConsumedProduct(double amount, Product product, String date, int serial) {
         this.amount = amount;
-        this.productItem = productItem;
+        this.product = product;
         this.date = date;
         this.serial = serial;
     }
@@ -35,12 +35,12 @@ public class ConsumedItem {
         this.amount = amount;
     }
 
-    public ProductItem getProductItem() {
-        return productItem;
+    public Product getProductItem() {
+        return product;
     }
 
-    public void setProductItem(ProductItem productItem) {
-        this.productItem = productItem;
+    public void setProductItem(Product product) {
+        this.product = product;
     }
 
     public String getDate() {
@@ -72,12 +72,12 @@ public class ConsumedItem {
      * @return סה"כ קלוריות כמספר שלם
      */
     public int getTotalCalories() {
-        if (productItem == null) {
+        if (product == null) {
             return 0;
         }
 
         try {
-            double caloriesPerUnit = Double.parseDouble(productItem.getCalorieText());
+            double caloriesPerUnit = Double.parseDouble(product.getCalorieText());
 
             if (isStandardUnit()) {
                 // יחידה סטנדרטית - חישוב לפי 100 גרם/מ"ל
@@ -96,11 +96,11 @@ public class ConsumedItem {
      * @return true אם היחידה סטנדרטית, false אחרת
      */
     public boolean isStandardUnit() {
-        if (productItem == null) {
+        if (product == null) {
             return false;
         }
 
-        String unit = productItem.getUnit();
+        String unit = product.getUnit();
         return UNIT_100_GRAM.equals(unit) ||
                 UNIT_100_ML.equals(unit) ||
                 UNIT_CALORIES.equals(unit);
@@ -111,12 +111,12 @@ public class ConsumedItem {
      * @return טקסט מעוצב להצגה
      */
     public String getUnitDisplayText() {
-        if (productItem == null) {
+        if (product == null) {
             return "";
         }
 
         String formattedAmount = formatAmount(amount);
-        String unit = productItem.getUnit();
+        String unit = product.getUnit();
 
         if (isStandardUnit()) {
             return getStandardUnitDisplayText(unit, formattedAmount);
