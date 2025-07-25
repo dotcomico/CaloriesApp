@@ -27,9 +27,9 @@
             android:visibility="gone" />
 
         <!-- include כרטיסיות (הוספה, עריכה, חיפוש עצמי) -->
-        <include layout="@layout/card_add_new_private_food" />
-        <include layout="@layout/card_add_food_to_list" />
-        <include layout="@layout/card_edit_consumed_food" />
+        <include layout="@layout/card_add_new_custom_product" />
+        <include layout="@layout/card_add_consumed_product" />
+        <include layout="@layout/card_edit_consumed_product" />
 
     </LinearLayout>
 </ScrollView>
