@@ -1,0 +1,66 @@
+<!-- bottom_menu.xml -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottomActionMenu"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:background="@android:color/transparent"
+    android:windowSoftInputMode="adjustResize">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:paddingVertical="5dp">
+
+        <android.widget.SearchView
+            android:id="@+id/mainSearchView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/sty_3"
+            android:contextClickable="true"
+            android:queryHint="הקלד מוצר" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="6.0">
+
+            <ImageView
+                android:id="@+id/iv_barcodeSearch_round"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:padding="9dp"
+                android:background="@drawable/circle_blue"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_baseline_qr_code_2_24_white" />
+
+            <ImageView
+                android:id="@+id/iv_selfAdd"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:padding="9dp"
+                android:background="@drawable/circle_purple"
+                android:scaleType="fitCenter"
+                android:src="@drawable/baseline_add_white"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/iv_selfSearch"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:padding="9dp"
+                android:background="@drawable/circle_oreng"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_baseline_search_24_white"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
