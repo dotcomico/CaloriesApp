@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.example.calories.data.models.Product;
 import com.example.calories.ui.dialogs.BarcodeDialogHandler;
 import com.example.calories.ui.views.UnitSelectorView;
 import com.example.calories.export.ProductExporter;
@@ -23,7 +25,6 @@ import com.example.calories.ui.adapters.ProductItemDeletionHelper;
 import com.example.calories.data.storage.ProductStorageManager;
 import com.example.calories.R;
 import com.example.calories.ui.adapters.RecyclerItemClickListener;
-import com.example.calories.data.models.ProductItem;
 import com.example.calories.utils.Utility;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -32,8 +33,8 @@ import com.google.zxing.integration.android.IntentResult;
 import java.util.ArrayList;
 
 public class MyProductActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
-    private ArrayList<ProductItem> customProducts = new ArrayList<>();
-    private ProductItem productItem;
+    private ArrayList<Product> customProducts = new ArrayList<>();
+    private Product product;
     private ProductItemAdapter productItemAdapter;
     private RecyclerView recyclerView;
     private Button updateProductButton;
@@ -106,18 +107,18 @@ setRecyclerView();
                             deletionHelper.toggleItemSelection(position);
                         } else {
                             // מצב רגיל - עריכת פריט
-                            productItem = customProducts.get(position);
+                            product = customProducts.get(position);
 
                             lastClickedItemPosition = position;
 
                             editProductLayout.setVisibility(View.VISIBLE);
 
-                            productNameEditText.setText(productItem.getName());
-                            productCaloriesEditText.setText(productItem.getCalorieText());
-                            unitSelectorView.setSelectedUnit(productItem.getUnit());
+                            productNameEditText.setText(product.getName());
+                            productCaloriesEditText.setText(product.getCalorieText());
+                            unitSelectorView.setSelectedUnit(product.getUnit());
 
                             barcodeDialogHandler.getBarcodeEditText().setText(
-                                    productItem.getBarcode() != null ? productItem.getBarcode() : ""
+                                    product.getBarcode() != null ? product.getBarcode() : ""
                             );
                         }
                     }
@@ -138,19 +139,19 @@ setRecyclerView();
 
     private void dotanAll() {
 
-        customProducts.add( new ProductItem(  1 , "נס קפה קר,  חלב סויה וניל" , "כוס זכוכית" , "90" , "" ) );
-        customProducts.add( new ProductItem(  1 , "נס קפה קר" , "כוס זכוכית" , "100" , "" ) );
-        customProducts.add( new ProductItem(  1 , "ציפס תפוח אדמה בנינגה" , "יחידה" , "8" , "" ) );
-        customProducts.add( new ProductItem(  1 , "בורקס בשר 250 גרם" , "יחידה" , "625"  , "" ) );
-        customProducts.add( new ProductItem(  1 , "בולגרית יוונית לבן" , "קוביה" , "14"  , "" ) );
-        customProducts.add( new ProductItem(  1 , "בולגרית יוונית לבן" , "100 גרם" , "282"  , "" ) );
-        customProducts.add( new ProductItem(  1 , "טונה ירקות- עגבניה שום בצל פטריות תבלינים" , "יחידה" , "200"  , "" ) );
-        customProducts.add( new ProductItem(  1 , "טונה ירקות של דותן" , "100 גרם" , "91"  , "" ) );
-        customProducts.add( new ProductItem(  1 , "מרק ירקות- תפוד גזר בצל פקק שמן ותבלינים" , "סיר קטן" , "220"  , "" ) );
-        customProducts.add( new ProductItem(  1 , "טוסט גבינה 28 אחוז" , "יחידה" , "250"  , "" ) );
-        customProducts.add( new ProductItem(  1 , "קציצת גונדי" , "יחידה" , "60"  , "" ) );
-        customProducts.add( new ProductItem(  1 , "המבורגר דאבל וציפס" , "מנה" , "900"  , "" ) );
-        customProducts.add( new ProductItem(  1 , "טוסט חיילים-חצי פיתה" , "יחידה" , "350"  , "" ) );
+        customProducts.add( new Product(  1 , "נס קפה קר,  חלב סויה וניל" , "כוס זכוכית" , "90" , "" ) );
+        customProducts.add( new Product(  1 , "נס קפה קר" , "כוס זכוכית" , "100" , "" ) );
+        customProducts.add( new Product(  1 , "ציפס תפוח אדמה בנינגה" , "יחידה" , "8" , "" ) );
+        customProducts.add( new Product(  1 , "בורקס בשר 250 גרם" , "יחידה" , "625"  , "" ) );
+        customProducts.add( new Product(  1 , "בולגרית יוונית לבן" , "קוביה" , "14"  , "" ) );
+        customProducts.add( new Product(  1 , "בולגרית יוונית לבן" , "100 גרם" , "282"  , "" ) );
+        customProducts.add( new Product(  1 , "טונה ירקות- עגבניה שום בצל פטריות תבלינים" , "יחידה" , "200"  , "" ) );
+        customProducts.add( new Product(  1 , "טונה ירקות של דותן" , "100 גרם" , "91"  , "" ) );
+        customProducts.add( new Product(  1 , "מרק ירקות- תפוד גזר בצל פקק שמן ותבלינים" , "סיר קטן" , "220"  , "" ) );
+        customProducts.add( new Product(  1 , "טוסט גבינה 28 אחוז" , "יחידה" , "250"  , "" ) );
+        customProducts.add( new Product(  1 , "קציצת גונדי" , "יחידה" , "60"  , "" ) );
+        customProducts.add( new Product(  1 , "המבורגר דאבל וציפס" , "מנה" , "900"  , "" ) );
+        customProducts.add( new Product(  1 , "טוסט חיילים-חצי פיתה" , "יחידה" , "350"  , "" ) );
 
         productStorageManager.save(customProducts);
 
@@ -168,7 +169,7 @@ setRecyclerView();
     public void onClick(View view) {
         if (view == updateProductButton) {
 
-            ProductItem updatedProduct= customProducts.get(lastClickedItemPosition);
+            Product updatedProduct= customProducts.get(lastClickedItemPosition);
 
             updatedProduct.setCalorieText( productCaloriesEditText.getText().toString().trim() );
             updatedProduct.setName( productNameEditText.getText().toString().trim() );
