@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_launcher_background">
+        android:background="@drawable/card_grey_background">
         <LinearLayout
             android:id="@+id/L1"
             android:layout_width="match_parent"
@@ -41,7 +41,7 @@
                     android:background="@drawable/sty_2"
                     />
                 <ImageView
-                    android:id="@+id/iv_barcode"
+                    android:id="@+id/iv_barcodeScan"
                     android:layout_weight="5"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
