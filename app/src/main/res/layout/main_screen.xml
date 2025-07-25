@@ -52,7 +52,7 @@
 
         <!-- רשימת מוצרים שנצרכו -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/myListRecyclerView"
+            android:id="@+id/consumedProductsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/rl_mainCal"
