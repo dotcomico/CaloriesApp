@@ -11,8 +11,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calories.R;
-import com.example.calories.data.models.ConsumedItem;
-import com.example.calories.data.models.ProductItem;
+import com.example.calories.data.models.ConsumedProduct;
+import com.example.calories.data.models.Product;
 import com.example.calories.data.storage.UnitManager;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class ConsumedItemAdapter extends RecyclerView.Adapter<ConsumedItemAdapte
     private static final float HIGHLIGHTED_SCALE_Y = 1.0f;
     private static final int HIGHLIGHTED_TEXT_SIZE = 30;
 
-    private final ArrayList<ConsumedItem> consumedItems;
+    private final ArrayList<ConsumedProduct> consumedProducts;
 
     public static class ConsumedItemViewHolder extends RecyclerView.ViewHolder {
         private final ImageView unitImageView;
@@ -44,8 +44,8 @@ public class ConsumedItemAdapter extends RecyclerView.Adapter<ConsumedItemAdapte
         }
     }
 
-    public ConsumedItemAdapter(ArrayList<ConsumedItem> consumedItems) {
-        this.consumedItems = consumedItems;
+    public ConsumedItemAdapter(ArrayList<ConsumedProduct> consumedProducts) {
+        this.consumedProducts = consumedProducts;
     }
 
     @NonNull
@@ -58,22 +58,22 @@ public class ConsumedItemAdapter extends RecyclerView.Adapter<ConsumedItemAdapte
 
     @Override
     public void onBindViewHolder(ConsumedItemViewHolder holder, int position) {
-        ConsumedItem currentItem = consumedItems.get(position);
+        ConsumedProduct currentItem = consumedProducts.get(position);
 
         bindProductInfo(holder, currentItem);
         bindCalorieInfo(holder, currentItem);
         applyItemStateStyle(holder, currentItem);
     }
 
-    private void bindProductInfo(ConsumedItemViewHolder holder, ConsumedItem item) {
-        ProductItem product = item.getProductItem();
+    private void bindProductInfo(ConsumedItemViewHolder holder, ConsumedProduct item) {
+        Product product = item.getProductItem();
 
         holder.unitImageView.setImageResource(UnitManager.getUnitImageResId(product.getUnit()));
         holder.productNameTextView.setText(product.getName());
     }
 
-    private void bindCalorieInfo(ConsumedItemViewHolder holder, ConsumedItem item) {
-        // Use ConsumedItem's calculation logic
+    private void bindCalorieInfo(ConsumedItemViewHolder holder, ConsumedProduct item) {
+        // Use ConsumedProduct's calculation logic
         int totalCalories = item.getTotalCalories();
         String unitDisplayText = item.getUnitDisplayText();
 
@@ -81,9 +81,9 @@ public class ConsumedItemAdapter extends RecyclerView.Adapter<ConsumedItemAdapte
         holder.unitTextView.setText(unitDisplayText);
     }
 
-    private void applyItemStateStyle(ConsumedItemViewHolder holder, ConsumedItem item) {
+    private void applyItemStateStyle(ConsumedItemViewHolder holder, ConsumedProduct item) {
         // Apply special styling for system items (itemState == 0)
-        if (item.getProductItem().getItemState() == ProductItem.ITEM_STATE_SYSTEM) {
+        if (item.getProductItem().getItemState() == Product.ITEM_STATE_SYSTEM) {
             holder.main.setBackgroundResource(R.drawable.message_sty1);
             holder.calorieLabelTextView.setVisibility(View.VISIBLE);
             holder.calorieValueTextView.setScaleY(HIGHLIGHTED_SCALE_Y);
@@ -103,6 +103,6 @@ public class ConsumedItemAdapter extends RecyclerView.Adapter<ConsumedItemAdapte
 
     @Override
     public int getItemCount() {
-        return consumedItems.size();
+        return consumedProducts.size();
     }
 }
