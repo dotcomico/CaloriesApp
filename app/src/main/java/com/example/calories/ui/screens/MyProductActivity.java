@@ -55,7 +55,7 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
         productStorageManager = new ProductStorageManager(this);
         barcodeDialogHandler = new BarcodeDialogHandler(this);
 
-        recyclerView = findViewById( R.id.recyclerView );
+        recyclerView = findViewById( R.id.productsRecyclerView);
         editProductLayout = findViewById( R.id.layoutEditProduct);
         cancelEditImageView = findViewById( R.id.iv_delete );
         scanBarcodeImageView = findViewById( R.id.iv_barcode );
