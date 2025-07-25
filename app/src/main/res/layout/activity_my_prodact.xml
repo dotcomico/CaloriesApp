@@ -72,7 +72,7 @@
                 android:gravity="right" />
 
             <ImageView
-                android:id="@+id/iv_barcode"
+                android:id="@+id/iv_barcodeScan"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_baseline_qr_code_2_24"
