@@ -64,10 +64,27 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, TextWatcher, View.OnTouchListener {
+
+    //--------------- CalorieTrackerView ---------------
+
+
+    //--------------- ProductCatalogView ---------------
+    private SearchView mainSearchView;
+
+    //--------------- CustomProductView  ---------------
     private WebView webview;
+    private SearchView selfSearchSearchView;
+
+    private EditText newProductNameEditText, newProductCaloriesEditText;
+
+
+    //--------------- others  ---------------
+
+
+
     private Calendar calendar;
-    private SearchView mainSearchView, selfSearchSearchView;
-    private EditText newProductNameEditText, newProductCaloriesEditText,et_amounttt,et_spinnerEditT,et_newAmount, et_d_enter_code;
+
+    private EditText et_amounttt,et_spinnerEditT,et_newAmount, et_d_enter_code;
     private Button saveNewProductItemButton,btn_addFood,btn_lastDay,btn_nextDay,btn_aditdFood;
     private LinearLayout ly_selfSearch_bar, ly_addNewPrivetFood,ly_addFood,ly_settings,ly_aditAmount;
     private ImageView iv_backFromSelfSearchToMain, iv_myProdacts_SS, iv_showSelfSearchBar, iv_hideSelfSearchBar, iv_selfSearch_round ,  iv_selfAdd, iv_barcode, iv_goToSelfSearch,
@@ -81,12 +98,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView myListRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager,myList_LayoutManager;
-    ArrayList<Product> exampleList = new ArrayList<>();//רשימת מוצרים (מערכת)
-    ArrayList<Product> filteredExampleList = new ArrayList<>();//רשימת מוצרים המתעדכנת לפי חיפוש
-    ArrayList<Product> myPrivetFoodlList = new ArrayList<>();//רשימת מוצרים שאני שמרתי
-    ArrayList<ConsumedProduct> myList = new ArrayList<>();//רשימת מוצרים שצרכתי
-    ArrayList<ConsumedProduct> myList_temp = new ArrayList<>();
-    ConsumedProduct consumedProduct_adit;
+
+    ArrayList<Product> systemProductList = new ArrayList<>();//רשימת מוצרים (מערכת)
+    ArrayList<Product> filteredProducts = new ArrayList<>();//רשימת מוצרים מסוננת (לפי חיפוש)
+    ArrayList<Product> customProducts = new ArrayList<>();//רשימת מוצרים שיצר המשתמש
+    ArrayList<ConsumedProduct> consumedProducts = new ArrayList<>();//רשימת מוצרים שנצרכו על ידי המשתמש
+    ArrayList<ConsumedProduct> consumedProductsBuffer = new ArrayList<>();
+
+    ConsumedProduct consumedProduct_edit;
     TextView tv_clearMainCaloriesList, tv_printSavedItemsCode, tv_clearSavedItems;
     ImageView iv_d_code_scan, iv_myProducts;
     Dialog scan_barcod_dialog;
@@ -163,9 +182,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         productsRecyclerView.addOnItemTouchListener( new RecyclerItemClickListener(MainActivity.this, productsRecyclerView
                 ,new RecyclerItemClickListener.OnItemClickListener() {
             @Override public void onItemClick(View view, int position) {
-                if (!(filteredExampleList.get( position ).getItemState() ==999)) {
-                    temp_exampleItem=filteredExampleList.get( position );
-                    showFoodDitals(filteredExampleList.get( position ));
+                if (!(filteredProducts.get( position ).getItemState() ==999)) {
+                    temp_exampleItem= filteredProducts.get( position );
+                    showFoodDitals(filteredProducts.get( position ));
                     hideKeyboard();
                 }
                 else{
@@ -189,9 +208,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //עריכת פריט
                 ly_aditAmount.startAnimation( slide_in_bottom );
                 ly_aditAmount.setVisibility( View.VISIBLE );
-                consumedProduct_adit =myList.get( position );
-                tv_foodname.setText( consumedProduct_adit.getProductItem().getName() );
-                et_newAmount.setText( ""+ consumedProduct_adit.getAmount());
+                consumedProduct_edit = consumedProducts.get( position );
+                tv_foodname.setText( consumedProduct_edit.getProductItem().getName() );
+                et_newAmount.setText( ""+ consumedProduct_edit.getAmount());
                 mainL_position=position;
             }
 
@@ -207,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onQueryTextSubmit(String s) {
                 if (isNumeric( s )){
                     selfAddActions();
-                }else if (filteredExampleList.size()==0){       //אם הרשימה ריקה(מוצר לא נמצא) תפתח חיפוש עצמי
+                }else if (filteredProducts.size()==0){       //אם הרשימה ריקה(מוצר לא נמצא) תפתח חיפוש עצמי
                     startWebSearch(); }
                 else { //אחרת סגור את מסך האתר
                 //   webview.setVisibility(View.GONE);
@@ -233,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                      iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_purple );
 
                 }
-                else if (filteredExampleList.size()==0){  // אם הרשימה ריקה (אין מוצרים)- הצעה לחיפוש עצמי
+                else if (filteredProducts.size()==0){  // אם הרשימה ריקה (אין מוצרים)- הצעה לחיפוש עצמי
                     mainSearchView.setBackgroundResource( R.drawable.sty_3_oreng );
                     rl_mainInformation.setVisibility(View.GONE);
                     iv_selfAdd.setVisibility(View.GONE);
@@ -407,8 +426,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     iv_backToMain.setVisibility( View.GONE );
                     productsRecyclerView.setVisibility( View.GONE );
                     rl_selfSearch.setVisibility( View.GONE );
-                    if (myList.size() != 0) {
-                        myListRecyclerView.smoothScrollToPosition( myList.size() - 1 );
+                    if (consumedProducts.size() != 0) {
+                        myListRecyclerView.smoothScrollToPosition( consumedProducts.size() - 1 );
                     }
                 }
             }
@@ -474,15 +493,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(view== tv_printSavedItemsCode){
             String detailsString="_myPrivetFoodlList_";
-            detailsString=detailsString+" "+myPrivetFoodlList.size()+" items ";
-            for(int i=0; i <myPrivetFoodlList.size();i++){
-                String b= myPrivetFoodlList.get( i ).getBarcode();
+            detailsString=detailsString+" "+ customProducts.size()+" items ";
+            for(int i = 0; i < customProducts.size(); i++){
+                String b= customProducts.get( i ).getBarcode();
                 if (b== null || b=="0" || b=="" ){b="";}
-                String itemT= "exampleList.add(new ExampleItem("+0+","+0+","+"\""+ myPrivetFoodlList.get( i ).getName()+"\"" +","+"\""+ myPrivetFoodlList.get( i ).getUnit()+"\""+" ,"+"\""+ myPrivetFoodlList.get( i ).getCalorieText()+"\""+","+0+"," +"\""+ b+"\"" +"));";
+                String itemT= "exampleList.add(new ExampleItem("+0+","+0+","+"\""+ customProducts.get( i ).getName()+"\"" +","+"\""+ customProducts.get( i ).getUnit()+"\""+" ,"+"\""+ customProducts.get( i ).getCalorieText()+"\""+","+0+"," +"\""+ b+"\"" +"));";
                 detailsString= detailsString + "\n"+itemT;
             }
             clipData(detailsString , this);
-            Toast.makeText( getBaseContext(), "Copied successfully"+myPrivetFoodlList.size()+" items ",Toast.LENGTH_SHORT).show();
+            Toast.makeText( getBaseContext(), "Copied successfully"+ customProducts.size()+" items ",Toast.LENGTH_SHORT).show();
         }
         if (view== tv_returnToMainScreen){
             ly_settings.setVisibility( View.GONE );
@@ -532,13 +551,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view==plus_adit){
             String st=et_newAmount.getText().toString();
             if (!st.matches( "" )){
-                if (calculationMod(consumedProduct_adit.getProductItem().getUnit())==1){
+                if (calculationMod(consumedProduct_edit.getProductItem().getUnit())==1){
                     if (Double.parseDouble(et_newAmount.getText().toString())>=1){   st= ""+(Double.parseDouble(et_newAmount.getText().toString())+1);}
                     if (Double.parseDouble(et_newAmount.getText().toString())==0.5){ st="1";}
                     if (Double.parseDouble(et_newAmount.getText().toString())==0.25){ st="0.5";}
                     if (Double.parseDouble(et_newAmount.getText().toString())==0){st="0.25";}
                 }
-                if (calculationMod(consumedProduct_adit.getProductItem().getUnit())==2&&Double.parseDouble(et_newAmount.getText().toString())>=0){
+                if (calculationMod(consumedProduct_edit.getProductItem().getUnit())==2&&Double.parseDouble(et_newAmount.getText().toString())>=0){
                     st= ""+(Double.parseDouble(et_newAmount.getText().toString())+50);}
             }else {st="0";}
             et_newAmount.setText(st);
@@ -546,14 +565,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view==minus_adit){
             String st=et_newAmount.getText().toString();
             if (!st.matches( "" )){
-                if (calculationMod(consumedProduct_adit.getProductItem().getUnit())==1 ){
+                if (calculationMod(consumedProduct_edit.getProductItem().getUnit())==1 ){
                     if (Double.parseDouble(et_newAmount.getText().toString())-1>=1){
                         st= ""+(Double.parseDouble(et_newAmount.getText().toString())-1); }
                     if (Double.parseDouble(et_newAmount.getText().toString())==1){ st="0.5";}
                     if (Double.parseDouble(et_newAmount.getText().toString())==0.5){ st="0.25";}
                     if (Double.parseDouble(et_newAmount.getText().toString())==0.25){st="0";}
                 }
-                if (calculationMod(consumedProduct_adit.getProductItem().getUnit())==2&&Double.parseDouble(et_newAmount.getText().toString())-50>=0){
+                if (calculationMod(consumedProduct_edit.getProductItem().getUnit())==2&&Double.parseDouble(et_newAmount.getText().toString())-50>=0){
                     st= ""+(Double.parseDouble(et_newAmount.getText().toString())-50);}
             }else {st="0";}
             et_newAmount.setText(st);
@@ -622,8 +641,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iv_backToMain.setVisibility( View.GONE );
         productsRecyclerView.setVisibility( View.GONE );
         rl_selfSearch.setVisibility( View.GONE );
-        if (myList.size() != 0) {
-            myListRecyclerView.smoothScrollToPosition( myList.size() - 1 );
+        if (consumedProducts.size() != 0) {
+            myListRecyclerView.smoothScrollToPosition( consumedProducts.size() - 1 );
         }
         mainSearchView.setBackgroundResource( R.drawable.sty_3 );
         iv_selfAdd.setVisibility(View.GONE);
@@ -681,8 +700,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Product examplel = new Product();
             boolean temp = false;
             int j = 0;
-            while (!temp && j < exampleList.size()) {
-                examplel = exampleList.get( j );
+            while (!temp && j < systemProductList.size()) {
+                examplel = systemProductList.get( j );
                 //אם מוצא התאמה ברקוד
                 if (examplel.getBarcode() != null && !examplel.getBarcode().isEmpty() && !examplel.getBarcode().equals( "null" )) {//אם לא ריק
                     if(!examplel.getBarcode().contains( "," )) {//אם יש ברקוד אחד
@@ -710,7 +729,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (temp) { //נמצאה התאמה
                 hideKeyboard();
                 showFoodDitals( examplel );
-                if (filteredExampleList.size() == 2) {
+                if (filteredProducts.size() == 2) {
                     openMain();
                 }
             } else {//לא נמצא
@@ -734,57 +753,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //פעולות עדכון רשימות בסיס
     private void updateFoodList()   {
-        exampleList = new ArrayList<>();
-        exampleList=getSystemProductsArr();
+        systemProductList = new ArrayList<>();
+        systemProductList =getSystemProductsArr();
 
         // המצב הראשוני של רשימת החיפוש כרשימת המוצרים (ברירת מחדל)
-        filteredExampleList=exampleList;
+        filteredProducts = systemProductList;
 
 //עדכון הרשימה הפיזית במסך כרשימת המוצרים
         mLayoutManager = new LinearLayoutManager(this);
         productsRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ProductItemAdapter(exampleList);
+        mAdapter = new ProductItemAdapter(systemProductList);
         productsRecyclerView.setAdapter(mAdapter);
     }
     private void addPrivetFoodListToFoodList() {
-        if (myPrivetFoodlList == null) {
-            myPrivetFoodlList = new ArrayList<>();
+        if (customProducts == null) {
+            customProducts = new ArrayList<>();
         }else {
-            for (int i = 0; i < myPrivetFoodlList.size();i++){
+            for (int i = 0; i < customProducts.size(); i++){
                 //הוספת איבי רשימה שלי לרשימה ראשית
-                exampleList.add( myPrivetFoodlList.get( i ) );
+                systemProductList.add( customProducts.get( i ) );
             }
-            productsRecyclerView.setAdapter(new ProductItemAdapter(exampleList));
+            productsRecyclerView.setAdapter(new ProductItemAdapter(systemProductList));
             // המצב הראשוני של רשימת החיפוש כרשימת המוצרים (ברירת מחדל)
-            filteredExampleList=exampleList;
+            filteredProducts = systemProductList;
         }
     }
     //פעולות מערכת
     private void searchInFoodList(String s) {
         //פעולת חיפוש ועדכון רשימת מזון
-        filteredExampleList = new ArrayList<>();
+        filteredProducts = new ArrayList<>();
         //חפש לפי שייכים לי
-        for (int j = 0; j <exampleList.size(); j++){
-            Product example2 = exampleList.get(j);
+        for (int j = 0; j < systemProductList.size(); j++){
+            Product example2 = systemProductList.get(j);
             if (example2.getName().toLowerCase().trim().contains( s.toLowerCase().trim() )&&example2.getItemState()==1 ){
-                filteredExampleList.add(example2);}
+                filteredProducts.add(example2);}
         }
         //חפש ברשימה כללית
-        for (int i = 0; i <exampleList.size(); i++){    //הכנס את מי שמתחילים בטקסט שהוקלד
-            Product example = exampleList.get(i);
+        for (int i = 0; i < systemProductList.size(); i++){    //הכנס את מי שמתחילים בטקסט שהוקלד
+            Product example = systemProductList.get(i);
             if(example.getName().toLowerCase().trim().startsWith( s.toLowerCase().trim() )&&example.getItemState()==0){
-                filteredExampleList.add(example);}
+                filteredProducts.add(example);}
         }
-        for (int i = 0; i <exampleList.size(); i++){  //ורק אז הכנס את מי שנשאר ומכיל את הטקסט שהוקלד
-            Product example = exampleList.get(i);
+        for (int i = 0; i < systemProductList.size(); i++){  //ורק אז הכנס את מי שנשאר ומכיל את הטקסט שהוקלד
+            Product example = systemProductList.get(i);
             if (example.getName().toLowerCase().trim().contains( s.toLowerCase().trim() )&&!example.getName().toLowerCase().trim().startsWith( s.toLowerCase().trim() ) &&example.getItemState()==0){
-                filteredExampleList.add(example);}
+                filteredProducts.add(example);}
             //    sortByAB(  filteredExampleList );
         }
         //הצג הודעה במקרה של חוסר תוצאות
-        if (filteredExampleList.size()>0){ filteredExampleList.add(new Product( 999, "לא מה שחיפשת?", "המשך בחיפוש עצמי","\uD83D\uDD0D",""));}
+        if (filteredProducts.size()>0){ filteredProducts.add(new Product( 999, "לא מה שחיפשת?", "המשך בחיפוש עצמי","\uD83D\uDD0D",""));}
         //עדכן רשימה
-        RecyclerView.Adapter  newAdapter = new ProductItemAdapter(filteredExampleList);
+        RecyclerView.Adapter  newAdapter = new ProductItemAdapter(filteredProducts);
         productsRecyclerView.setAdapter(newAdapter);
     }
 
@@ -851,13 +870,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
     private void sortArrayList() {
-        Collections.sort(exampleList, new Comparator<Product>() {
+        Collections.sort(systemProductList, new Comparator<Product>() {
             @Override
             public int compare(Product o1, Product o2) {
                 return o1.getName().compareTo(o2.getName());
             }
         });
-        mAdapter = new ProductItemAdapter(exampleList);
+        mAdapter = new ProductItemAdapter(systemProductList);
         mAdapter.notifyDataSetChanged();
     }
     //פעולות שרדפרפרנס רשימת מזון פרטית
@@ -866,7 +885,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Product item;
         String unit = unitSelectorView.getUnit();
             item = new Product(   1 , newProductNameEditText.getText().toString().trim() , unit , newProductCaloriesEditText.getText().toString().trim() , et_d_enter_code.getText().toString() );
-            myPrivetFoodlList.add(item);
+            customProducts.add(item);
             temp_exampleItem=item;
     }
     private void loadPrivetFoodListData() {
@@ -874,22 +893,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Gson gson = new Gson();
         String json = sharedPreferences.getString("task list", null);
         Type type = new TypeToken<ArrayList<Product>>() {}.getType();
-        myPrivetFoodlList = gson.fromJson(json, type);
-        if (myPrivetFoodlList == null) {
-            myPrivetFoodlList = new ArrayList<>();
+        customProducts = gson.fromJson(json, type);
+        if (customProducts == null) {
+            customProducts = new ArrayList<>();
         }
     }
     private void saveData(){
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(myPrivetFoodlList);
+        String json = gson.toJson(customProducts);
         editor.putString("task list", json);
         editor.apply();
     }
     private void clearData(){
-        if (myPrivetFoodlList == null) {
-            myPrivetFoodlList = new ArrayList<>();
+        if (customProducts == null) {
+            customProducts = new ArrayList<>();
         }else {
             SharedPreferences sharedPreferences = getSharedPreferences( "shared preferences" , MODE_PRIVATE );
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -898,7 +917,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             editor.putString( "task list" , json );
             editor.apply();
-            myPrivetFoodlList = new ArrayList<>();
+            customProducts = new ArrayList<>();
             //mRecyclerView.setAdapter( new ExampleAdapter( exampleList ) );
         }
     }
@@ -996,9 +1015,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dialog= new Dialog(this);
         dialog.setContentView(R.layout.new_privet_prodact_sheet);
 
-        tv_qr_information=findViewById( R.id.tv_qr_information );
+        tv_qr_information=findViewById( R.id.tv_barcodeInfo);
 
-        iv_expend_more = findViewById( R.id.iv_expend_more );
+        iv_expend_more = findViewById( R.id.iv_expandProductInfo);
         iv_expend_more.setOnClickListener( this );
 
         rl_top=findViewById(R.id.rl_top);
@@ -1055,10 +1074,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         et_newAmount=findViewById( R.id.et_newAmount );
         tv_foodname=findViewById( R.id.tv_foodname );
         ly_aditAmount=findViewById( R.id.ly_aditAmount );
-        minus_z=findViewById( R.id.minus_z );
+        minus_z=findViewById( R.id.iv_decreaseAmount);
         minus_z.setOnClickListener( this );
 
-        plus_z=findViewById( R.id.plus_z );
+        plus_z=findViewById( R.id.iv_increaseAmount);
         plus_z.setOnClickListener( this );
 
         et_spinnerEditT=findViewById( R.id.et_spinnerEditT );
@@ -1072,7 +1091,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iv_settings.setOnClickListener( this );
         ly_settings=findViewById( R.id.ly_settings);
 
-        iv_delete1=findViewById( R.id.iv_delete1);
+        iv_delete1=findViewById( R.id.iv_closeBottomSheet);
         iv_delete1.setOnClickListener( this );
 
         tv_date=findViewById( R.id.tv_date);
@@ -1088,7 +1107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         productsRecyclerView = findViewById(R.id.productsRecyclerView);
         tv_clearMainCaloriesList =findViewById( R.id.tv_clearMainCaloriesList);
         tv_clearMainCaloriesList.setOnClickListener( this );
-        et_amounttt=findViewById( R.id.et_amounttt );
+        et_amounttt=findViewById( R.id.et_selectedAmount);
 
         iv_backToMain =findViewById( R.id.iv_backToMain );
         iv_backToMain.setOnClickListener( this );
@@ -1138,17 +1157,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         });
-        tv_food = findViewById( R.id.tv_food );
+        tv_food = findViewById( R.id.tv_selectedProductName);
         tv_food.setMovementMethod( new ScrollingMovementMethod() );
         tv_food.setOnClickListener( this );
-        tv_kal= findViewById( R.id.tv_kal );
-        tv_Type=findViewById( R.id.tv_Type);
+        tv_kal= findViewById( R.id.tv_caloriesHeader);
+        tv_Type=findViewById( R.id.tv_unit);
         saveNewProductItemButton =findViewById( R.id.saveNewProductItemButton);
         saveNewProductItemButton.setOnClickListener( this );
-        btn_addFood =findViewById( R.id.btn_addFood );
+        btn_addFood =findViewById( R.id.btn_addToConsumption);
         btn_addFood.setOnClickListener( this );
         ly_addNewPrivetFood =findViewById( R.id.ly_addNewPrivetFood );
-        ly_addFood=findViewById( R.id.ly_addFood );
+        ly_addFood=findViewById( R.id.ly_productSelectionBottomSheet);
         tv_totalCalories =findViewById( R.id.tv_totalCalories);  tv_totalCalories.setOnClickListener( this );
         webview = findViewById( R.id.webview);
         webview.setWebViewClient( new WebViewClient() );
@@ -1275,9 +1294,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateKlist(){
         loadFoodListData_k();
-        myListRecyclerView.setAdapter(new ConsumedItemAdapter(myList));
-        if (myList.size()!=0){
-            myListRecyclerView.smoothScrollToPosition(myList.size()-1);}
+        myListRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
+        if (consumedProducts.size()!=0){
+            myListRecyclerView.smoothScrollToPosition(consumedProducts.size()-1);}
         update_kaloriesSum_k();
     }
     private void backToMain() {
@@ -1335,13 +1354,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     private void clipExampleListAsCode(String labal){
         String detailsString= labal;
-        detailsString=detailsString+" "+exampleList.size()+" items ";
-        for(int i=0; i <exampleList.size();i++){
-            String itemT= "exampleList.add(new ExampleItem("+0+","+0+","+"\""+ exampleList.get( i ).getName()+"\"" +","+"\""+ exampleList.get( i ).getUnit()+"\""+" ,"+"\""+ exampleList.get( i ).getCalorieText()+"\""+","+0+","+"null"+"));";
+        detailsString=detailsString+" "+ systemProductList.size()+" items ";
+        for(int i = 0; i < systemProductList.size(); i++){
+            String itemT= "exampleList.add(new ExampleItem("+0+","+0+","+"\""+ systemProductList.get( i ).getName()+"\"" +","+"\""+ systemProductList.get( i ).getUnit()+"\""+" ,"+"\""+ systemProductList.get( i ).getCalorieText()+"\""+","+0+","+"null"+"));";
             detailsString= detailsString + "\n"+itemT;
         }
         clipData(detailsString , this);
-        Toast.makeText( getBaseContext(), "Copied successfully"+exampleList.size()+" items ",Toast.LENGTH_SHORT).show();
+        Toast.makeText( getBaseContext(), "Copied successfully"+ systemProductList.size()+" items ",Toast.LENGTH_SHORT).show();
     }
     //פעולות שרדפרפרנס רשימת הקלוריות המוצגת במסך ראשי
     private void addToList( double amount,int kals){
@@ -1352,12 +1371,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //עדכון רשימת מסך ראשי
 
         ConsumedProduct listItem=new ConsumedProduct(amount,temp_exampleItem, date.format(calendar.getTime()), 0);
-        myList_temp.add(listItem );
+        consumedProductsBuffer.add(listItem );
         // שמירה בטלפון
         saveData_K();
         // עדכון רשימה פיזית
         loadFoodListData_k();
-        myListRecyclerView.setAdapter(new ConsumedItemAdapter(myList));
+        myListRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
     }
     private void loadFoodListData_k() {
         Calendar c = Calendar.getInstance();
@@ -1368,20 +1387,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Gson gson = new Gson();
         String json = sharedPreferences.getString("eat list", null);
         Type type = new TypeToken<ArrayList<ConsumedProduct>>() {}.getType();
-        myList_temp = gson.fromJson(json, type);
-        myList = new ArrayList<>();
-        if (myList_temp == null) {
-            myList_temp= new ArrayList<>();
-            myList = new ArrayList<>();
+        consumedProductsBuffer = gson.fromJson(json, type);
+        consumedProducts = new ArrayList<>();
+        if (consumedProductsBuffer == null) {
+            consumedProductsBuffer = new ArrayList<>();
+            consumedProducts = new ArrayList<>();
         }else {
-            for (int i = 0; i < myList_temp.size(); i++) {
+            for (int i = 0; i < consumedProductsBuffer.size(); i++) {
                 //תעדכן מספר סידורי
-                myList_temp.get( i ).setSerial( i );
+                consumedProductsBuffer.get( i ).setSerial( i );
                 //אם זה היום הנכון לפי התאריך
-                if(strDate.equals(myList_temp.get( i ).getDate())){
+                if(strDate.equals(consumedProductsBuffer.get( i ).getDate())){
 //פה זה מתקן את התמונה של כמות, בבוא הזמן נשנה אותה לתמונות של בוקר צהריים או ערב, השוני יקבע לפי השעה שהוספנו את המזון לרשימה
 
-                    myList.add( myList_temp.get( i ) );
+                    consumedProducts.add( consumedProductsBuffer.get( i ) );
                 }
 
             }
@@ -1390,13 +1409,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(myList_temp);
+        String json = gson.toJson(consumedProductsBuffer);
         editor.putString("eat list", json);
         editor.apply();
     }
     private void clearData_K(){
-        if (myList_temp == null) {
-            myList_temp = new ArrayList<>();
+        if (consumedProductsBuffer == null) {
+            consumedProductsBuffer = new ArrayList<>();
         }else {
             SharedPreferences sharedPreferences = getSharedPreferences( "shared preferences" , MODE_PRIVATE );
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -1405,14 +1424,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             editor.putString( "eat list" , json );
             editor.apply();
-            myList_temp = new ArrayList<>();
+            consumedProductsBuffer = new ArrayList<>();
             //mRecyclerView.setAdapter( new ExampleAdapter( exampleList ) );
         }
     }
     private void update_kaloriesSum_k(){
         int kaloriesSum=0;
-        for( int i = 0; i < myList.size(); i++){
-            kaloriesSum+= myList.get( i ).getTotalCalories();
+        for(int i = 0; i < consumedProducts.size(); i++){
+            kaloriesSum+= consumedProducts.get( i ).getTotalCalories();
         }
 
         if (kaloriesSum!=0){
@@ -1427,11 +1446,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int q=0;
         while (!finished){
             //אם המספר הסידורי של איבר ברשימה הגדולה שווה למספר הסידורי של האיבר שרציתי למחוק מהרשימה של היום הכללי (כלומר אם זה האיבר שאני רוצה למחוק)
-            if (myList_temp.get( q ).getSerial()==myList.get( position).getSerial()){
+            if (consumedProductsBuffer.get( q ).getSerial()== consumedProducts.get( position).getSerial()){
                 //מחק אותו וסיים
-                myList_temp.remove( q);
+                consumedProductsBuffer.remove( q);
                 //רק אחרי שמחקנו את האיבר תמחק המרשימה הקטנה!! אחרת נוצרות בעיות
-                myList.remove( position );
+                consumedProducts.remove( position );
                 //סיים משימה
                 finished = true;
             }
@@ -1440,7 +1459,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //myList_temp.remove( myList.get( position).getSerial());
         saveData_K();
         update_kaloriesSum_k();
-        myListRecyclerView.setAdapter(new ConsumedItemAdapter(myList));
+        myListRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
     }
 
     private void aditItemFromCalList(int position,double newAmount){
@@ -1448,11 +1467,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int q=0;
         while (!finished){
             //אם המספר הסידורי של איבר ברשימה הגדולה שווה למספר הסידורי של האיבר שרציתי למחוק מהרשימה של היום הכללי (כלומר אם זה האיבר שאני רוצה לשנוצ)
-            if (myList_temp.get( q ).getSerial()==myList.get( position).getSerial()){
+            if (consumedProductsBuffer.get( q ).getSerial()== consumedProducts.get( position).getSerial()){
                 //שנה כמות
-                myList_temp.get( q ).setAmount( newAmount );
-               // String  st = calcolatyCAL( Double.parseDouble(   myList_temp.get( q ).getProductItem().getCalorieText()) , myList_temp.get( q ).getAmount() ,myList_temp.get( q ).getProductItem().getUnit());
-               // myList_temp.get( q ).setS_kal( Integer.parseInt( st ) );
+                consumedProductsBuffer.get( q ).setAmount( newAmount );
                 //סיים משימה
                 finished = true;
             }
@@ -1461,7 +1478,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         saveData_K();
         loadFoodListData_k();
         update_kaloriesSum_k();
-        myListRecyclerView.setAdapter(new ConsumedItemAdapter(myList));
+        myListRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
     }
 
     // אין לי מושג מה זה ומה שלא יודעים לא כואב ;)  (כל מה שמתחת)
