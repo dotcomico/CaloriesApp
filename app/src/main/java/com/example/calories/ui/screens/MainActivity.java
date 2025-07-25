@@ -27,7 +27,6 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -63,42 +62,34 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, ViewTreeObserver.OnGlobalLayoutListener, TextWatcher, View.OnTouchListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, TextWatcher, View.OnTouchListener {
     private WebView webview;
-    private Calendar cal;
-    private SearchView searchview,serchview_internet;
+    private Calendar calendar;
+    private SearchView mainSearchView, selfSearchSearchView;
     private EditText newProductNameEditText, newProductCaloriesEditText,et_amounttt,et_spinnerEditT,et_newAmount, et_d_enter_code;
     private Button saveNewProductItemButton,btn_addFood,btn_lastDay,btn_nextDay,btn_aditdFood;
     private LinearLayout ly_selfSearch_bar, ly_addNewPrivetFood,ly_addFood,ly_settings,ly_aditAmount;
-    private ImageView  iv_back_SS_to_M, iv_myProdacts_SS, iv_showSelfSearchBar, iv_hideSelfSearchBar, iv_selfSearch_round ,  iv_selfAdd, iv_barcode,iv_search,
+    private ImageView iv_backFromSelfSearchToMain, iv_myProdacts_SS, iv_showSelfSearchBar, iv_hideSelfSearchBar, iv_selfSearch_round ,  iv_selfAdd, iv_barcode, iv_goToSelfSearch,
             iv_backToMain,iv_delete1,iv_settings, saveAndStay,plus_z,minus_z,more_z,iv_deleteAdit,minus_adit,plus_adit, iv_barcodeSearch_round;
-    private RelativeLayout rl_selfSearch,rl_top,rl_top_ss,rl_mainInformation;
-    private TextView tv_food,tv_kal,tv_Type ,text,tv_date,t_see,tv_foodname;
+    private RelativeLayout rl_selfSearch,rl_top, rl_selfSearchTopBar,rl_mainInformation;
+    private TextView tv_food,tv_kal,tv_Type , tv_totalCalories,tv_date, tv_returnToMainScreen,tv_foodname;
     private int calcolaty_mod,mainL_position=-1;
     private ProductItem temp_exampleItem=null;
-    float type_x,type_y,amounttt_x,amounttt_y,p_x,m_x,pa_x,ma_x;
-    List<String> categories;
-    Button moreSerch;
-    //רשימת מוצרים
-    private RecyclerView mRecyclerView;
+    Button webSearchSuggestion;
+    private RecyclerView productsRecyclerView;
     private RecyclerView myListRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager,myList_LayoutManager;
-    private RecyclerView.Adapter myListAdapter;
     ArrayList<ProductItem> exampleList = new ArrayList<>();//רשימת מוצרים (מערכת)
     ArrayList<ProductItem> filteredExampleList = new ArrayList<>();//רשימת מוצרים המתעדכנת לפי חיפוש
     ArrayList<ProductItem> myPrivetFoodlList = new ArrayList<>();//רשימת מוצרים שאני שמרתי
     ArrayList<ConsumedItem> myList = new ArrayList<>();//רשימת מוצרים שצרכתי
     ArrayList<ConsumedItem> myList_temp = new ArrayList<>();
     ConsumedItem consumedItem_adit;
-    ArrayList<Integer> typeList = new ArrayList<>();//רשימת תמונות סוג מדד
-
-    SharedPreferences sp;
-    TextView textttttdtghfd,ffffffdtghfd,t_sdfdfss;
-    ImageView iv_d_code_scan,iv_myProdacts;
-    Dialog QrCode_dialog;
+    TextView tv_clearMainCaloriesList, tv_printSavedItemsCode, tv_clearSavedItems;
+    ImageView iv_d_code_scan, iv_myProducts;
+    Dialog scan_barcod_dialog;
     Animation slide_in_bottom,slide_out_bottom;
     TextView tv_qr_information;
     ImageView iv_expend_more;
@@ -111,8 +102,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main );
 
-        cal = Calendar.getInstance();
-        cal.setTime(cal.getTime());
+        calendar = Calendar.getInstance();
+        calendar.setTime(calendar.getTime());
         findViewAndMore();
         changeBarColor(rl_top);
         //יצירת רשימת המוצרים
@@ -169,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         //פעולות לחיצה על איברי הרשימה
-        mRecyclerView.addOnItemTouchListener( new RecyclerItemClickListener(MainActivity.this, mRecyclerView
+        productsRecyclerView.addOnItemTouchListener( new RecyclerItemClickListener(MainActivity.this, productsRecyclerView
                 ,new RecyclerItemClickListener.OnItemClickListener() {
             @Override public void onItemClick(View view, int position) {
                 if (!(filteredExampleList.get( position ).getItemState() ==999)) {
@@ -211,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         } ) );
         //פעולת חיפוש
-        searchview.setOnQueryTextListener( new SearchView.OnQueryTextListener() {
+        mainSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override//כאשר לוחצים חפש
             public boolean onQueryTextSubmit(String s) {
                 if (isNumeric( s )){
@@ -232,41 +223,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 searchInFoodList(s);
 
                 if (isNumeric( s )){
-                    searchview.setBackgroundResource( R.drawable.sty_3_purple );
+                    mainSearchView.setBackgroundResource( R.drawable.sty_3_purple );
                     rl_mainInformation.setVisibility(View.VISIBLE);
                     iv_selfAdd.setVisibility(View.VISIBLE);
                     iv_selfSearch_round.setVisibility( View.GONE );
                     iv_barcodeSearch_round.setVisibility( View.GONE );
                     rl_selfSearch.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.GONE);
+                    productsRecyclerView.setVisibility(View.GONE);
                      iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_purple );
 
                 }
                 else if (filteredExampleList.size()==0){  // אם הרשימה ריקה (אין מוצרים)- הצעה לחיפוש עצמי
-                    searchview.setBackgroundResource( R.drawable.sty_3_oreng );
+                    mainSearchView.setBackgroundResource( R.drawable.sty_3_oreng );
                     rl_mainInformation.setVisibility(View.GONE);
                     iv_selfAdd.setVisibility(View.GONE);
                     iv_selfSearch_round.setVisibility( View.VISIBLE );
                     iv_barcodeSearch_round.setVisibility( View.GONE );
                     rl_selfSearch.setVisibility(View.VISIBLE);
-                    mRecyclerView.setVisibility(View.GONE);
+                    productsRecyclerView.setVisibility(View.GONE);
                     iv_backToMain.setImageResource( R.drawable.baseline_arrow_circle_right_oreng );
 
                 } else {
-                    searchview.setBackgroundResource( R.drawable.sty_3 );
+                    mainSearchView.setBackgroundResource( R.drawable.sty_3 );
                     rl_mainInformation.setVisibility(View.GONE);
                     iv_selfAdd.setVisibility(View.GONE);
                     iv_selfSearch_round.setVisibility( View.GONE );
                     iv_barcodeSearch_round.setVisibility( View.VISIBLE );
                     rl_selfSearch.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
+                    productsRecyclerView.setVisibility(View.VISIBLE);
                     iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_blue );
                 }
 
                 return false;
             }
         } );
-        serchview_internet.setOnQueryTextListener( new SearchView.OnQueryTextListener() {
+        selfSearchSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 startinternetWebSearch();
@@ -285,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ly_addNewPrivetFood.setVisibility(View.GONE);
         ly_addFood.setVisibility(View.GONE);
         iv_backToMain.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.GONE);
+        productsRecyclerView.setVisibility(View.GONE);
         rl_selfSearch.setVisibility(View.GONE);
         ly_aditAmount.setVisibility(View.GONE);
         rl_mainInformation.setVisibility(View.VISIBLE);
@@ -319,15 +310,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 tv_qr_information.setVisibility(  View.GONE );
         }
 
-        if(view==moreSerch){
-            startinternetWebSearchDotan(moreSerch.getText().toString());
-            moreSerch.setVisibility( View.GONE );
+        if(view== webSearchSuggestion){
+            startinternetWebSearchDotan(webSearchSuggestion.getText().toString());
+            webSearchSuggestion.setVisibility( View.GONE );
             hideKeyboard();
             ly_selfSearch_bar.setVisibility( View.GONE );
             iv_showSelfSearchBar.setVisibility( View.VISIBLE );
         }
 
-        if(view==iv_myProdacts || view == iv_myProdacts_SS){
+        if(view== iv_myProducts || view == iv_myProdacts_SS){
             startNewActivity(MainActivity.this, MyProductActivity.class);
 
         }
@@ -346,23 +337,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(view==btn_nextDay){
             //יקרה רק אם כל שאר המסכים סגורים
             if (ly_aditAmount.getVisibility()==View.GONE&&ly_addFood.getVisibility()==View.GONE&&ly_addNewPrivetFood.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE){
-                cal.add(Calendar.DAY_OF_MONTH, 1); //Adds a day
-                tv_date.setText( new SimpleDateFormat("dd-MM-yyyy").format(cal.getTime()));
+                calendar.add(Calendar.DAY_OF_MONTH, 1); //Adds a day
+                tv_date.setText( new SimpleDateFormat("dd-MM-yyyy").format(calendar.getTime()));
                 updateKlist();
             }
         }
         if(view==btn_lastDay){
             //יקרה רק אם כל שאר המסכים סגורים
             if (ly_aditAmount.getVisibility()==View.GONE&&ly_addFood.getVisibility()==View.GONE&&ly_addNewPrivetFood.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE) {
-                cal.add( Calendar.DAY_OF_MONTH , -1 ); //Goes to previous day
-                tv_date.setText( new SimpleDateFormat( "dd-MM-yyyy" ).format( cal.getTime() ) );
+                calendar.add( Calendar.DAY_OF_MONTH , -1 ); //Goes to previous day
+                tv_date.setText( new SimpleDateFormat( "dd-MM-yyyy" ).format( calendar.getTime() ) );
                 updateKlist();
             }
         }
         if(view == iv_delete1){cancelFoodAdd();
         }
-        //  if(view == iv_delete2 || view == iv_back_SS_to_M){
-        if( view == iv_back_SS_to_M){
+        //  if(view == iv_delete2 || view == iv_backFromSelfSearchToMain){
+        if( view == iv_backFromSelfSearchToMain){
 
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
@@ -404,9 +395,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     addToList( amount , Integer.parseInt( str_caloria ) );
                     update_kaloriesSum_k();
-                    searchview.setVisibility( View.VISIBLE );
-                    searchview.setQuery( "" , true );
-                    searchview.setIconified( true );
+                    mainSearchView.setVisibility( View.VISIBLE );
+                    mainSearchView.setQuery( "" , true );
+                    mainSearchView.setIconified( true );
                     hideKeyboard();
                     cancelFoodAdd();
                     rl_mainInformation.setVisibility( View.VISIBLE );
@@ -414,7 +405,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ly_addNewPrivetFood.setVisibility( View.GONE );
                     ly_addFood.setVisibility( View.GONE );
                     iv_backToMain.setVisibility( View.GONE );
-                    mRecyclerView.setVisibility( View.GONE );
+                    productsRecyclerView.setVisibility( View.GONE );
                     rl_selfSearch.setVisibility( View.GONE );
                     if (myList.size() != 0) {
                         myListRecyclerView.smoothScrollToPosition( myList.size() - 1 );
@@ -432,21 +423,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             hideKeyboard();
             cancelFoodAdd();
-            searchview.setVisibility( View.VISIBLE );
-            searchview.setIconified(true);
+            mainSearchView.setVisibility( View.VISIBLE );
+            mainSearchView.setIconified(true);
             showFoodDitals(getLastItem());
             openMain();
         }
-        if (view == searchview){
+        if (view == mainSearchView){
             //  mRecyclerView.setVisibility(View.VISIBLE);
             ///    et_food.setText( "" );
             //   rl_mainInformation.setVisibility(View.GONE);
-            searchview.setIconified(false);
+            mainSearchView.setIconified(false);
         }
-        if (view == serchview_internet){
-            serchview_internet.setIconified(false);
+        if (view == selfSearchSearchView){
+            selfSearchSearchView.setIconified(false);
         }
-        if (view==iv_search){
+        if (view== iv_goToSelfSearch){
             startWebSearch();
             /*
                Intent i = new Intent(this, MainActivity.class);
@@ -465,23 +456,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view == iv_backToMain){
             backToMain();
         }
-        if (view ==t_sdfdfss){
+        if (view == tv_clearSavedItems){
             clearData();
             Toast.makeText( getBaseContext(), "פריטים שמורים (רשימת חיפוש מאכלים) נמחקו",Toast.LENGTH_SHORT).show();
             restartApp();
         }
-        if (view ==textttttdtghfd){
+        if (view == tv_clearMainCaloriesList){
             //   str_caloria =("0");
             //  SharedPreferences.Editor editor = sp.edit();
             //         editor.putString( "caloria" , str_caloria );
             //     editor.commit();
             //   text.setText( str_caloria );
-            text.setText("0");
+            tv_totalCalories.setText("0");
             clearData_K();
             Toast.makeText( getBaseContext(), "רשימת קלוריות שנצרכו נמחקה (מסך ראשי)",Toast.LENGTH_SHORT).show();
             restartApp();
         }
-        if(view==ffffffdtghfd){
+        if(view== tv_printSavedItemsCode){
             String detailsString="_myPrivetFoodlList_";
             detailsString=detailsString+" "+myPrivetFoodlList.size()+" items ";
             for(int i=0; i <myPrivetFoodlList.size();i++){
@@ -493,7 +484,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             clipData(detailsString , this);
             Toast.makeText( getBaseContext(), "Copied successfully"+myPrivetFoodlList.size()+" items ",Toast.LENGTH_SHORT).show();
         }
-        if (view==t_see){
+        if (view== tv_returnToMainScreen){
             ly_settings.setVisibility( View.GONE );
         }
         if (view==iv_settings) {
@@ -576,29 +567,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             EditText  et_temp= (EditText) view;
             et_temp.setText("");
         }
-        /*    if (view ==iv_plus){
-            isPluse=!isPluse;
-            if (isPluse==true){
-
-            serchview.setVisibility(View.GONE);
-            et_food.setVisibility(View.VISIBLE);
-            et_kal.setVisibility(View.VISIBLE);
-            btn_plus.setVisibility(View.VISIBLE);
-            iv_plus.setImageResource( R.drawable.orengdelite );
-            if (serchview.getQuery().toString()!= null){
-            et_food.setText( serchview.getQuery().toString());
-            }
-            }
-            else {  serchview.setVisibility(View.VISIBLE);
-                et_food.setVisibility(View.GONE);
-                et_kal.setVisibility(View.GONE);
-                btn_plus.setVisibility(View.GONE);
-                iv_plus.setImageResource( R.drawable.orengplus_icon );}
-        }
-
-
-
-     */
     }
 
     private void saveNewProduct() {
@@ -637,14 +605,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void selfAddActions() {
 
-        String str_caloria= searchview.getQuery().toString().trim();
+        String str_caloria= mainSearchView.getQuery().toString().trim();
         temp_exampleItem= new ProductItem(0,"הוספת עצמית","קלוריות" ,"0","");
         temp_exampleItem.setCalorieText("100");
       addToList( Integer.parseInt( str_caloria ) , Integer.parseInt( str_caloria ) );
         update_kaloriesSum_k();
-        searchview.setVisibility( View.VISIBLE );
-        searchview.setQuery( "" , true );
-        searchview.setIconified( true );
+        mainSearchView.setVisibility( View.VISIBLE );
+        mainSearchView.setQuery( "" , true );
+        mainSearchView.setIconified( true );
         hideKeyboard();
         cancelFoodAdd();
         rl_mainInformation.setVisibility( View.VISIBLE );
@@ -652,12 +620,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ly_addNewPrivetFood.setVisibility( View.GONE );
         ly_addFood.setVisibility( View.GONE );
         iv_backToMain.setVisibility( View.GONE );
-        mRecyclerView.setVisibility( View.GONE );
+        productsRecyclerView.setVisibility( View.GONE );
         rl_selfSearch.setVisibility( View.GONE );
         if (myList.size() != 0) {
             myListRecyclerView.smoothScrollToPosition( myList.size() - 1 );
         }
-        searchview.setBackgroundResource( R.drawable.sty_3 );
+        mainSearchView.setBackgroundResource( R.drawable.sty_3 );
         iv_selfAdd.setVisibility(View.GONE);
         iv_barcodeSearch_round.setVisibility( View.VISIBLE );
 
@@ -665,28 +633,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //Function to display the custom dialog.
     public void showCustomDialog() {
-        /*
-        Dialog dialog = new Dialog( MainActivity.this );
-        //We have added a title in the custom layout. So let's disable the default title.
-        //   dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
-        //The user will be able to cancel the dialog bu clicking anywhere outside the dialog.
-        dialog.setCancelable( true ); dialog.setContentView( R.layout.custom_dialog );
-        //Mention the name of the layout of your custom dialog.
-
-
-        //Initializing the views of the dialog.
-        et_d= dialog.findViewById( R.id.et_d );
-        iv_scan=dialog.findViewById( R.id.iv_scan);
-        iv_scan.setOnClickListener( this );
-        btn_bsave=dialog.findViewById(R.id.btn_bsave);
-        btn_bsave.setOnClickListener( this );
-       // et_d.setText( temp_exampleItem.getmBarcode() );
-
-         */
-        QrCode_dialog.show();
+        scan_barcod_dialog.show();
     }
     public void closeCustomDialog() {
-        QrCode_dialog.dismiss();
+        scan_barcod_dialog.dismiss();
     }
 
     //פעולה שתציג דיאלוג ספציפי מתחתית המסך
@@ -704,27 +654,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(result != null){
             if (result.getContents() != null){
                 //     searchview.setQuery( ""+result.getContents() ,false);
-                if (QrCode_dialog.isShowing()){  serchByBC(result.getContents(),1);}
+                if (scan_barcod_dialog.isShowing()){  serchByBC(result.getContents(),1);}
                 else{
                     serchByBC(result.getContents(),0);}
-                /*
-                AlertDialog.Builder builder =new AlertDialog.Builder(this);
-                builder.setMessage( result.getContents() );
-                builder.setTitle( "תוצאות סריקה" );
-                builder.setPositiveButton( "סרוק שוב" , new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogI , int which) {
-scanCode();
-                    }
-                } ).setNegativeButton( "סיום" , new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog , int which) {
-finish();
-                    }
-                } );
-                AlertDialog dialog =builder.create();
-                dialog.show();
-                */
+
             }
             else{
                 Toast.makeText( this, "אין תוצאה",Toast.LENGTH_SHORT ).show();
@@ -794,8 +727,8 @@ finish();
             } else {
                 et_d_enter_code.setText( temp + " , " +barcode  );
             }
-            moreSerch.setVisibility( View.VISIBLE );
-            moreSerch.setText( barcode );
+            webSearchSuggestion.setVisibility( View.VISIBLE );
+            webSearchSuggestion.setText( barcode );
         }
     }
 
@@ -809,9 +742,9 @@ finish();
 
 //עדכון הרשימה הפיזית במסך כרשימת המוצרים
         mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        productsRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ProductItemAdapter(exampleList);
-        mRecyclerView.setAdapter(mAdapter);
+        productsRecyclerView.setAdapter(mAdapter);
     }
     private void addPrivetFoodListToFoodList() {
         if (myPrivetFoodlList == null) {
@@ -821,7 +754,7 @@ finish();
                 //הוספת איבי רשימה שלי לרשימה ראשית
                 exampleList.add( myPrivetFoodlList.get( i ) );
             }
-            mRecyclerView.setAdapter(new ProductItemAdapter(exampleList));
+            productsRecyclerView.setAdapter(new ProductItemAdapter(exampleList));
             // המצב הראשוני של רשימת החיפוש כרשימת המוצרים (ברירת מחדל)
             filteredExampleList=exampleList;
         }
@@ -852,7 +785,7 @@ finish();
         if (filteredExampleList.size()>0){ filteredExampleList.add(new ProductItem( 999, "לא מה שחיפשת?", "המשך בחיפוש עצמי","\uD83D\uDD0D",""));}
         //עדכן רשימה
         RecyclerView.Adapter  newAdapter = new ProductItemAdapter(filteredExampleList);
-        mRecyclerView.setAdapter(newAdapter);
+        productsRecyclerView.setAdapter(newAdapter);
     }
 
     private void sortByAB(ArrayList<ProductItem> mExampleList) {
@@ -884,7 +817,7 @@ finish();
 
         ly_addNewPrivetFood.setVisibility( View.GONE );
         ly_addFood.setVisibility( View.VISIBLE );
-        searchview.setVisibility( View.GONE );
+        mainSearchView.setVisibility( View.GONE );
         tv_food.setText(exampleItem.getName());
         tv_kal.setText(exampleItem.getCalorieText());
         tv_Type.setText(  exampleItem.getUnit());
@@ -991,11 +924,11 @@ finish();
 
         rl_mainInformation.setVisibility(View.VISIBLE);
         rl_top.setVisibility( View.VISIBLE );
-        rl_top_ss.setVisibility( View.GONE );
+        rl_selfSearchTopBar.setVisibility( View.GONE );
         changeBarColor(rl_top);
 
         iv_backToMain.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.GONE);
+        productsRecyclerView.setVisibility(View.GONE);
 
         webview.setVisibility(View.GONE);
 
@@ -1012,11 +945,11 @@ finish();
     private void openFood(){
         rl_mainInformation.setVisibility(View.GONE);
         rl_top.setVisibility( View.VISIBLE );
-        rl_top_ss.setVisibility( View.GONE );
+        rl_selfSearchTopBar.setVisibility( View.GONE );
         changeBarColor(rl_top);
         iv_backToMain.setVisibility(View.VISIBLE);
 
-        mRecyclerView.setVisibility(View.VISIBLE);
+        productsRecyclerView.setVisibility(View.VISIBLE);
 
         webview.setVisibility(View.GONE);
 
@@ -1028,19 +961,19 @@ finish();
     }
     private void closeFood(){
         iv_backToMain.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.GONE);
+        productsRecyclerView.setVisibility(View.GONE);
     }
     private void openNewProdact(){
 
         ly_addNewPrivetFood.startAnimation( slide_in_bottom );
         rl_mainInformation.setVisibility(View.GONE);
         rl_top.setVisibility( View.GONE );
-        rl_top_ss.setVisibility( View.VISIBLE );
-        changeBarColor(rl_top_ss);
+        rl_selfSearchTopBar.setVisibility( View.VISIBLE );
+        changeBarColor(rl_selfSearchTopBar);
         //   showDialog();
 
         iv_backToMain.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.GONE);
+        productsRecyclerView.setVisibility(View.GONE);
 
         webview.setVisibility(View.VISIBLE);
         ly_addNewPrivetFood.setVisibility(View.VISIBLE);
@@ -1069,37 +1002,37 @@ finish();
         iv_expend_more.setOnClickListener( this );
 
         rl_top=findViewById(R.id.rl_top);
-        rl_top_ss=findViewById(R.id.rl_top_ss);
+        rl_selfSearchTopBar =findViewById(R.id.rl_selfSearchTopBar);
         iv_myProdacts_SS=findViewById(R.id.iv_myProdacts_SS);
         iv_myProdacts_SS.setOnClickListener( this );
-        iv_back_SS_to_M=findViewById(R.id.iv_back_SS_to_M);
-        iv_back_SS_to_M.setOnClickListener( this );
+        iv_backFromSelfSearchToMain =findViewById(R.id.iv_backFromSelfSearchToMain);
+        iv_backFromSelfSearchToMain.setOnClickListener( this );
 
 
-        moreSerch=findViewById( R.id.moreSerch);
-        moreSerch.setOnClickListener( this );
+        webSearchSuggestion =findViewById( R.id.webSearchSuggestion);
+        webSearchSuggestion.setOnClickListener( this );
         slide_in_bottom= AnimationUtils.loadAnimation( this,R.anim.slide_in_bottom );
         slide_out_bottom= AnimationUtils.loadAnimation( this,R.anim.slide_out_bottom );
-        QrCode_dialog = new Dialog( MainActivity.this );
+        scan_barcod_dialog = new Dialog( MainActivity.this );
 
-        QrCode_dialog.setContentView( R.layout.scan_barcod_dialog );
-        QrCode_dialog.setCancelable( true );
-        et_d_enter_code = QrCode_dialog.findViewById( R.id.et_d_enter_code );
-        iv_d_code_scan = QrCode_dialog.findViewById( R.id.iv_d_code_scan );
+        scan_barcod_dialog.setContentView( R.layout.scan_barcod_dialog );
+        scan_barcod_dialog.setCancelable( true );
+        et_d_enter_code = scan_barcod_dialog.findViewById( R.id.et_d_enter_code );
+        iv_d_code_scan = scan_barcod_dialog.findViewById( R.id.iv_d_code_scan );
         iv_d_code_scan.setOnClickListener( this );
 
-        iv_myProdacts=findViewById( R.id.iv_myProdacts );
-        iv_myProdacts.setOnClickListener( this );
+        iv_myProducts =findViewById( R.id.iv_myProducts);
+        iv_myProducts.setOnClickListener( this );
 
         myListRecyclerView=findViewById( R.id.myListRecyclerView );
         myList_LayoutManager = new LinearLayoutManager(this);
         myListRecyclerView.setLayoutManager(myList_LayoutManager);
         plus_adit=findViewById( R.id.plus_adit );
         plus_adit.setOnClickListener( this );
-        plus_adit.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
         minus_adit=findViewById( R.id.minus_adit );
         minus_adit.setOnClickListener( this );
-        minus_adit.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
         btn_aditdFood=findViewById( R.id.btn_aditdFood );
         btn_aditdFood.setOnClickListener( this );
 
@@ -1111,9 +1044,9 @@ finish();
         iv_showSelfSearchBar.setOnClickListener( this );
         iv_hideSelfSearchBar =findViewById( R.id.iv_hideSelfSearchBar );
         iv_hideSelfSearchBar.setOnClickListener( this );
-        iv_selfSearch_round =findViewById( R.id.iv_selfSearch_round );
+        iv_selfSearch_round =findViewById( R.id.iv_selfSearch);
         iv_selfSearch_round.setOnClickListener( this );
-        iv_selfAdd =findViewById( R.id.iv_selfAdd_round );
+        iv_selfAdd =findViewById( R.id.iv_selfAdd);
         iv_selfAdd.setOnClickListener( this );
         iv_barcode =findViewById( R.id.iv_barcode );
         iv_barcode.setOnClickListener( this );
@@ -1124,17 +1057,17 @@ finish();
         ly_aditAmount=findViewById( R.id.ly_aditAmount );
         minus_z=findViewById( R.id.minus_z );
         minus_z.setOnClickListener( this );
-        minus_z.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
         plus_z=findViewById( R.id.plus_z );
         plus_z.setOnClickListener( this );
-        plus_z.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
         et_spinnerEditT=findViewById( R.id.et_spinnerEditT );
         saveAndStay =findViewById( R.id.saveAndStay);
         saveAndStay.setOnClickListener( this );
-        t_sdfdfss=findViewById( R.id.t_sdfdfss);
-        t_sdfdfss.setOnClickListener( this );
-        t_see=findViewById( R.id.t_see);
-        t_see.setOnClickListener( this );
+        tv_clearSavedItems =findViewById( R.id.tv_clearSavedItems);
+        tv_clearSavedItems.setOnClickListener( this );
+        tv_returnToMainScreen =findViewById( R.id.tv_returnToMainScreen);
+        tv_returnToMainScreen.setOnClickListener( this );
         iv_settings=findViewById( R.id.iv_settings);
         iv_settings.setOnClickListener( this );
         ly_settings=findViewById( R.id.ly_settings);
@@ -1145,24 +1078,24 @@ finish();
         tv_date=findViewById( R.id.tv_date);
         btn_nextDay=findViewById( R.id.btn_nextDay);
         btn_nextDay.setOnClickListener( this );
-        btn_nextDay.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
         btn_lastDay=findViewById( R.id.btn_lastDay);
         btn_lastDay.setOnClickListener( this );
-        btn_lastDay.getViewTreeObserver().addOnGlobalLayoutListener(this);
-        ffffffdtghfd=findViewById( R.id.ffffffdtghfd);
-        ffffffdtghfd.setOnClickListener( this );
+
+        tv_printSavedItemsCode =findViewById( R.id.tv_printSavedItemsCode);
+        tv_printSavedItemsCode.setOnClickListener( this );
         rl_mainInformation=findViewById( R.id.rl_mainInformation );
-        mRecyclerView = findViewById(R.id.recyclerView);
-        textttttdtghfd=findViewById( R.id.textttttdtghfd );
-        textttttdtghfd.setOnClickListener( this );
+        productsRecyclerView = findViewById(R.id.productsRecyclerView);
+        tv_clearMainCaloriesList =findViewById( R.id.tv_clearMainCaloriesList);
+        tv_clearMainCaloriesList.setOnClickListener( this );
         et_amounttt=findViewById( R.id.et_amounttt );
-        et_amounttt.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
         iv_backToMain =findViewById( R.id.iv_backToMain );
         iv_backToMain.setOnClickListener( this );
         rl_selfSearch=findViewById(R.id.rl_selfSearch);
-        iv_search=findViewById( R.id.iv_search );
-        iv_search.setOnClickListener( this );
-        newProductNameEditText = findViewById( R.id.et_food );
+        iv_goToSelfSearch =findViewById( R.id.iv_goToSelfSearch);
+        iv_goToSelfSearch.setOnClickListener( this );
+        newProductNameEditText = findViewById( R.id.newProductNameEditText );
         newProductNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
@@ -1175,12 +1108,12 @@ finish();
             }
             @Override
             public void afterTextChanged(Editable editable) {
-                moreSerch.setText(newProductNameEditText.getText().toString());
+                webSearchSuggestion.setText(newProductNameEditText.getText().toString());
                 if(!newProductNameEditText.getText().toString().equals( "" )){
-                    moreSerch.setVisibility( View.VISIBLE );
-                    moreSerch.setText( newProductNameEditText.getText().toString() + " " + "קלוריות" );
+                    webSearchSuggestion.setVisibility( View.VISIBLE );
+                    webSearchSuggestion.setText( newProductNameEditText.getText().toString() + " " + "קלוריות" );
                 }else{
-                    moreSerch.setVisibility( View.GONE );
+                    webSearchSuggestion.setVisibility( View.GONE );
                 }
                 /* if (webview.getUrl().toString().equals( "https://www.google.com/search?q=" + et_food.getText().toString() +" "+ "קלוריות")){
                     moreSerch.setVisibility( View.GONE );
@@ -1190,7 +1123,7 @@ finish();
 
             }
         });
-        newProductCaloriesEditText = findViewById( R.id.et_kal );
+        newProductCaloriesEditText = findViewById( R.id.newProductCaloriesEditText );
         newProductCaloriesEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
@@ -1210,14 +1143,13 @@ finish();
         tv_food.setOnClickListener( this );
         tv_kal= findViewById( R.id.tv_kal );
         tv_Type=findViewById( R.id.tv_Type);
-        tv_Type.getViewTreeObserver().addOnGlobalLayoutListener(this);
         saveNewProductItemButton =findViewById( R.id.saveNewProductItemButton);
         saveNewProductItemButton.setOnClickListener( this );
         btn_addFood =findViewById( R.id.btn_addFood );
         btn_addFood.setOnClickListener( this );
         ly_addNewPrivetFood =findViewById( R.id.ly_addNewPrivetFood );
         ly_addFood=findViewById( R.id.ly_addFood );
-        text=findViewById( R.id.text );  text.setOnClickListener( this );
+        tv_totalCalories =findViewById( R.id.tv_totalCalories);  tv_totalCalories.setOnClickListener( this );
         webview = findViewById( R.id.webview);
         webview.setWebViewClient( new WebViewClient() );
         WebSettings webSettings=webview.getSettings();
@@ -1231,10 +1163,10 @@ finish();
         webSettings.setGeolocationEnabled( true );
         webSettings.setDomStorageEnabled(  true);
         webview.setWebViewClient( new MyWebViewClient() );
-        searchview = findViewById( R.id.serchview );
-        searchview.setOnClickListener( this );
-        serchview_internet = findViewById( R.id.serchview_internet );
-        serchview_internet.setOnClickListener( this );
+        mainSearchView = findViewById( R.id.mainSearchView);
+        mainSearchView.setOnClickListener( this );
+        selfSearchSearchView = findViewById( R.id.selfSearchSearchView);
+        selfSearchSearchView.setOnClickListener( this );
         newProductCaloriesEditText.setOnTouchListener( this );
         et_amounttt.setOnTouchListener( this );
         ;et_newAmount.setOnTouchListener( this );
@@ -1256,7 +1188,7 @@ finish();
     private void cancelFoodAdd() {
         ly_addNewPrivetFood.setVisibility(View.GONE);
         ly_addFood.setVisibility(View.GONE);
-        searchview.setVisibility(View.VISIBLE);
+        mainSearchView.setVisibility(View.VISIBLE);
         iv_backToMain.setVisibility( View.VISIBLE );
 
     }
@@ -1265,19 +1197,19 @@ finish();
         cancelFoodAdd();
         iv_backToMain.setVisibility(View.GONE);
         ly_selfSearch_bar.setVisibility( View.VISIBLE );
-        mRecyclerView.setVisibility(View.VISIBLE);
-        moreSerch.setVisibility( View.GONE );
+        productsRecyclerView.setVisibility(View.VISIBLE);
+        webSearchSuggestion.setVisibility( View.GONE );
         iv_selfSearch_round.setVisibility( View.GONE );
         iv_showSelfSearchBar.setVisibility( View.GONE );
         iv_barcodeSearch_round.setVisibility( View.VISIBLE );
 
-        searchview.setQuery( "" , false );
+        mainSearchView.setQuery( "" , false );
         newProductNameEditText.setText( "" );
         newProductCaloriesEditText.setText( "" );
 
         unitSelectorView.selectDefaultUnit();
 
-        searchview.setBackgroundResource( R.drawable.sty_3 );
+        mainSearchView.setBackgroundResource( R.drawable.sty_3 );
         updateMainList();
 
     }
@@ -1285,7 +1217,7 @@ finish();
         if (Build.VERSION.SDK_INT >= 19) {
             webview.getSettings().setCacheMode( WebSettings.LOAD_CACHE_ELSE_NETWORK);
         }
-        webview.loadUrl("https://www.google.com/search?q=" + serchview_internet.getQuery().toString() +" "+ "קלוריות");
+        webview.loadUrl("https://www.google.com/search?q=" + selfSearchSearchView.getQuery().toString() +" "+ "קלוריות");
         //העלם עמודת חיפוש והצג אפשרות ביטול
         //   serchview_internet.setVisibility(View.GONE);
     }
@@ -1296,18 +1228,10 @@ finish();
         webview.loadUrl("https://www.google.com/search?q=" + str);
     }
     private void startWebSearchForBarcode(String bCod) {
-        //  et_food.setText( searchview.getQuery().toString() );
-
-        //   rl_selfSearch.setVisibility(View.GONE);
-        //  mRecyclerView.setVisibility(View.GONE);
-        //  rl_selfSearch.setVisibility( View.GONE );
-        //  webview.setVisibility( View.VISIBLE );
-        //     ly_addNewPrivetFood.setVisibility(View.VISIBLE);
-
         ly_addFood.setVisibility(View.GONE);
 
 
-        et_d_enter_code = QrCode_dialog.findViewById( R.id.et_d_enter_code );
+        et_d_enter_code = scan_barcod_dialog.findViewById( R.id.et_d_enter_code );
         et_d_enter_code.setText(bCod);
 
         if (Build.VERSION.SDK_INT >= 19) {
@@ -1316,37 +1240,37 @@ finish();
         webview.loadUrl("https://www.google.com/search?q=" + bCod);
 
         //העלם עמודת חיפוש והצג אפשרות ביטול
-        searchview.setVisibility(View.GONE);
+        mainSearchView.setVisibility(View.GONE);
     }
     private void startWebSearch() {
         ly_addNewPrivetFood.startAnimation( slide_in_bottom );
         ly_selfSearch_bar.setVisibility( View.VISIBLE );
         iv_backToMain.setVisibility( View.GONE );
-        moreSerch.setVisibility( View.GONE );
+        webSearchSuggestion.setVisibility( View.GONE );
         rl_mainInformation.setVisibility(View.GONE);
         rl_top.setVisibility( View.GONE );
-        rl_top_ss.setVisibility( View.VISIBLE );
-        changeBarColor(rl_top_ss);
+        rl_selfSearchTopBar.setVisibility( View.VISIBLE );
+        changeBarColor(rl_selfSearchTopBar);
 
         rl_selfSearch.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.GONE);
+        productsRecyclerView.setVisibility(View.GONE);
 
         rl_selfSearch.setVisibility( View.GONE );
         webview.setVisibility( View.VISIBLE );
         ly_addNewPrivetFood.setVisibility(View.VISIBLE);
         ly_addFood.setVisibility(View.GONE);
 
-        et_d_enter_code = QrCode_dialog.findViewById( R.id.et_d_enter_code );
+        et_d_enter_code = scan_barcod_dialog.findViewById( R.id.et_d_enter_code );
         et_d_enter_code.setText("");
 
         if (Build.VERSION.SDK_INT >= 19) {
             webview.getSettings().setCacheMode( WebSettings.LOAD_CACHE_ELSE_NETWORK);
         }
-        webview.loadUrl("https://www.google.com/search?q=" + searchview.getQuery().toString() +" "+ "קלוריות");
-        newProductNameEditText.setText( searchview.getQuery().toString() );
-        moreSerch.setVisibility( View.GONE ); //זה בכוונה אחרי חיפוש המוצר ואחרי עדעון האדיט טקסט של שם המוצר.
+        webview.loadUrl("https://www.google.com/search?q=" + mainSearchView.getQuery().toString() +" "+ "קלוריות");
+        newProductNameEditText.setText( mainSearchView.getQuery().toString() );
+        webSearchSuggestion.setVisibility( View.GONE ); //זה בכוונה אחרי חיפוש המוצר ואחרי עדעון האדיט טקסט של שם המוצר.
         //העלם עמודת חיפוש והצג אפשרות ביטול
-        searchview.setVisibility(View.GONE);
+        mainSearchView.setVisibility(View.GONE);
     }
 
     private void updateKlist(){
@@ -1357,9 +1281,9 @@ finish();
         update_kaloriesSum_k();
     }
     private void backToMain() {
-        searchview.setVisibility( View.VISIBLE );
-        searchview.setQuery( "",true );
-        searchview.setIconified(true);
+        mainSearchView.setVisibility( View.VISIBLE );
+        mainSearchView.setQuery( "",true );
+        mainSearchView.setIconified(true);
         hideKeyboard();
         cancelFoodAdd();
         openMain();
@@ -1373,38 +1297,7 @@ finish();
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
-    private void switchPlaces() {
-        /*   spinner_x=spinner.getX();
-        spinner_y=spinner.getY();
-        amount_x=et_amount.getX();
-        amount_y=et_amount.getY();
-        if(spinner_x>amount_x){
-            spinner.setX( amount_x );
-            et_amount.setX( spinner_x );
-        }
-      */
-        type_x=tv_Type.getX();
-        amounttt_x=et_amounttt.getX();
-        if(type_x>amounttt_x){
-            tv_Type.setX( amounttt_x );
-            et_amounttt.setX( type_x );
-        }
 
-        p_x=plus_z.getX();
-        m_x=minus_z.getX();
-        if(p_x>m_x){
-            plus_z.setX( m_x );
-            minus_z.setX( p_x );
-        }
-
-        pa_x=plus_adit.getX();
-        ma_x=minus_adit.getX();
-        if(pa_x>ma_x){
-            plus_adit.setX( ma_x );
-            minus_adit.setX( pa_x );
-        }
-
-    }
 
     public static boolean isContainsLetters(String string) {
         if (string == null || string.isEmpty()) {
@@ -1458,7 +1351,7 @@ finish();
 
         //עדכון רשימת מסך ראשי
 
-        ConsumedItem listItem=new ConsumedItem(amount,temp_exampleItem, date.format(cal.getTime()), 0);
+        ConsumedItem listItem=new ConsumedItem(amount,temp_exampleItem, date.format(calendar.getTime()), 0);
         myList_temp.add(listItem );
         // שמירה בטלפון
         saveData_K();
@@ -1469,7 +1362,7 @@ finish();
     private void loadFoodListData_k() {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String strDate = sdf.format(cal.getTime());
+        String strDate = sdf.format(calendar.getTime());
 
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -1524,10 +1417,10 @@ finish();
 
         if (kaloriesSum!=0){
             //  text.setText( "  "+kaloriesSum+"  " );
-            text.setText( ""+kaloriesSum );
-            text.setBackgroundResource( R.drawable.sty_blue_r ); }
-        else{    text.setText( "");
-            text.setBackgroundResource( R.drawable.sty_blue_r_sercle ); }
+            tv_totalCalories.setText( ""+kaloriesSum );
+            tv_totalCalories.setBackgroundResource( R.drawable.sty_blue_r ); }
+        else{    tv_totalCalories.setText( "");
+            tv_totalCalories.setBackgroundResource( R.drawable.sty_blue_r_sercle ); }
     }
     private void deleteFromCalList(int position){
         boolean finished = false;
@@ -1579,11 +1472,6 @@ finish();
     public void onNothingSelected(AdapterView<?> adapterView) {
     }
     @Override
-    public void onGlobalLayout() {
-        switchPlaces();
-        switchPlaces();
-    }
-    @Override
     public void beforeTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
 
     }
@@ -1608,7 +1496,7 @@ finish();
             if (ly_addFood.getVisibility() == View.VISIBLE) {
                 cancelFoodAdd();
             } else {
-                if (mRecyclerView.getVisibility() == View.VISIBLE) {
+                if (productsRecyclerView.getVisibility() == View.VISIBLE) {
                     backToMain();
                 } else {
                     if (rl_selfSearch.getVisibility() == View.VISIBLE) {
