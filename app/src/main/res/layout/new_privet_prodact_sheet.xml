@@ -136,7 +136,7 @@
             android:orientation="horizontal">
             <Button
                 android:visibility="gone"
-                android:id="@+id/moreSerch"
+                android:id="@+id/webSearchSuggestion"
                 android:text="הצעה לחיפוש"
                 android:textColor="#FFFFFF"
                 android:textSize="16dp"
@@ -147,7 +147,7 @@
                 android:drawableRight="@drawable/ic_baseline_search_24_white"
                 />
             <android.widget.SearchView
-                android:id="@+id/serchview_internet"
+                android:id="@+id/selfSearchSearchView"
                 android:layout_height="50dp"
                 android:queryHint="חיפוש נוסף"
                 android:background="#34878787"
