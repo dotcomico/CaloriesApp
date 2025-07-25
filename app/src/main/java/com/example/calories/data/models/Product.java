@@ -1,6 +1,6 @@
 package com.example.calories.data.models;
 
-public class ProductItem {
+public class Product {
 
     // Constants for item states
     public static final int ITEM_STATE_SYSTEM = 0;  // מוצר במערכת
@@ -13,12 +13,12 @@ public class ProductItem {
     private String calorieText; // קלוריות
     private String barcode;
 
-    public ProductItem() {
+    public Product() {
         // קונסטרקטור ריק
     }
 
-    public ProductItem( int itemState, String name, String unit,
-                        String calorieText, String barcode) {
+    public Product(int itemState, String name, String unit,
+                   String calorieText, String barcode) {
 
         this.itemState = itemState;
         this.name = name;
@@ -115,7 +115,7 @@ public class ProductItem {
 
     @Override
     public String toString() {
-        return "ProductItem{" +
+        return "Product{" +
                 "name='" + name + '\'' +
                 ", unit='" + unit + '\'' +
                 ", calories='" + calorieText + '\'' +
