@@ -46,6 +46,7 @@ import android.widget.Toast;
 
 import com.example.calories.data.models.ConsumedProduct;
 import com.example.calories.data.models.Product;
+import com.example.calories.data.storage.ProductStorageManager;
 import com.example.calories.ui.utils.CaptureAct;
 import com.example.calories.ui.adapters.ConsumedItemAdapter;
 import com.example.calories.ui.adapters.ProductItemAdapter;
@@ -141,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Animation slide_in_bottom,slide_out_bottom;
     private Dialog dialog ;
 
+    ProductStorageManager productStorageManager;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -152,6 +154,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         calendar.setTime(calendar.getTime());
         findViewAndMore();
         changeBarColor(rl_top);
+
+        productStorageManager  = new ProductStorageManager(this);
         //יצירת רשימת המוצרים
         updateMainList();
         //מיון לפי א"ב
@@ -256,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }else if (filteredProducts.size()==0){       //אם הרשימה ריקה(מוצר לא נמצא) תפתח חיפוש עצמי
                     startWebSearch(); }
                 else { //אחרת סגור את מסך האתר
-                //   webview.setVisibility(View.GONE);
+                    //   webview.setVisibility(View.GONE);
                 }
                 return false;
             }
@@ -264,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onQueryTextChange(String s) {
                 // עדכון רשימת מזון לפי חיפוש בזמן הקלדה
                 iv_backToMain.setVisibility(View.VISIBLE);
-              //  mRecyclerView.setVisibility(View.VISIBLE);
+                //  mRecyclerView.setVisibility(View.VISIBLE);
 
                 searchInFoodList(s);
 
@@ -276,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     iv_barcodeSearch_round.setVisibility( View.GONE );
                     rl_selfSearch.setVisibility(View.GONE);
                     productsRecyclerView.setVisibility(View.GONE);
-                     iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_purple );
+                    iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_purple );
 
                 }
                 else if (filteredProducts.size()==0){  // אם הרשימה ריקה (אין מוצרים)- הצעה לחיפוש עצמי
@@ -351,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         if (view == iv_expandProductInfo) {
             if (tv_barcodeInfo.getVisibility() == View.GONE )
-            tv_barcodeInfo.setVisibility(  View.VISIBLE );
+                tv_barcodeInfo.setVisibility(  View.VISIBLE );
             else
                 tv_barcodeInfo.setVisibility(  View.GONE );
         }
@@ -375,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             showCustomDialog();
         }
         if (view==iv_selfAdd) {
-          selfAddActions();
+            selfAddActions();
         }
         if(view== iv_barcodeSearch_round){
             openMain();
@@ -385,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (ly_editConsumedProduct.getVisibility()==View.GONE&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE){
                 calendar.add(Calendar.DAY_OF_MONTH, 1); //Adds a day
                 tv_date.setText( new SimpleDateFormat("dd-MM-yyyy").format(calendar.getTime()));
-                updateKlist();
+                updateConsumedProductslist();
             }
         }
         if(view==btn_lastDay){
@@ -393,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (ly_editConsumedProduct.getVisibility()==View.GONE&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE) {
                 calendar.add( Calendar.DAY_OF_MONTH , -1 ); //Goes to previous day
                 tv_date.setText( new SimpleDateFormat( "dd-MM-yyyy" ).format( calendar.getTime() ) );
-                updateKlist();
+                updateConsumedProductslist();
             }
         }
         if(view == iv_closeBottomSheet){cancelFoodAdd();
@@ -493,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (view==iv_selfSearch_round){
             startWebSearch();
-              /*
+            /*
                Intent i = new Intent(this, MainActivity.class);
             i.putExtra("selfSearch", true );
             startActivity( i );
@@ -572,7 +576,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 aditItemFromCalList(mainL_position, Double.parseDouble( et_consumedProductNewAmount.getText().toString() ) );
                 hideKeyboard();
                 ly_editConsumedProduct.setVisibility( View.GONE );
-               }
+            }
         }
         if (view== iv_increaseAmountEdit){
             String st= et_consumedProductNewAmount.getText().toString();
@@ -653,7 +657,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String str_caloria= mainSearchView.getQuery().toString().trim();
         temp_exampleItem= new Product(0,"הוספת עצמית","קלוריות" ,"0","");
         temp_exampleItem.setCalorieText("100");
-      addToList( Integer.parseInt( str_caloria ) , Integer.parseInt( str_caloria ) );
+        addToList( Integer.parseInt( str_caloria ) , Integer.parseInt( str_caloria ) );
         update_kaloriesSum_k();
         mainSearchView.setVisibility( View.VISIBLE );
         mainSearchView.setQuery( "" , true );
@@ -770,7 +774,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(mode==1) {
             String temp= et_d_enter_code.getText().toString();
             if (temp.isEmpty()){
-            et_d_enter_code.setText(barcode);
+                et_d_enter_code.setText(barcode);
             } else {
                 et_d_enter_code.setText( temp + " , " +barcode  );
             }
@@ -780,20 +784,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //פעולות עדכון רשימות בסיס
-    private void updateFoodList()   {
+    private void updateSystemProductList()   {
         systemProductList = new ArrayList<>();
         systemProductList =getSystemProductsArr();
 
         // המצב הראשוני של רשימת החיפוש כרשימת המוצרים (ברירת מחדל)
         filteredProducts = systemProductList;
 
-//עדכון הרשימה הפיזית במסך כרשימת המוצרים
+        //עדכון הרשימה הפיזית במסך כרשימת המוצרים
         productsLayoutManager = new LinearLayoutManager(this);
         productsRecyclerView.setLayoutManager(productsLayoutManager);
         productsAdapter = new ProductItemAdapter(systemProductList);
         productsRecyclerView.setAdapter(productsAdapter);
     }
-    private void addPrivetFoodListToFoodList() {
+    private void addCustomProductListToProductCatalog() {
         if (customProducts == null) {
             customProducts = new ArrayList<>();
         }else {
@@ -912,58 +916,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //הוסף מזון לרשימת מוצרים שלי (רק אם אני בחיפוש עצמי או עורך מוצר קיים)
         Product item;
         String unit = unitSelectorView.getUnit();
-            item = new Product(   1 , newProductNameEditText.getText().toString().trim() , unit , newProductCaloriesEditText.getText().toString().trim() , et_d_enter_code.getText().toString() );
-            customProducts.add(item);
-            temp_exampleItem=item;
+        item = new Product(   1 , newProductNameEditText.getText().toString().trim() , unit , newProductCaloriesEditText.getText().toString().trim() , et_d_enter_code.getText().toString() );
+        customProducts.add(item);
+        temp_exampleItem=item;
     }
-    private void loadPrivetFoodListData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("task list", null);
-        Type type = new TypeToken<ArrayList<Product>>() {}.getType();
-        customProducts = gson.fromJson(json, type);
-        if (customProducts == null) {
-            customProducts = new ArrayList<>();
-        }
+    private void loadCustomProductListData() {
+        customProducts =productStorageManager.load();
     }
     private void saveData(){
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(customProducts);
-        editor.putString("task list", json);
-        editor.apply();
+        productStorageManager.save(customProducts);
     }
     private void clearData(){
-        if (customProducts == null) {
+            productStorageManager.clear();
             customProducts = new ArrayList<>();
-        }else {
-            SharedPreferences sharedPreferences = getSharedPreferences( "shared preferences" , MODE_PRIVATE );
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            Gson gson = new Gson();
-            String json = gson.toJson( null );
-
-            editor.putString( "task list" , json );
-            editor.apply();
-            customProducts = new ArrayList<>();
-            //mRecyclerView.setAdapter( new ExampleAdapter( exampleList ) );
-        }
     }
     private Product getLastItem(){
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("task list", null);
-        Type type = new TypeToken<ArrayList<Product>>() {}.getType();
-        ArrayList<Product> arrayList = new ArrayList<>();
-        arrayList = gson.fromJson(json, type);
-        if (arrayList == null) {
-            arrayList = new ArrayList<>();
-        }else {
-            Product exampleItem=new Product();
-            exampleItem=   arrayList.get( arrayList.size()-1 );
-            return exampleItem;
-        }
-        return null;
+        return productStorageManager.getLastItem();
     }
 
     // פתיחת וסגירת מסכים
@@ -1222,10 +1190,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //
     }
     private void updateMainList() {
-        updateFoodList();
-        loadPrivetFoodListData();
-        addPrivetFoodListToFoodList();
-        updateKlist();
+        updateSystemProductList();
+        loadCustomProductListData();
+        addCustomProductListToProductCatalog();
+        updateConsumedProductslist();
         //מיון לפי א"ב
         //sortArrayList();
     }
@@ -1321,7 +1289,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainSearchView.setVisibility(View.GONE);
     }
 
-    private void updateKlist(){
+    private void updateConsumedProductslist(){
         loadFoodListData_k();
         consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
         if (consumedProducts.size()!=0){
