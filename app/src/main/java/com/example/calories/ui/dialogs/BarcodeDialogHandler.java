@@ -1,5 +1,6 @@
 package com.example.calories.ui.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.widget.EditText;
@@ -19,6 +20,8 @@ public class BarcodeDialogHandler {
     private final EditText etBarcode;
     private final ImageView ivScan;
 
+    private final CaptureAct captureAct = new CaptureAct();
+
     public BarcodeDialogHandler(Context context) {
         this.context = context;
         dialog = new Dialog(context);
@@ -27,6 +30,8 @@ public class BarcodeDialogHandler {
 
         etBarcode = dialog.findViewById(R.id.et_d_enter_code);
         ivScan = dialog.findViewById(R.id.iv_d_code_scan);
+
+
         ivScan.setOnClickListener(v -> scanCode());
     }
 
@@ -47,13 +52,8 @@ public class BarcodeDialogHandler {
         return dialog.isShowing();
     }
 
-    private void scanCode() {
-        IntentIntegrator integrator = new IntentIntegrator((MyProductActivity) context); // אם תשתמש באחר — שנה את זה
-        integrator.setCaptureActivity(CaptureAct.class);
-        integrator.setOrientationLocked(false);
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-        integrator.setPrompt("לחץ על מקשי צליל להפעלת פנס");
-        integrator.initiateScan();
+    private void scanCode(){
+        captureAct.scanCode(context);
     }
 
     public void handleActivityResult(IntentResult result) {
