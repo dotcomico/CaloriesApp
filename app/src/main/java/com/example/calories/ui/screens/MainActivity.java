@@ -46,6 +46,7 @@ import android.widget.Toast;
 
 import com.example.calories.data.models.ConsumedProduct;
 import com.example.calories.data.models.Product;
+import com.example.calories.data.storage.ConsumedProductStorageManager;
 import com.example.calories.data.storage.ProductStorageManager;
 import com.example.calories.ui.dialogs.BarcodeDialogHandler;
 import com.example.calories.ui.utils.CaptureAct;
@@ -54,6 +55,7 @@ import com.example.calories.ui.adapters.ProductItemAdapter;
 import com.example.calories.R;
 import com.example.calories.ui.adapters.RecyclerItemClickListener;
 import com.example.calories.ui.views.UnitSelectorView;
+import com.example.calories.utils.Utility;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -117,9 +119,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Calendar calendar;
     private final CaptureAct captureAct = new CaptureAct();
 
-
+    ProductStorageManager productStorageManager;
     // dialog
-
+    ConsumedProductStorageManager consumedProductStorageManager;
 
 
     // top bar
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Animation slide_in_bottom,slide_out_bottom;
     private Dialog dialog ;
 
-    ProductStorageManager productStorageManager;
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -158,7 +160,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         barcodeDialogHandler =new BarcodeDialogHandler(this);
         productStorageManager  = new ProductStorageManager(this);
-        //יצירת רשימת המוצרים
+        consumedProductStorageManager = new ConsumedProductStorageManager(this);
+    //יצירת רשימת המוצרים
         updateMainList();
         //מיון לפי א"ב
         //      sortArrayList();
@@ -173,7 +176,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
-                if ( newProductCaloriesEditText.getText().toString().equals( "." )){ et_addAmount.setText( "" );}
+                if ( newProductCaloriesEditText.getText().toString().equals( "." )){
+                    et_addAmount.setText( "" );
+                }
 
             }
 
@@ -237,8 +242,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onItemClick(View view , int position)
             {
-                //            Toast.makeText(getBaseContext(), "position:"+position+ "\n"+"  מספר ברשימה כללית:"+myList.get( position).getSerial()+"", Toast.LENGTH_SHORT).show();
-                //עריכת פריט
+                 //עריכת פריט
                 ly_editConsumedProduct.startAnimation( slide_in_bottom );
                 ly_editConsumedProduct.setVisibility( View.VISIBLE );
                 consumedProduct_edit = consumedProducts.get( position );
@@ -259,7 +263,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onQueryTextSubmit(String s) {
                 if (isNumeric( s )){
                     selfAddActions();
-                }else if (filteredProducts.size()==0){       //אם הרשימה ריקה(מוצר לא נמצא) תפתח חיפוש עצמי
+                }else if (filteredProducts.size()==0){
+                    //אם הרשימה ריקה(מוצר לא נמצא) תפתח חיפוש עצמי
                     startWebSearch(); }
                 else { //אחרת סגור את מסך האתר
                     //   webview.setVisibility(View.GONE);
@@ -318,9 +323,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public boolean onQueryTextChange(String s) {
-                //      if (!serchview_internet.getQuery().toString().matches( "")||!serchview_internet.getQuery().toString().matches( " קלוריות")||serchview_internet.getQuery().toString().matches( "קלוריות") )
-                //   serchview_internet.setQuery( serchview_internet.getQuery().toString()+" קלוריות" );
-                return false;
+               return false;
             }
         });
         //סגירת מסכים לא נחוצים בכניסה התחלתית למסך
@@ -348,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        showDialog();
+        // showDialog();
 
     }
 
@@ -442,8 +445,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     } else {
                         str_caloria = (String.format( String.valueOf( (int) (kal * amount /* +temp*/) ) ));
                     }
-                    addToList( amount , Integer.parseInt( str_caloria ) );
-                    update_kaloriesSum_k();
+                    addConsumedProductToList( amount , Integer.parseInt( str_caloria ) );
+                    updateTotalCalories();
                     mainSearchView.setVisibility( View.VISIBLE );
                     mainSearchView.setQuery( "" , true );
                     mainSearchView.setIconified( true );
@@ -517,7 +520,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //     editor.commit();
             //   text.setText( str_caloria );
             tv_totalCalories.setText("0");
-            clearData_K();
+            clearConsumedProductData();
             Toast.makeText( getBaseContext(), "רשימת קלוריות שנצרכו נמחקה (מסך ראשי)",Toast.LENGTH_SHORT).show();
             restartApp();
         }
@@ -656,8 +659,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String str_caloria= mainSearchView.getQuery().toString().trim();
         temp_exampleItem= new Product(0,"הוספת עצמית","קלוריות" ,"0","");
         temp_exampleItem.setCalorieText("100");
-        addToList( Integer.parseInt( str_caloria ) , Integer.parseInt( str_caloria ) );
-        update_kaloriesSum_k();
+        addConsumedProductToList( Integer.parseInt( str_caloria ) , Integer.parseInt( str_caloria ) );
+        updateTotalCalories();
         mainSearchView.setVisibility( View.VISIBLE );
         mainSearchView.setQuery( "" , true );
         mainSearchView.setIconified( true );
@@ -704,10 +707,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(result != null){
             if (result.getContents() != null){
                 if (barcodeDialogHandler.isDialogShowing()){
-                    serchByBC(result.getContents(),1);
+                    searchProductByBarcode(result.getContents(),1);
                 }
                 else{
-                    serchByBC(result.getContents(),0);}
+                    searchProductByBarcode(result.getContents(),0);}
 
             }
             else{
@@ -722,7 +725,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void scanCode(){
         captureAct.scanCode(this);
     }
-    private void serchByBC(String barcode , int mode) {
+    private void searchProductByBarcode(String barcode , int mode) {
         if(mode==0) {
             Product examplel = new Product();
             boolean temp = false;
@@ -1166,7 +1169,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         webSettings.setEnableSmoothTransition( true );
         webSettings.setGeolocationEnabled( true );
         webSettings.setDomStorageEnabled(  true);
-        webview.setWebViewClient( new MyWebViewClient() );
+        webview.setWebViewClient(new MyWebViewClient());
         mainSearchView = findViewById( R.id.mainSearchView);
         mainSearchView.setOnClickListener( this );
         selfSearchSearchView = findViewById( R.id.selfSearchSearchView);
@@ -1274,11 +1277,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void updateConsumedProductslist(){
-        loadFoodListData_k();
+        loadConsumedProductData(calendar);
         consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
         if (consumedProducts.size()!=0){
             consumedProductsRecyclerView.smoothScrollToPosition(consumedProducts.size()-1);}
-        update_kaloriesSum_k();
+        updateTotalCalories();
     }
     private void backToMain() {
         mainSearchView.setVisibility( View.VISIBLE );
@@ -1343,8 +1346,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         clipData(detailsString , this);
         Toast.makeText( getBaseContext(), "Copied successfully"+ systemProductList.size()+" items ",Toast.LENGTH_SHORT).show();
     }
+
     //פעולות שרדפרפרנס רשימת הקלוריות המוצגת במסך ראשי
-    private void addToList( double amount,int kals){
+    private void addConsumedProductToList(double amount, int calories){
         Calendar c = Calendar.getInstance();
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat hour = new SimpleDateFormat("HH");
@@ -1354,12 +1358,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ConsumedProduct listItem=new ConsumedProduct(amount,temp_exampleItem, date.format(calendar.getTime()), 0);
         consumedProductsBuffer.add(listItem );
         // שמירה בטלפון
-        saveData_K();
+        saveConsumedProductData();
         // עדכון רשימה פיזית
-        loadFoodListData_k();
+        loadConsumedProductData(calendar);
         consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
     }
-    private void loadFoodListData_k() {
+    private void loadConsumedProductData(Calendar calendar_day) {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String strDate = sdf.format(calendar.getTime());
@@ -1385,39 +1389,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
             }
-        }}
-    private void saveData_K(){
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(consumedProductsBuffer);
-        editor.putString("eat list", json);
-        editor.apply();
-    }
-    private void clearData_K(){
-        if (consumedProductsBuffer == null) {
-            consumedProductsBuffer = new ArrayList<>();
-        }else {
-            SharedPreferences sharedPreferences = getSharedPreferences( "shared preferences" , MODE_PRIVATE );
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            Gson gson = new Gson();
-            String json = gson.toJson( null );
-
-            editor.putString( "eat list" , json );
-            editor.apply();
-            consumedProductsBuffer = new ArrayList<>();
-            //mRecyclerView.setAdapter( new ExampleAdapter( exampleList ) );
         }
     }
-    private void update_kaloriesSum_k(){
-        int kaloriesSum=0;
+    private void saveConsumedProductData(){
+        consumedProductStorageManager.save(consumedProductsBuffer);
+    }
+    private void clearConsumedProductData(){
+     consumedProductStorageManager.clear();
+     consumedProductsBuffer = new ArrayList<>();
+    }
+    private void updateTotalCalories(){
+        int totalCalories=0;
+
         for(int i = 0; i < consumedProducts.size(); i++){
-            kaloriesSum+= consumedProducts.get( i ).getTotalCalories();
+            totalCalories += consumedProducts.get( i ).getTotalCalories();
         }
 
-        if (kaloriesSum!=0){
-            //  text.setText( "  "+kaloriesSum+"  " );
-            tv_totalCalories.setText( ""+kaloriesSum );
+        if (totalCalories!=0){
+            //  text.setText( "  "+totalCalories+"  " );
+            tv_totalCalories.setText( ""+totalCalories );
             tv_totalCalories.setBackgroundResource( R.drawable.sty_blue_r ); }
         else{    tv_totalCalories.setText( "");
             tv_totalCalories.setBackgroundResource( R.drawable.sty_blue_r_sercle ); }
@@ -1438,8 +1428,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             q++;
         }
 //myList_temp.remove( myList.get( position).getSerial());
-        saveData_K();
-        update_kaloriesSum_k();
+        saveConsumedProductData();
+        updateTotalCalories();
         consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
     }
 
@@ -1456,9 +1446,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             q++;
         }
-        saveData_K();
-        loadFoodListData_k();
-        update_kaloriesSum_k();
+        saveConsumedProductData();
+        loadConsumedProductData(calendar);
+        updateTotalCalories();
         consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
     }
 
@@ -1522,7 +1512,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return false;}
         return false;
     }
-    private class MyWebViewClient extends WebViewClient {
+    private static class MyWebViewClient extends WebViewClient {
         /*
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
