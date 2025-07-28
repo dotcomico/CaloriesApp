@@ -47,6 +47,7 @@ import android.widget.Toast;
 import com.example.calories.data.models.ConsumedProduct;
 import com.example.calories.data.models.Product;
 import com.example.calories.data.storage.ProductStorageManager;
+import com.example.calories.ui.dialogs.BarcodeDialogHandler;
 import com.example.calories.ui.utils.CaptureAct;
 import com.example.calories.ui.adapters.ConsumedItemAdapter;
 import com.example.calories.ui.adapters.ProductItemAdapter;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ConsumedProduct consumedProduct_edit;
 
+
     //--------------- ProductCatalogView ---------------
 
     private ArrayList<Product> systemProductList = new ArrayList<>();//רשימת מוצרים (מערכת)
@@ -108,17 +110,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView iv_collapseBottomSheet , saveAndStay;
     private UnitSelectorView unitSelectorView;
 
-
+    private BarcodeDialogHandler barcodeDialogHandler;
 
 
     //--------------- others  ---------------
     private Calendar calendar;
-
+    private final CaptureAct captureAct = new CaptureAct();
 
 
     // dialog
-    private EditText  et_d_enter_code;
-    private Dialog scan_barcod_dialog;
+
 
 
     // top bar
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private ImageView iv_backFromSelfSearchToMain, iv_myProdacts_SS, iv_showSelfSearchBar, iv_selfSearch_round ,  iv_selfAdd, iv_barcodeScan, iv_goToSelfSearch,
-            iv_backToMain,iv_settings, iv_barcodeSearch_round;
+            iv_backToMain,iv_settings, iv_startBarcodescan;
     private RelativeLayout rl_selfSearch,rl_top, rl_selfSearchTopBar,rl_mainInformation;
     private TextView tv_date, tv_returnToMainScreen;
     private int calcolaty_mod,mainL_position=-1;
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private TextView tv_clearMainCaloriesList, tv_printSavedItemsCode, tv_clearSavedItems , tv_totalCalories;
-    private ImageView iv_d_code_scan, iv_myProducts;
+    private ImageView iv_myProducts;
 
     private Animation slide_in_bottom,slide_out_bottom;
     private Dialog dialog ;
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewAndMore();
         changeBarColor(rl_top);
 
+        barcodeDialogHandler =new BarcodeDialogHandler(this);
         productStorageManager  = new ProductStorageManager(this);
         //יצירת רשימת המוצרים
         updateMainList();
@@ -277,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     rl_mainInformation.setVisibility(View.VISIBLE);
                     iv_selfAdd.setVisibility(View.VISIBLE);
                     iv_selfSearch_round.setVisibility( View.GONE );
-                    iv_barcodeSearch_round.setVisibility( View.GONE );
+                    iv_startBarcodescan.setVisibility( View.GONE );
                     rl_selfSearch.setVisibility(View.GONE);
                     productsRecyclerView.setVisibility(View.GONE);
                     iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_purple );
@@ -288,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     rl_mainInformation.setVisibility(View.GONE);
                     iv_selfAdd.setVisibility(View.GONE);
                     iv_selfSearch_round.setVisibility( View.VISIBLE );
-                    iv_barcodeSearch_round.setVisibility( View.GONE );
+                    iv_startBarcodescan.setVisibility( View.GONE );
                     rl_selfSearch.setVisibility(View.VISIBLE);
                     productsRecyclerView.setVisibility(View.GONE);
                     iv_backToMain.setImageResource( R.drawable.baseline_arrow_circle_right_oreng );
@@ -298,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     rl_mainInformation.setVisibility(View.GONE);
                     iv_selfAdd.setVisibility(View.GONE);
                     iv_selfSearch_round.setVisibility( View.GONE );
-                    iv_barcodeSearch_round.setVisibility( View.VISIBLE );
+                    iv_startBarcodescan.setVisibility( View.VISIBLE );
                     rl_selfSearch.setVisibility(View.GONE);
                     productsRecyclerView.setVisibility(View.VISIBLE);
                     iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_blue );
@@ -372,16 +374,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startNewActivity(MainActivity.this, MyProductActivity.class);
 
         }
-        if (view== iv_d_code_scan){
-            scanCode();
-        }
         if (view== iv_barcodeScan){
             showCustomDialog();
         }
         if (view==iv_selfAdd) {
             selfAddActions();
         }
-        if(view== iv_barcodeSearch_round){
+        if(view== iv_startBarcodescan){
             openMain();
             scanCode();}
         if(view==btn_nextDay){
@@ -676,16 +675,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         mainSearchView.setBackgroundResource( R.drawable.sty_3 );
         iv_selfAdd.setVisibility(View.GONE);
-        iv_barcodeSearch_round.setVisibility( View.VISIBLE );
+        iv_startBarcodescan.setVisibility( View.VISIBLE );
 
     }
 
     //Function to display the custom dialog.
     public void showCustomDialog() {
-        scan_barcod_dialog.show();
+   barcodeDialogHandler.showDialog();
     }
     public void closeCustomDialog() {
-        scan_barcod_dialog.dismiss();
+        barcodeDialogHandler.dismissDialog();
     }
 
     //פעולה שתציג דיאלוג ספציפי מתחתית המסך
@@ -704,8 +703,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         IntentResult result =IntentIntegrator.parseActivityResult( requestCode,resultCode,data );
         if(result != null){
             if (result.getContents() != null){
-                //     searchview.setQuery( ""+result.getContents() ,false);
-                if (scan_barcod_dialog.isShowing()){  serchByBC(result.getContents(),1);}
+                if (barcodeDialogHandler.isDialogShowing()){
+                    serchByBC(result.getContents(),1);
+                }
                 else{
                     serchByBC(result.getContents(),0);}
 
@@ -720,12 +720,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             super.onActivityResult( requestCode, resultCode, data );}
     }
     private void scanCode(){
-        IntentIntegrator integrator=new IntentIntegrator( this );
-        integrator.setCaptureActivity( CaptureAct.class );
-        integrator.setOrientationLocked( false );
-        integrator.setDesiredBarcodeFormats( IntentIntegrator.ALL_CODE_TYPES );
-        integrator.setPrompt("לחץ על מקשי צליל להפעלת פנס");
-        integrator.initiateScan();
+        captureAct.scanCode(this);
     }
     private void serchByBC(String barcode , int mode) {
         if(mode==0) {
@@ -772,11 +767,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         if(mode==1) {
-            String temp= et_d_enter_code.getText().toString();
+            String temp= barcodeDialogHandler.getBarcodeEditText().getText().toString().trim();
             if (temp.isEmpty()){
-                et_d_enter_code.setText(barcode);
+                barcodeDialogHandler.getBarcodeEditText().setText(barcode);
             } else {
-                et_d_enter_code.setText( temp + " , " +barcode  );
+                barcodeDialogHandler.getBarcodeEditText().setText( temp + " , " +barcode  );
             }
             webSearchSuggestion.setVisibility( View.VISIBLE );
             webSearchSuggestion.setText( barcode );
@@ -916,7 +911,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //הוסף מזון לרשימת מוצרים שלי (רק אם אני בחיפוש עצמי או עורך מוצר קיים)
         Product item;
         String unit = unitSelectorView.getUnit();
-        item = new Product(   1 , newProductNameEditText.getText().toString().trim() , unit , newProductCaloriesEditText.getText().toString().trim() , et_d_enter_code.getText().toString() );
+        item = new Product(   1 , newProductNameEditText.getText().toString().trim() ,
+                unit , newProductCaloriesEditText.getText().toString().trim() , barcodeDialogHandler.getBarcodeEditText().getText().toString().trim() );
         customProducts.add(item);
         temp_exampleItem=item;
     }
@@ -1028,13 +1024,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         webSearchSuggestion.setOnClickListener( this );
         slide_in_bottom= AnimationUtils.loadAnimation( this,R.anim.slide_in_bottom );
         slide_out_bottom= AnimationUtils.loadAnimation( this,R.anim.slide_out_bottom );
-        scan_barcod_dialog = new Dialog( MainActivity.this );
-
-        scan_barcod_dialog.setContentView( R.layout.scan_barcod_dialog );
-        scan_barcod_dialog.setCancelable( true );
-        et_d_enter_code = scan_barcod_dialog.findViewById( R.id.et_d_enter_code );
-        iv_d_code_scan = scan_barcod_dialog.findViewById( R.id.iv_d_code_scan );
-        iv_d_code_scan.setOnClickListener( this );
 
         iv_myProducts =findViewById( R.id.iv_myProducts);
         iv_myProducts.setOnClickListener( this );
@@ -1051,8 +1040,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_saveChanges =findViewById( R.id.btn_saveChanges);
         btn_saveChanges.setOnClickListener( this );
 
-        iv_barcodeSearch_round =findViewById( R.id.iv_barcodeSearch_round );
-        iv_barcodeSearch_round.setOnClickListener( this );
+        iv_startBarcodescan =findViewById( R.id.iv_barcodeSearch_round );
+        iv_startBarcodescan.setOnClickListener( this );
 
         ly_productCreationForm =findViewById( R.id.ly_productCreationForm);
         iv_showSelfSearchBar =findViewById( R.id.iv_showSelfSearchBar );
@@ -1184,7 +1173,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         selfSearchSearchView.setOnClickListener( this );
         newProductCaloriesEditText.setOnTouchListener( this );
         et_addAmount.setOnTouchListener( this );
-        ;
         et_consumedProductNewAmount.setOnTouchListener( this );
         //   et_kal.setOnClickListener( this );et_amounttt.setOnClickListener( this );et_spinnerEditT.setOnClickListener( this );et_newAmount.setOnClickListener( this );;
 //
@@ -1217,7 +1205,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         webSearchSuggestion.setVisibility( View.GONE );
         iv_selfSearch_round.setVisibility( View.GONE );
         iv_showSelfSearchBar.setVisibility( View.GONE );
-        iv_barcodeSearch_round.setVisibility( View.VISIBLE );
+        iv_startBarcodescan.setVisibility( View.VISIBLE );
 
         mainSearchView.setQuery( "" , false );
         newProductNameEditText.setText( "" );
@@ -1245,10 +1233,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     private void startWebSearchForBarcode(String bCod) {
         ly_productSelectionBottomSheet.setVisibility(View.GONE);
-
-
-        et_d_enter_code = scan_barcod_dialog.findViewById( R.id.et_d_enter_code );
-        et_d_enter_code.setText(bCod);
+        barcodeDialogHandler.getBarcodeEditText().setText(bCod);
 
         if (Build.VERSION.SDK_INT >= 19) {
             webview.getSettings().setCacheMode( WebSettings.LOAD_CACHE_ELSE_NETWORK);
@@ -1276,8 +1261,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ly_customProductBottomSheet.setVisibility(View.VISIBLE);
         ly_productSelectionBottomSheet.setVisibility(View.GONE);
 
-        et_d_enter_code = scan_barcod_dialog.findViewById( R.id.et_d_enter_code );
-        et_d_enter_code.setText("");
+        barcodeDialogHandler.getBarcodeEditText().setText("");
 
         if (Build.VERSION.SDK_INT >= 19) {
             webview.getSettings().setCacheMode( WebSettings.LOAD_CACHE_ELSE_NETWORK);
