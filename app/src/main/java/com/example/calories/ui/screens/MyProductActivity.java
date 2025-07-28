@@ -31,6 +31,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MyProductActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     private ArrayList<Product> customProducts = new ArrayList<>();
@@ -69,9 +70,9 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
         cancelEditImageView.setOnClickListener( this );
         updateProductButton.setOnClickListener( this );
 
-setRecyclerView();
+        setRecyclerView();
 
-        getSupportActionBar().show();
+        Objects.requireNonNull(getSupportActionBar()).show();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -187,7 +188,6 @@ setRecyclerView();
 
             editProductLayout.setVisibility( View.GONE );
         }
-
         if (view == scanBarcodeImageView) {
             barcodeDialogHandler.showDialog();
         }
