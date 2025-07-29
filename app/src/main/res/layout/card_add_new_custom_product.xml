@@ -7,7 +7,7 @@
     android:windowSoftInputMode="adjustResize">
     <!-- כתום - כרטיסיית יצירת מוצר חדש   -->
     <LinearLayout
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/ly_customProductBottomSheet"
         android:orientation="vertical"
         android:layout_width="match_parent"
