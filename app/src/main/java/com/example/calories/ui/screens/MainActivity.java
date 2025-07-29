@@ -55,7 +55,6 @@ import com.example.calories.ui.adapters.ProductItemAdapter;
 import com.example.calories.R;
 import com.example.calories.ui.adapters.RecyclerItemClickListener;
 import com.example.calories.ui.views.UnitSelectorView;
-import com.example.calories.utils.Utility;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -67,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, TextWatcher, View.OnTouchListener {
 
@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ConsumedProduct consumedProduct_edit;
 
+    private String lastClickedId;
 
     //--------------- ProductCatalogView ---------------
 
@@ -135,8 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             iv_backToMain,iv_settings, iv_startBarcodescan;
     private RelativeLayout rl_selfSearch,rl_top, rl_selfSearchTopBar,rl_mainInformation;
     private TextView tv_date, tv_returnToMainScreen;
-    private int calcolaty_mod,mainL_position=-1;
-
+    private int calcolaty_mod;
 
 
     private TextView tv_clearMainCaloriesList, tv_printSavedItemsCode, tv_clearSavedItems , tv_totalCalories;
@@ -245,16 +245,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                  //עריכת פריט
                 ly_editConsumedProduct.startAnimation( slide_in_bottom );
                 ly_editConsumedProduct.setVisibility( View.VISIBLE );
+
                 consumedProduct_edit = consumedProducts.get( position );
                 tv_consumedProductName.setText( consumedProduct_edit.getProductItem().getName() );
                 et_consumedProductNewAmount.setText( ""+ consumedProduct_edit.getAmount());
-                mainL_position=position;
+
+                lastClickedId = consumedProducts.get(position).getId();;
             }
 
             @Override
             public void onLongItemClick(View view , int position) {
                 if (ly_editConsumedProduct.getVisibility()==View.GONE){
-                    deleteFromCalList(position);}
+                    String id = consumedProducts.get(position).getId();
+                    deleteConsumedProductById(id);
+                }
             }
         } ) );
         //פעולת חיפוש
@@ -574,8 +578,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cancelAdit();
         }
         if (view== btn_saveChanges){
-            if (!et_consumedProductNewAmount.getText().toString().matches( "" )){
-                aditItemFromCalList(mainL_position, Double.parseDouble( et_consumedProductNewAmount.getText().toString() ) );
+            String str =et_consumedProductNewAmount.getText().toString() ;
+            if (!str.matches( "" )){
+                aditConsumedProductAmountById(lastClickedId, Double.parseDouble( str ) );
                 hideKeyboard();
                 ly_editConsumedProduct.setVisibility( View.GONE );
             }
@@ -1363,33 +1368,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         loadConsumedProductData(calendar);
         consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
     }
-    private void loadConsumedProductData(Calendar calendar_day) {
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String strDate = sdf.format(calendar.getTime());
 
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("eat list", null);
-        Type type = new TypeToken<ArrayList<ConsumedProduct>>() {}.getType();
-        consumedProductsBuffer = gson.fromJson(json, type);
-        consumedProducts = new ArrayList<>();
-        if (consumedProductsBuffer == null) {
-            consumedProductsBuffer = new ArrayList<>();
-            consumedProducts = new ArrayList<>();
-        }else {
-            for (int i = 0; i < consumedProductsBuffer.size(); i++) {
-                //תעדכן מספר סידורי
-                consumedProductsBuffer.get( i ).setSerial( i );
-                //אם זה היום הנכון לפי התאריך
-                if(strDate.equals(consumedProductsBuffer.get( i ).getDate())){
-//פה זה מתקן את התמונה של כמות, בבוא הזמן נשנה אותה לתמונות של בוקר צהריים או ערב, השוני יקבע לפי השעה שהוספנו את המזון לרשימה
-
-                    consumedProducts.add( consumedProductsBuffer.get( i ) );
-                }
-
-            }
-        }
+    private void loadConsumedProductData(Calendar calendarDayParameter) {
+        consumedProductsBuffer = consumedProductStorageManager.load();
+        consumedProducts = consumedProductStorageManager.loadByDay(calendarDayParameter);
     }
     private void saveConsumedProductData(){
         consumedProductStorageManager.save(consumedProductsBuffer);
@@ -1412,39 +1394,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else{    tv_totalCalories.setText( "");
             tv_totalCalories.setBackgroundResource( R.drawable.sty_blue_r_sercle ); }
     }
-    private void deleteFromCalList(int position){
-        boolean finished = false;
-        int q=0;
-        while (!finished){
-            //אם המספר הסידורי של איבר ברשימה הגדולה שווה למספר הסידורי של האיבר שרציתי למחוק מהרשימה של היום הכללי (כלומר אם זה האיבר שאני רוצה למחוק)
-            if (consumedProductsBuffer.get( q ).getSerial()== consumedProducts.get( position).getSerial()){
-                //מחק אותו וסיים
-                consumedProductsBuffer.remove( q);
-                //רק אחרי שמחקנו את האיבר תמחק המרשימה הקטנה!! אחרת נוצרות בעיות
-                consumedProducts.remove( position );
-                //סיים משימה
-                finished = true;
+    private void deleteConsumedProductById(String targetId){
+        // הסרה מהרשימה היומית
+        Iterator<ConsumedProduct> iterator = consumedProducts.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().getId().equals(targetId)) {
+                iterator.remove();
+                break;
             }
-            q++;
         }
-//myList_temp.remove( myList.get( position).getSerial());
+// הסרה מהרשימה הראשית
+        Iterator<ConsumedProduct> bufferIterator = consumedProductsBuffer.iterator();
+        while (bufferIterator.hasNext()) {
+            if (bufferIterator.next().getId().equals(targetId)) {
+                bufferIterator.remove();
+                break;
+            }
+        }
         saveConsumedProductData();
         updateTotalCalories();
         consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
     }
 
-    private void aditItemFromCalList(int position,double newAmount){
-        boolean finished = false;
-        int q=0;
-        while (!finished){
-            //אם המספר הסידורי של איבר ברשימה הגדולה שווה למספר הסידורי של האיבר שרציתי למחוק מהרשימה של היום הכללי (כלומר אם זה האיבר שאני רוצה לשנוצ)
-            if (consumedProductsBuffer.get( q ).getSerial()== consumedProducts.get( position).getSerial()){
-                //שנה כמות
-                consumedProductsBuffer.get( q ).setAmount( newAmount );
-                //סיים משימה
-                finished = true;
+    private void aditConsumedProductAmountById(String targetId, double newAmount){
+
+        for (ConsumedProduct consumedProduct : consumedProducts) {
+            if (consumedProduct.getId().equals(targetId)) {
+                consumedProduct.setAmount(newAmount);
+                break;
             }
-            q++;
+        }
+
+        for (ConsumedProduct consumedProduct : consumedProductsBuffer) {
+            if (consumedProduct.getId().equals(targetId)) {
+                consumedProduct.setAmount(newAmount);
+                break;
+            }
         }
         saveConsumedProductData();
         loadConsumedProductData(calendar);
