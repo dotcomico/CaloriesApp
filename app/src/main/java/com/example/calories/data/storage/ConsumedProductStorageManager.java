@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.calories.data.models.ConsumedProduct;
-import com.example.calories.utils.Utility;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -47,20 +46,16 @@ public class ConsumedProductStorageManager {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String strDate = sdf.format(calendar_day.getTime());
 
-        ArrayList<ConsumedProduct> consumedProductsBuffer = load();
-        ArrayList<ConsumedProduct> consumedProducts = new ArrayList<>();
+        ArrayList<ConsumedProduct> consumedProductsAll = load();
+        ArrayList<ConsumedProduct> consumedProductsOfDay = new ArrayList<>();
 
-            for (int i = 0; i < consumedProductsBuffer.size(); i++) {
-                //תעדכן מספר סידורי
-                consumedProductsBuffer.get(i).setSerial(i);
+            for (int i = 0; i < consumedProductsAll.size(); i++) {
                 //אם זה היום הנכון לפי התאריך
-                if (strDate.equals(consumedProductsBuffer.get(i).getDate())) {
-//פה זה מתקן את התמונה של כמות, בבוא הזמן נשנה אותה לתמונות של בוקר צהריים או ערב, השוני יקבע לפי השעה שהוספנו את המזון לרשימה
-
-                    consumedProducts.add(consumedProductsBuffer.get(i));
+                if (strDate.equals(consumedProductsAll.get(i).getDate())) {
+                    consumedProductsOfDay.add(consumedProductsAll.get(i));
                 }
             }
-        return consumedProducts;
+        return consumedProductsOfDay;
     }
     public void clear() {
         sharedPreferences.edit().remove(KEY_PRODUCT_LIST).apply();
