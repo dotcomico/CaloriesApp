@@ -11,10 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -44,6 +44,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.calories.ConsumedProductManager;
 import com.example.calories.data.models.ConsumedProduct;
 import com.example.calories.data.models.Product;
 import com.example.calories.data.storage.ConsumedProductStorageManager;
@@ -55,24 +56,19 @@ import com.example.calories.ui.adapters.ProductItemAdapter;
 import com.example.calories.R;
 import com.example.calories.ui.adapters.RecyclerItemClickListener;
 import com.example.calories.ui.views.UnitSelectorView;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, TextWatcher, View.OnTouchListener {
 
     //--------------- CalorieTrackerView ---------------
-    private ArrayList<ConsumedProduct> consumedProducts = new ArrayList<>();//רשימת מוצרים שנצרכו על ידי המשתמש
-    private ArrayList<ConsumedProduct> consumedProductsBuffer = new ArrayList<>();
     private RecyclerView consumedProductsRecyclerView;
     private RecyclerView.LayoutManager consumedProductsLayoutManager;
 
@@ -94,8 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView productsRecyclerView;
     private RecyclerView.Adapter productsAdapter;
     private RecyclerView.LayoutManager productsLayoutManager;
-    private LinearLayout ly_productSelectionBottomSheet ,ll_servingAmountSection;
-    private RelativeLayout rl_productInfoSection , rl_controlsSection;
+    private LinearLayout ly_productSelectionBottomSheet;
     private ImageView iv_closeBottomSheet , iv_expandProductInfo , iv_increaseAmount , iv_decreaseAmount;
     private TextView tv_caloriesHeader , tv_selectedProductName ,tv_barcodeInfo , tv_unit;
     private SearchView mainSearchView;
@@ -120,16 +115,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Calendar calendar;
     private final CaptureAct captureAct = new CaptureAct();
 
-    ProductStorageManager productStorageManager;
+    private ProductStorageManager productStorageManager;
+
     // dialog
-    ConsumedProductStorageManager consumedProductStorageManager;
 
-
+    ConsumedProductManager consumedProductManager;
     // top bar
     private Button btn_lastDay,btn_nextDay;
 
 //  settings
-    private LinearLayout ly_settings;
+private LinearLayout ly_settings;
 
 
     private ImageView iv_backFromSelfSearchToMain, iv_myProdacts_SS, iv_showSelfSearchBar, iv_selfSearch_round ,  iv_selfAdd, iv_barcodeScan, iv_goToSelfSearch,
@@ -139,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int calcolaty_mod;
 
 
-    private TextView tv_clearMainCaloriesList, tv_printSavedItemsCode, tv_clearSavedItems , tv_totalCalories;
+    private TextView tv_clearMainCaloriesList, tv_totalCalories;
     private ImageView iv_myProducts;
 
     private Animation slide_in_bottom,slide_out_bottom;
@@ -160,8 +155,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         barcodeDialogHandler =new BarcodeDialogHandler(this);
         productStorageManager  = new ProductStorageManager(this);
-        consumedProductStorageManager = new ConsumedProductStorageManager(this);
-    //יצירת רשימת המוצרים
+        consumedProductManager = new ConsumedProductManager(this);
+
+        //יצירת רשימת המוצרים
         updateMainList();
         //מיון לפי א"ב
         //      sortArrayList();
@@ -242,21 +238,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onItemClick(View view , int position)
             {
-                 //עריכת פריט
+                //עריכת פריט
                 ly_editConsumedProduct.startAnimation( slide_in_bottom );
                 ly_editConsumedProduct.setVisibility( View.VISIBLE );
 
-                consumedProduct_edit = consumedProducts.get( position );
+                consumedProduct_edit = consumedProductManager.getConsumedProductsOfDay().get( position );
                 tv_consumedProductName.setText( consumedProduct_edit.getProductItem().getName() );
                 et_consumedProductNewAmount.setText( ""+ consumedProduct_edit.getAmount());
 
-                lastClickedId = consumedProducts.get(position).getId();;
+                lastClickedId = consumedProductManager.getConsumedProductsOfDay().get(position).getId();;
             }
 
             @Override
             public void onLongItemClick(View view , int position) {
                 if (ly_editConsumedProduct.getVisibility()==View.GONE){
-                    String id = consumedProducts.get(position).getId();
+                    String id = consumedProductManager.getConsumedProductsOfDay().get(position).getId();
                     deleteConsumedProductById(id);
                 }
             }
@@ -267,19 +263,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onQueryTextSubmit(String s) {
                 if (isNumeric( s )){
                     selfAddActions();
-                }else if (filteredProducts.size()==0){
+                }else if (filteredProducts.isEmpty()){
                     //אם הרשימה ריקה(מוצר לא נמצא) תפתח חיפוש עצמי
                     startWebSearch(); }
-                else { //אחרת סגור את מסך האתר
-                    //   webview.setVisibility(View.GONE);
-                }
+
                 return false;
             }
             @Override//כאשר החיפוש מתבצע
             public boolean onQueryTextChange(String s) {
                 // עדכון רשימת מזון לפי חיפוש בזמן הקלדה
                 iv_backToMain.setVisibility(View.VISIBLE);
-                //  mRecyclerView.setVisibility(View.VISIBLE);
 
                 searchInFoodList(s);
 
@@ -294,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_purple );
 
                 }
-                else if (filteredProducts.size()==0){  // אם הרשימה ריקה (אין מוצרים)- הצעה לחיפוש עצמי
+                else if (filteredProducts.isEmpty()){  // אם הרשימה ריקה (אין מוצרים)- הצעה לחיפוש עצמי
                     mainSearchView.setBackgroundResource( R.drawable.sty_orang3);
                     rl_mainInformation.setVisibility(View.GONE);
                     iv_selfAdd.setVisibility(View.GONE);
@@ -327,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public boolean onQueryTextChange(String s) {
-               return false;
+                return false;
             }
         });
         //סגירת מסכים לא נחוצים בכניסה התחלתית למסך
@@ -343,7 +336,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         et_addAmount.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
         newProductCaloriesEditText.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
         et_consumedProductNewAmount.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
-        getSupportActionBar().hide();
+
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -360,6 +354,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    @SuppressLint("SimpleDateFormat")
     @Override
     public void onClick(View view) {
         if (view == iv_expandProductInfo) {
@@ -463,8 +458,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     iv_backToMain.setVisibility( View.GONE );
                     productsRecyclerView.setVisibility( View.GONE );
                     rl_selfSearch.setVisibility( View.GONE );
-                    if (consumedProducts.size() != 0) {
-                        consumedProductsRecyclerView.smoothScrollToPosition( consumedProducts.size() - 1 );
+                    if (!consumedProductManager.getConsumedProductsOfDay().isEmpty()) {
+                        consumedProductsRecyclerView.smoothScrollToPosition( consumedProductManager.getConsumedProductsOfDay().size() - 1 );
                     }
                 }
             }
@@ -512,11 +507,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view == iv_backToMain){
             backToMain();
         }
-        if (view == tv_clearSavedItems){
-            clearData();
-            Toast.makeText( getBaseContext(), "פריטים שמורים (רשימת חיפוש מאכלים) נמחקו",Toast.LENGTH_SHORT).show();
-            restartApp();
-        }
         if (view == tv_clearMainCaloriesList){
             //   str_caloria =("0");
             //  SharedPreferences.Editor editor = sp.edit();
@@ -527,18 +517,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             clearConsumedProductData();
             Toast.makeText( getBaseContext(), "רשימת קלוריות שנצרכו נמחקה (מסך ראשי)",Toast.LENGTH_SHORT).show();
             restartApp();
-        }
-        if(view== tv_printSavedItemsCode){
-            String detailsString="_myPrivetFoodlList_";
-            detailsString=detailsString+" "+ customProducts.size()+" items ";
-            for(int i = 0; i < customProducts.size(); i++){
-                String b= customProducts.get( i ).getBarcode();
-                if (b== null || b=="0" || b=="" ){b="";}
-                String itemT= "exampleList.add(new ExampleItem("+0+","+0+","+"\""+ customProducts.get( i ).getName()+"\"" +","+"\""+ customProducts.get( i ).getUnit()+"\""+" ,"+"\""+ customProducts.get( i ).getCalorieText()+"\""+","+0+"," +"\""+ b+"\"" +"));";
-                detailsString= detailsString + "\n"+itemT;
-            }
-            clipData(detailsString , this);
-            Toast.makeText( getBaseContext(), "Copied successfully"+ customProducts.size()+" items ",Toast.LENGTH_SHORT).show();
         }
         if (view== tv_returnToMainScreen){
             ly_settings.setVisibility( View.GONE );
@@ -580,7 +558,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view== btn_saveChanges){
             String str =et_consumedProductNewAmount.getText().toString() ;
             if (!str.matches( "" )){
-                aditConsumedProductAmountById(lastClickedId, Double.parseDouble( str ) );
+                editConsumedProductAmountById(lastClickedId, Double.parseDouble( str ) , calendar);
                 hideKeyboard();
                 ly_editConsumedProduct.setVisibility( View.GONE );
             }
@@ -678,8 +656,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iv_backToMain.setVisibility( View.GONE );
         productsRecyclerView.setVisibility( View.GONE );
         rl_selfSearch.setVisibility( View.GONE );
-        if (consumedProducts.size() != 0) {
-            consumedProductsRecyclerView.smoothScrollToPosition( consumedProducts.size() - 1 );
+        if (!consumedProductManager.getConsumedProductsOfDay().isEmpty()) {
+            consumedProductsRecyclerView.smoothScrollToPosition( consumedProductManager.getConsumedProductsOfDay().size() - 1 );
         }
         mainSearchView.setBackgroundResource( R.drawable.sty_3 );
         iv_selfAdd.setVisibility(View.GONE);
@@ -689,7 +667,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //Function to display the custom dialog.
     public void showCustomDialog() {
-   barcodeDialogHandler.showDialog();
+        barcodeDialogHandler.showDialog();
     }
     public void closeCustomDialog() {
         barcodeDialogHandler.dismissDialog();
@@ -931,8 +909,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         productStorageManager.save(customProducts);
     }
     private void clearData(){
-            productStorageManager.clear();
-            customProducts = new ArrayList<>();
+        productStorageManager.clear();
+        customProducts = new ArrayList<>();
     }
     private Product getLastItem(){
         return productStorageManager.getLastItem();
@@ -1075,8 +1053,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         saveAndStay =findViewById( R.id.saveAndStay);
         saveAndStay.setOnClickListener( this );
-        tv_clearSavedItems =findViewById( R.id.tv_clearSavedItems);
-        tv_clearSavedItems.setOnClickListener( this );
+
         tv_returnToMainScreen =findViewById( R.id.tv_returnToMainScreen);
         tv_returnToMainScreen.setOnClickListener( this );
         iv_settings=findViewById( R.id.iv_settings);
@@ -1092,9 +1069,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btn_lastDay=findViewById( R.id.btn_lastDay);
         btn_lastDay.setOnClickListener( this );
-
-        tv_printSavedItemsCode =findViewById( R.id.tv_printSavedItemsCode);
-        tv_printSavedItemsCode.setOnClickListener( this );
+        ;
         rl_mainInformation=findViewById( R.id.rl_mainInformation );
         productsRecyclerView = findViewById(R.id.productsRecyclerView);
         tv_clearMainCaloriesList =findViewById( R.id.tv_clearMainCaloriesList);
@@ -1283,9 +1258,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateConsumedProductslist(){
         loadConsumedProductData(calendar);
-        consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
-        if (consumedProducts.size()!=0){
-            consumedProductsRecyclerView.smoothScrollToPosition(consumedProducts.size()-1);}
+        consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProductManager.getConsumedProductsOfDay()));
+        if (!consumedProductManager.getConsumedProductsOfDay().isEmpty()){
+            consumedProductsRecyclerView.smoothScrollToPosition(consumedProductManager.getConsumedProductsOfDay().size()-1);}
         updateTotalCalories();
     }
     private void backToMain() {
@@ -1352,39 +1327,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toast.makeText( getBaseContext(), "Copied successfully"+ systemProductList.size()+" items ",Toast.LENGTH_SHORT).show();
     }
 
+
     //פעולות שרדפרפרנס רשימת הקלוריות המוצגת במסך ראשי
+
     private void addConsumedProductToList(double amount, int calories){
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat hour = new SimpleDateFormat("HH");
-
-        //עדכון רשימת מסך ראשי
-
-        ConsumedProduct listItem=new ConsumedProduct(amount,temp_exampleItem, date.format(calendar.getTime()), 0);
-        consumedProductsBuffer.add(listItem );
-        // שמירה בטלפון
-        saveConsumedProductData();
-        // עדכון רשימה פיזית
-        loadConsumedProductData(calendar);
-        consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
+        consumedProductManager.addItem( amount,temp_exampleItem,calendar);
+        consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProductManager.getConsumedProductsOfDay()));
     }
-
     private void loadConsumedProductData(Calendar calendarDayParameter) {
-        consumedProductsBuffer = consumedProductStorageManager.load();
-        consumedProducts = consumedProductStorageManager.loadByDay(calendarDayParameter);
-    }
+        consumedProductManager.loadItemsData(calendarDayParameter);    }
     private void saveConsumedProductData(){
-        consumedProductStorageManager.save(consumedProductsBuffer);
+        consumedProductManager.saveItemsData();
     }
     private void clearConsumedProductData(){
-     consumedProductStorageManager.clear();
-     consumedProductsBuffer = new ArrayList<>();
+        consumedProductManager.clearItemsData();
     }
     private void updateTotalCalories(){
         int totalCalories=0;
 
-        for(int i = 0; i < consumedProducts.size(); i++){
-            totalCalories += consumedProducts.get( i ).getTotalCalories();
+        for(int i = 0; i < consumedProductManager.getConsumedProductsOfDay().size(); i++){
+            totalCalories += consumedProductManager.getConsumedProductsOfDay().get( i ).getTotalCalories();
         }
 
         if (totalCalories!=0){
@@ -1395,47 +1357,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tv_totalCalories.setBackgroundResource( R.drawable.sty_blue_r_sercle ); }
     }
     private void deleteConsumedProductById(String targetId){
-        // הסרה מהרשימה היומית
-        Iterator<ConsumedProduct> iterator = consumedProducts.iterator();
-        while (iterator.hasNext()) {
-            if (iterator.next().getId().equals(targetId)) {
-                iterator.remove();
-                break;
-            }
-        }
-// הסרה מהרשימה הראשית
-        Iterator<ConsumedProduct> bufferIterator = consumedProductsBuffer.iterator();
-        while (bufferIterator.hasNext()) {
-            if (bufferIterator.next().getId().equals(targetId)) {
-                bufferIterator.remove();
-                break;
-            }
-        }
-        saveConsumedProductData();
+        consumedProductManager.deleteItemById(targetId);
         updateTotalCalories();
-        consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
+        consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProductManager.getConsumedProductsOfDay()));
+    }
+    private void editConsumedProductAmountById(String targetId, double newAmount , Calendar calendar){
+        consumedProductManager.editItemAmountById(newAmount ,targetId , calendar );
+        updateTotalCalories();
+        consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProductManager.getConsumedProductsOfDay()));
     }
 
-    private void aditConsumedProductAmountById(String targetId, double newAmount){
-
-        for (ConsumedProduct consumedProduct : consumedProducts) {
-            if (consumedProduct.getId().equals(targetId)) {
-                consumedProduct.setAmount(newAmount);
-                break;
-            }
-        }
-
-        for (ConsumedProduct consumedProduct : consumedProductsBuffer) {
-            if (consumedProduct.getId().equals(targetId)) {
-                consumedProduct.setAmount(newAmount);
-                break;
-            }
-        }
-        saveConsumedProductData();
-        loadConsumedProductData(calendar);
-        updateTotalCalories();
-        consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
-    }
 
     // אין לי מושג מה זה ומה שלא יודעים לא כואב ;)  (כל מה שמתחת)
     @Override
