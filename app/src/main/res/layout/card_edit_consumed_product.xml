@@ -7,7 +7,7 @@
     android:windowSoftInputMode="adjustResize">
     <!--ירוק -   כרטיסיית עריכת מוצר פרטי     -->
     <LinearLayout
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/ly_editConsumedProduct"
         android:orientation="vertical"
         android:layout_width="match_parent"
