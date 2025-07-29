@@ -35,6 +35,8 @@
     <include layout="@layout/cards_container" />
 
     <!-- חלון הגדרות -->
-    <include layout="@layout/dialog_settings" />
+    <include layout="@layout/dialog_settings"
+        android:visibility="gone"
+        />
 
 </RelativeLayout>
