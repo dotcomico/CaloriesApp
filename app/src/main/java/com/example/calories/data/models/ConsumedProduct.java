@@ -1,6 +1,7 @@
 package com.example.calories.data.models;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class ConsumedProduct {
 
@@ -10,20 +11,21 @@ public class ConsumedProduct {
     private static final String UNIT_CALORIES = "קלוריות";
     private static final int STANDARD_UNIT_BASE = 100;
 
+    private String id; // מזהה פנימי (למשל לשמירה במסד נתונים)
     private double amount; // כמות שנצרכה
     private Product product; // המוצר שנצרך
     private String date; // תאריך כטקסט (לצורך תאימות לאחור)
-    private int serial; // מזהה פנימי (למשל לשמירה במסד נתונים)
+
     private LocalDateTime dateTime; // מתי נאכל
 
     public ConsumedProduct() {
     }
 
-    public ConsumedProduct(double amount, Product product, String date, int serial) {
+    public ConsumedProduct(double amount, Product product, String date, int id) {
         this.amount = amount;
         this.product = product;
         this.date = date;
-        this.serial = serial;
+        this.id = UUID.randomUUID().toString();;
     }
 
     // Getters and Setters
@@ -51,12 +53,12 @@ public class ConsumedProduct {
         this.date = date;
     }
 
-    public int getSerial() {
-        return serial;
+    public String getId() {
+        return id;
     }
 
-    public void setSerial(int serial) {
-        this.serial = serial;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public LocalDateTime getDateTime() {
