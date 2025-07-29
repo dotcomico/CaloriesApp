@@ -14,7 +14,7 @@ import java.util.Calendar;
 
 public class ConsumedProductStorageManager {
     private static final String PREF_NAME = "shared preferences";
-    private static final String KEY_PRODUCT_LIST = "eat list";
+    private static final String KEY_PRODUCT_LIST = "consumed_products";
 
     private final SharedPreferences sharedPreferences;
     private final Gson gson;
