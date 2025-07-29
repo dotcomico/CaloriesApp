@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class ProductStorageManager {
     private static final String PREF_NAME = "shared preferences";
-    private static final String KEY_PRODUCT_LIST = "task list";
+    private static final String KEY_PRODUCT_LIST = "products";
 
     private final SharedPreferences sharedPreferences;
     private final Gson gson;
