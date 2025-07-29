@@ -21,7 +21,7 @@ public class ConsumedProduct {
     public ConsumedProduct() {
     }
 
-    public ConsumedProduct(double amount, Product product, String date, int id) {
+    public ConsumedProduct(double amount, Product product, String date) {
         this.amount = amount;
         this.product = product;
         this.date = date;
