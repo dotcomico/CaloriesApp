@@ -19,7 +19,7 @@ public class ConsumedProductStorageManager {
     private final SharedPreferences sharedPreferences;
     private final Gson gson;
 
-    public ConsumedProductStorageManager(Context context) {
+        public ConsumedProductStorageManager(Context context) {
         this.sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         this.gson = new Gson();
     }
@@ -29,6 +29,22 @@ public class ConsumedProductStorageManager {
         sharedPreferences.edit().putString(KEY_PRODUCT_LIST, json).apply();
     }
 
+    public ArrayList<ConsumedProduct> loadByDay(Calendar calendar_day) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String strDate = sdf.format(calendar_day.getTime());
+
+        ArrayList<ConsumedProduct> consumedProductsAll = load();
+        ArrayList<ConsumedProduct> consumedProductsOfDay = new ArrayList<>();
+
+        for (int i = 0; i < consumedProductsAll.size(); i++) {
+            //אם זה היום הנכון לפי התאריך
+            if (strDate.equals(consumedProductsAll.get(i).getDate())) {
+                consumedProductsOfDay.add(consumedProductsAll.get(i));
+            }
+        }
+        return consumedProductsOfDay;
+    }
     public ArrayList<ConsumedProduct> load() {
         String json = sharedPreferences.getString(KEY_PRODUCT_LIST, null);
         Type type = new TypeToken<ArrayList<ConsumedProduct>>() {}.getType();
@@ -41,24 +57,9 @@ public class ConsumedProductStorageManager {
 
         return loadByDay(calendar);
     }
-    public ArrayList<ConsumedProduct> loadByDay(Calendar calendar_day) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String strDate = sdf.format(calendar_day.getTime());
-
-        ArrayList<ConsumedProduct> consumedProductsAll = load();
-        ArrayList<ConsumedProduct> consumedProductsOfDay = new ArrayList<>();
-
-            for (int i = 0; i < consumedProductsAll.size(); i++) {
-                //אם זה היום הנכון לפי התאריך
-                if (strDate.equals(consumedProductsAll.get(i).getDate())) {
-                    consumedProductsOfDay.add(consumedProductsAll.get(i));
-                }
-            }
-        return consumedProductsOfDay;
-    }
     public void clear() {
         sharedPreferences.edit().remove(KEY_PRODUCT_LIST).apply();
     }
+
 
 }
