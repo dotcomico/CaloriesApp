@@ -47,7 +47,6 @@ import android.widget.Toast;
 import com.example.calories.ConsumedProductManager;
 import com.example.calories.data.models.ConsumedProduct;
 import com.example.calories.data.models.Product;
-import com.example.calories.data.storage.ConsumedProductStorageManager;
 import com.example.calories.data.storage.ProductStorageManager;
 import com.example.calories.ui.dialogs.BarcodeDialogHandler;
 import com.example.calories.ui.utils.CaptureAct;
@@ -72,11 +71,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView consumedProductsRecyclerView;
     private RecyclerView.LayoutManager consumedProductsLayoutManager;
 
-    private EditText et_consumedProductNewAmount;
-    private Button btn_saveChanges;
-    private LinearLayout ly_editConsumedProduct;
-    private ImageView iv_closeEditBottomSheet , iv_decreaseAmountEdit , iv_increaseAmountEdit;
-    private TextView tv_consumedProductName;
+    private EditText consumedProductNewAmountTv;
+    private Button saveEdit;
+    private LinearLayout editConsumedProductLayout;
+    private ImageView closeEditImg, decreaseEditImg, increaseEditImg;
+    private TextView consumedProductNameTv;
 
     private ConsumedProduct consumedProduct_edit;
 
@@ -239,19 +238,19 @@ private LinearLayout ly_settings;
             public void onItemClick(View view , int position)
             {
                 //עריכת פריט
-                ly_editConsumedProduct.startAnimation( slide_in_bottom );
-                ly_editConsumedProduct.setVisibility( View.VISIBLE );
+                editConsumedProductLayout.startAnimation( slide_in_bottom );
+                editConsumedProductLayout.setVisibility( View.VISIBLE );
 
                 consumedProduct_edit = consumedProductManager.getConsumedProductsOfDay().get( position );
-                tv_consumedProductName.setText( consumedProduct_edit.getProductItem().getName() );
-                et_consumedProductNewAmount.setText( ""+ consumedProduct_edit.getAmount());
+                consumedProductNameTv.setText( consumedProduct_edit.getProductItem().getName() );
+                consumedProductNewAmountTv.setText( ""+ consumedProduct_edit.getAmount());
 
                 lastClickedId = consumedProductManager.getConsumedProductsOfDay().get(position).getId();;
             }
 
             @Override
             public void onLongItemClick(View view , int position) {
-                if (ly_editConsumedProduct.getVisibility()==View.GONE){
+                if (editConsumedProductLayout.getVisibility()==View.GONE){
                     String id = consumedProductManager.getConsumedProductsOfDay().get(position).getId();
                     deleteConsumedProductById(id);
                 }
@@ -330,12 +329,12 @@ private LinearLayout ly_settings;
         iv_backToMain.setVisibility(View.GONE);
         productsRecyclerView.setVisibility(View.GONE);
         rl_selfSearch.setVisibility(View.GONE);
-        ly_editConsumedProduct.setVisibility(View.GONE);
+        editConsumedProductLayout.setVisibility(View.GONE);
         rl_mainInformation.setVisibility(View.VISIBLE);
 
         et_addAmount.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
         newProductCaloriesEditText.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
-        et_consumedProductNewAmount.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
+        consumedProductNewAmountTv.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
 
         Objects.requireNonNull(getSupportActionBar()).hide();
 
@@ -387,7 +386,7 @@ private LinearLayout ly_settings;
             scanCode();}
         if(view==btn_nextDay){
             //יקרה רק אם כל שאר המסכים סגורים
-            if (ly_editConsumedProduct.getVisibility()==View.GONE&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE){
+            if (editConsumedProductLayout.getVisibility()==View.GONE&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE){
                 calendar.add(Calendar.DAY_OF_MONTH, 1); //Adds a day
                 tv_date.setText( new SimpleDateFormat("dd-MM-yyyy").format(calendar.getTime()));
                 updateConsumedProductslist();
@@ -395,7 +394,7 @@ private LinearLayout ly_settings;
         }
         if(view==btn_lastDay){
             //יקרה רק אם כל שאר המסכים סגורים
-            if (ly_editConsumedProduct.getVisibility()==View.GONE&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE) {
+            if (editConsumedProductLayout.getVisibility()==View.GONE&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE) {
                 calendar.add( Calendar.DAY_OF_MONTH , -1 ); //Goes to previous day
                 tv_date.setText( new SimpleDateFormat( "dd-MM-yyyy" ).format( calendar.getTime() ) );
                 updateConsumedProductslist();
@@ -552,52 +551,52 @@ private LinearLayout ly_settings;
             }else {st="0";}
             et_addAmount.setText(st);
         }
-        if (view== iv_closeEditBottomSheet){
+        if (view== closeEditImg){
             cancelAdit();
         }
-        if (view== btn_saveChanges){
-            String str =et_consumedProductNewAmount.getText().toString() ;
+        if (view== saveEdit){
+            String str = consumedProductNewAmountTv.getText().toString() ;
             if (!str.matches( "" )){
                 editConsumedProductAmountById(lastClickedId, Double.parseDouble( str ) , calendar);
                 hideKeyboard();
-                ly_editConsumedProduct.setVisibility( View.GONE );
+                editConsumedProductLayout.setVisibility( View.GONE );
             }
         }
-        if (view== iv_increaseAmountEdit){
-            String st= et_consumedProductNewAmount.getText().toString();
+        if (view== increaseEditImg){
+            String st= consumedProductNewAmountTv.getText().toString();
             if (!st.matches( "" )){
                 if (calculationMod(consumedProduct_edit.getProductItem().getUnit())==1){
-                    if (Double.parseDouble(et_consumedProductNewAmount.getText().toString())>=1){   st= ""+(Double.parseDouble(et_consumedProductNewAmount.getText().toString())+1);}
-                    if (Double.parseDouble(et_consumedProductNewAmount.getText().toString())==0.5){ st="1";}
-                    if (Double.parseDouble(et_consumedProductNewAmount.getText().toString())==0.25){ st="0.5";}
-                    if (Double.parseDouble(et_consumedProductNewAmount.getText().toString())==0){st="0.25";}
+                    if (Double.parseDouble(consumedProductNewAmountTv.getText().toString())>=1){   st= ""+(Double.parseDouble(consumedProductNewAmountTv.getText().toString())+1);}
+                    if (Double.parseDouble(consumedProductNewAmountTv.getText().toString())==0.5){ st="1";}
+                    if (Double.parseDouble(consumedProductNewAmountTv.getText().toString())==0.25){ st="0.5";}
+                    if (Double.parseDouble(consumedProductNewAmountTv.getText().toString())==0){st="0.25";}
                 }
-                if (calculationMod(consumedProduct_edit.getProductItem().getUnit())==2&&Double.parseDouble(et_consumedProductNewAmount.getText().toString())>=0){
-                    st= ""+(Double.parseDouble(et_consumedProductNewAmount.getText().toString())+50);}
+                if (calculationMod(consumedProduct_edit.getProductItem().getUnit())==2&&Double.parseDouble(consumedProductNewAmountTv.getText().toString())>=0){
+                    st= ""+(Double.parseDouble(consumedProductNewAmountTv.getText().toString())+50);}
             }else {st="0";}
-            et_consumedProductNewAmount.setText(st);
+            consumedProductNewAmountTv.setText(st);
         }
-        if (view== iv_decreaseAmountEdit){
-            String st= et_consumedProductNewAmount.getText().toString();
+        if (view== decreaseEditImg){
+            String st= consumedProductNewAmountTv.getText().toString();
             if (!st.matches( "" )){
                 if (calculationMod(consumedProduct_edit.getProductItem().getUnit())==1 ){
-                    if (Double.parseDouble(et_consumedProductNewAmount.getText().toString())-1>=1){
-                        st= ""+(Double.parseDouble(et_consumedProductNewAmount.getText().toString())-1); }
-                    if (Double.parseDouble(et_consumedProductNewAmount.getText().toString())==1){ st="0.5";}
-                    if (Double.parseDouble(et_consumedProductNewAmount.getText().toString())==0.5){ st="0.25";}
-                    if (Double.parseDouble(et_consumedProductNewAmount.getText().toString())==0.25){st="0";}
+                    if (Double.parseDouble(consumedProductNewAmountTv.getText().toString())-1>=1){
+                        st= ""+(Double.parseDouble(consumedProductNewAmountTv.getText().toString())-1); }
+                    if (Double.parseDouble(consumedProductNewAmountTv.getText().toString())==1){ st="0.5";}
+                    if (Double.parseDouble(consumedProductNewAmountTv.getText().toString())==0.5){ st="0.25";}
+                    if (Double.parseDouble(consumedProductNewAmountTv.getText().toString())==0.25){st="0";}
                 }
-                if (calculationMod(consumedProduct_edit.getProductItem().getUnit())==2&&Double.parseDouble(et_consumedProductNewAmount.getText().toString())-50>=0){
-                    st= ""+(Double.parseDouble(et_consumedProductNewAmount.getText().toString())-50);}
+                if (calculationMod(consumedProduct_edit.getProductItem().getUnit())==2&&Double.parseDouble(consumedProductNewAmountTv.getText().toString())-50>=0){
+                    st= ""+(Double.parseDouble(consumedProductNewAmountTv.getText().toString())-50);}
             }else {st="0";}
-            et_consumedProductNewAmount.setText(st);
+            consumedProductNewAmountTv.setText(st);
         }
         if (view== tv_selectedProductName){
             //העתק טקסט
             clipData(tv_selectedProductName.getText().toString() , this);
             Toast.makeText( getBaseContext(), "הועתק שם מוצר",Toast.LENGTH_SHORT).show();
         }
-        if (view== newProductCaloriesEditText ||view== et_addAmount||view== et_consumedProductNewAmount){
+        if (view== newProductCaloriesEditText ||view== et_addAmount||view== consumedProductNewAmountTv){
             EditText  et_temp= (EditText) view;
             et_temp.setText("");
         }
@@ -953,7 +952,7 @@ private LinearLayout ly_settings;
         rl_selfSearch.setVisibility(View.GONE);
 
         ly_customProductBottomSheet.setVisibility(View.GONE);
-        ly_editConsumedProduct.setVisibility(View.GONE);
+        editConsumedProductLayout.setVisibility(View.GONE);
         ly_productSelectionBottomSheet.setVisibility(View.GONE);
     }
     private void closeFood(){
@@ -977,7 +976,7 @@ private LinearLayout ly_settings;
 
         rl_selfSearch.setVisibility(View.GONE);
 
-        ly_editConsumedProduct.setVisibility(View.GONE);
+        editConsumedProductLayout.setVisibility(View.GONE);
         ly_productSelectionBottomSheet.setVisibility(View.GONE);
 
     }
@@ -1017,14 +1016,14 @@ private LinearLayout ly_settings;
         consumedProductsRecyclerView =findViewById( R.id.consumedProductsRecyclerView);
         consumedProductsLayoutManager = new LinearLayoutManager(this);
         consumedProductsRecyclerView.setLayoutManager(consumedProductsLayoutManager);
-        iv_increaseAmountEdit =findViewById( R.id.iv_increaseAmountEdit);
-        iv_increaseAmountEdit.setOnClickListener( this );
+        increaseEditImg =findViewById( R.id.increaseEditImg);
+        increaseEditImg.setOnClickListener( this );
 
-        iv_decreaseAmountEdit =findViewById( R.id.iv_decreaseAmountEdit);
-        iv_decreaseAmountEdit.setOnClickListener( this );
+        decreaseEditImg =findViewById( R.id.decreaseEditImg);
+        decreaseEditImg.setOnClickListener( this );
 
-        btn_saveChanges =findViewById( R.id.btn_saveChanges);
-        btn_saveChanges.setOnClickListener( this );
+        saveEdit =findViewById( R.id.saveEdit);
+        saveEdit.setOnClickListener( this );
 
         iv_startBarcodescan =findViewById( R.id.iv_barcodeSearch_round );
         iv_startBarcodescan.setOnClickListener( this );
@@ -1040,11 +1039,11 @@ private LinearLayout ly_settings;
         iv_selfAdd.setOnClickListener( this );
         iv_barcodeScan =findViewById( R.id.iv_barcodeScan);
         iv_barcodeScan.setOnClickListener( this );
-        iv_closeEditBottomSheet =findViewById( R.id.iv_closeEditBottomSheet);
-        iv_closeEditBottomSheet.setOnClickListener( this );
-        et_consumedProductNewAmount =findViewById( R.id.et_consumedProductNewAmount);
-        tv_consumedProductName =findViewById( R.id.tv_consumedProductName);
-        ly_editConsumedProduct =findViewById( R.id.ly_editConsumedProduct);
+        closeEditImg =findViewById( R.id.closeEditImg);
+        closeEditImg.setOnClickListener( this );
+        consumedProductNewAmountTv =findViewById( R.id.consumedProductNewAmountTv);
+        consumedProductNameTv =findViewById( R.id.consumedProductNameTv);
+        editConsumedProductLayout =findViewById( R.id.editConsumedProductLayout);
         iv_decreaseAmount =findViewById( R.id.iv_decreaseAmount);
         iv_decreaseAmount.setOnClickListener( this );
 
@@ -1156,7 +1155,7 @@ private LinearLayout ly_settings;
         selfSearchSearchView.setOnClickListener( this );
         newProductCaloriesEditText.setOnTouchListener( this );
         et_addAmount.setOnTouchListener( this );
-        et_consumedProductNewAmount.setOnTouchListener( this );
+        consumedProductNewAmountTv.setOnTouchListener( this );
         //   et_kal.setOnClickListener( this );et_amounttt.setOnClickListener( this );et_spinnerEditT.setOnClickListener( this );et_newAmount.setOnClickListener( this );;
 //
     }
@@ -1170,7 +1169,7 @@ private LinearLayout ly_settings;
     }
     private void cancelAdit() {
 
-        ly_editConsumedProduct.setVisibility( View.GONE );
+        editConsumedProductLayout.setVisibility( View.GONE );
     }
     private void cancelFoodAdd() {
         ly_customProductBottomSheet.setVisibility(View.GONE);
@@ -1409,7 +1408,7 @@ private LinearLayout ly_settings;
                 }
             }
 
-            if (ly_editConsumedProduct.getVisibility() == View.VISIBLE) {
+            if (editConsumedProductLayout.getVisibility() == View.VISIBLE) {
                 cancelAdit();
             }
             if (ly_settings.getVisibility() == View.VISIBLE) {
@@ -1422,7 +1421,7 @@ private LinearLayout ly_settings;
     }
     @Override
     public boolean onTouch(View view , MotionEvent motionEvent) {
-        if (view== newProductCaloriesEditText ||view== et_addAmount ||view== et_consumedProductNewAmount){
+        if (view== newProductCaloriesEditText ||view== et_addAmount ||view== consumedProductNewAmountTv){
             EditText  et_temp= (EditText) view;
             et_temp.setText("");
             return false;}
