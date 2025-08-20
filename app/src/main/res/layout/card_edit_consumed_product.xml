@@ -8,7 +8,7 @@
     <!--ירוק -   כרטיסיית עריכת מוצר פרטי     -->
     <LinearLayout
         android:visibility="visible"
-        android:id="@+id/ly_editConsumedProduct"
+        android:id="@+id/editConsumedProductLayout"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         android:background="@drawable/sty_green"
         >
         <ImageView
-            android:id="@+id/iv_closeEditBottomSheet"
+            android:id="@+id/closeEditImg"
             android:visibility="visible"
             android:layout_width="25dp"
             android:layout_height="25dp"
@@ -47,7 +47,7 @@
             android:textColor="#000"
             />
         <TextView
-            android:id="@+id/tv_consumedProductName"
+            android:id="@+id/consumedProductNameTv"
             android:text="מוצר"
             android:layout_width="match_parent"
             android:layout_height="32dp"
@@ -87,7 +87,7 @@
 
             <EditText
                 android:text="1"
-                android:id="@+id/et_consumedProductNewAmount"
+                android:id="@+id/consumedProductNewAmountTv"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -110,8 +110,8 @@
             android:layout_marginBottom="15dp"
             android:layout_marginTop="25dp">
             <ImageView
-                android:id="@+id/iv_decreaseAmountEdit"
-                android:layout_toRightOf="@+id/iv_increaseAmountEdit"
+                android:id="@+id/decreaseEditImg"
+                android:layout_toRightOf="@+id/increaseEditImg"
                 android:padding="8dp"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
@@ -120,7 +120,7 @@
                 android:src="@drawable/ic_baseline_horizontal_rule_24"
                 />
             <ImageView
-                android:id="@+id/iv_increaseAmountEdit"
+                android:id="@+id/increaseEditImg"
                 android:layout_alignParentLeft="true"
                 android:padding="8dp"
                 android:layout_width="45dp"
@@ -129,7 +129,7 @@
                 android:src="@drawable/ic_baseline_add_24"
                 />
             <Button
-                android:id="@+id/btn_saveChanges"
+                android:id="@+id/saveEdit"
                 android:layout_gravity="center"
                 android:layout_alignParentRight="true"
                 android:layout_width="120dp"
