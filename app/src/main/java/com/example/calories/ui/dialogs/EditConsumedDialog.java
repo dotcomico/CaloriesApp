@@ -73,10 +73,10 @@ public class EditConsumedDialog {
 
 
 
-    public void show(ConsumedProduct consumedProduct, Calendar cld) {
+    public void show(ConsumedProduct consumedProduct, Calendar cld ,  ConsumedProductManager manager) {
         this.calendar = cld;
         this.consumedProduct = consumedProduct;
-        this.consumedProductManager=new ConsumedProductManager(context);
+        this.consumedProductManager=manager;
 
         dialog.show();
         setupData();
@@ -91,8 +91,6 @@ public class EditConsumedDialog {
             String amountText = consumedProductNewAmountTv.getText().toString().trim();
             if (!amountText.isEmpty()) {
                 double newAmount = Double.parseDouble(amountText);
-
-                // עדכון הנתונים
                 consumedProductManager.editItemAmountById(newAmount, consumedProduct.getId(), calendar);
 
                 if (listener != null) {
