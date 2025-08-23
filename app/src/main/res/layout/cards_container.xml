@@ -30,8 +30,7 @@
             />
         <include layout="@layout/card_add_consumed_product"
            />
-        <include layout="@layout/card_edit_consumed_product"
-            />
+
 
     </LinearLayout>
 </ScrollView>
