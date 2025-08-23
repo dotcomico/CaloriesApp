@@ -21,7 +21,7 @@ import java.util.Calendar;
 import java.util.Objects;
 
 
-public class EditConsumedDialog {
+public class EditConsumedProductDialog {
 
     private Dialog dialog;
     private final Context context;
@@ -44,7 +44,7 @@ public class EditConsumedDialog {
     public void setOnEditCompleteListener(OnEditCompleteListener listener) {
         this.listener = listener;
     }
-    public EditConsumedDialog(Context context ) {
+    public EditConsumedProductDialog(Context context ) {
         this.context = context;
         createDialog();
     }
