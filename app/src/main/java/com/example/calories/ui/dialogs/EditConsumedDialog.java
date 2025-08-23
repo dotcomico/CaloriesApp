@@ -35,6 +35,8 @@ public class EditConsumedDialog {
     private ImageView increaseEditImg, decreaseEditImg;
     private Button saveEdit;
     private OnEditCompleteListener listener;
+    private boolean listenersSetup = false;
+
     public interface OnEditCompleteListener {
         void onEditComplete();  // כשמשתמש שומר
     }
@@ -69,10 +71,6 @@ public class EditConsumedDialog {
         saveEdit = dialog.findViewById(R.id.saveEdit);
     }
 
-
-
-
-
     public void show(ConsumedProduct consumedProduct, Calendar cld ,  ConsumedProductManager manager) {
         this.calendar = cld;
         this.consumedProduct = consumedProduct;
@@ -87,6 +85,7 @@ public class EditConsumedDialog {
         consumedProductNewAmountTv.setText(String.valueOf(consumedProduct.getAmount()));
     }
     private void setupListeners() {
+        if (listenersSetup) return;
         saveEdit.setOnClickListener(v -> {
             String amountText = consumedProductNewAmountTv.getText().toString().trim();
             if (!amountText.isEmpty()) {
@@ -107,7 +106,8 @@ public class EditConsumedDialog {
         // ניקוי טקסט בלחיצה על EditText
         consumedProductNewAmountTv.setOnClickListener(v ->
                 consumedProductNewAmountTv.setText(""));
-    }
+
+        listenersSetup = true; }
 
     private void adjustAmount(boolean increase) {
         String currentText = consumedProductNewAmountTv.getText().toString().trim();
