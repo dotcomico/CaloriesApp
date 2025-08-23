@@ -91,6 +91,7 @@ public class ConsumedProductManager {
 
 
     public ArrayList<ConsumedProduct> getConsumedProductsOfDay() {
+        //לשקול ממש כאן את הפעולה loadItemsData(calendarDayParameter); ולהפוך אותה לפרטית
         return consumedProductsOfDay;
     }
 
