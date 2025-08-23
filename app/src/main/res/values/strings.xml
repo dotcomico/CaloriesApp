@@ -4,4 +4,23 @@
     <!--  scan_barcode_dialog  -->
     <string name="add_code">הוסף קוד מוצר</string>
     <string name="product_code">קוד מוצר</string>
+    <string name="edit_product">עריכת מוצר</string>
+    <string name="product">מוצר</string>
+    <string name="measure">מדד</string>
+    <string name="dot">DOT</string>
+    <string name="one">1</string>
+    <string name="amount">כמות</string>
+    <string name="decrease">decrease</string>
+    <string name="add">add</string>
+    <string name="save_changes">שמור שינויים</string>
+    <string name="back_to_main_activity">back to main activity</string>
+    <string name="show_add_product_dialog">show add product dialog</string>
+    <string name="delete">מחיקה</string>
+    <string name="scan_barcode">סריקת ברקוד</string>
+    <string name="calories">קלוריות</string>
+    <string name="save_product">שמור מוצר</string>
+    <string name="add_product">הוסף מוצר</string>
+    <string name="add_self_calorie_value">הוסף ערך קלורי עצמי</string>
+    <string name="move_to_custom_product_view">המשך להוספת מוצר</string>
+    <string name="add_dotan_self_product">הוספת פריטים של דותן לסל האישי</string>
 </resources>
