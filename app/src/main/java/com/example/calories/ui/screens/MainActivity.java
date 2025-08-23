@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             {
                 //עריכת פריט
                 consumedProduct_edit = consumedProductManager.getConsumedProductsOfDay().get( position );
-                editConsumedDialog.show(consumedProduct_edit, calendar);
+                editConsumedDialog.show(consumedProduct_edit, calendar , consumedProductManager);
             }
 
             @Override
@@ -343,10 +343,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editConsumedDialog.setOnEditCompleteListener(new EditConsumedDialog.OnEditCompleteListener() {
             @Override
             public void onEditComplete() {
-                                // רענון הרשימה
-                consumedProductManager=new ConsumedProductManager(MainActivity.this
-                );
-         consumedProductsRecyclerView.setAdapter( new ConsumedItemAdapter(consumedProductManager.getConsumedProductsOfDay()));
+                 // רענון הרשימה
+                refreshConsumedProductsList();
             }
         });
     }
@@ -388,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (editConsumedDialog.isClose()&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE){
                 calendar.add(Calendar.DAY_OF_MONTH, 1); //Adds a day
                 tv_date.setText( new SimpleDateFormat("dd-MM-yyyy").format(calendar.getTime()));
-                updateConsumedProductslist();
+                refreshConsumedProductsList();
             }
         }
         if(view==btn_lastDay){
@@ -396,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (editConsumedDialog.isClose()&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE) {
                 calendar.add( Calendar.DAY_OF_MONTH , -1 ); //Goes to previous day
                 tv_date.setText( new SimpleDateFormat( "dd-MM-yyyy" ).format( calendar.getTime() ) );
-                updateConsumedProductslist();
+                refreshConsumedProductsList();
             }
         }
         if(view == iv_closeBottomSheet){cancelFoodAdd();
@@ -1110,7 +1108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updateSystemProductList();
         loadCustomProductListData();
         addCustomProductListToProductCatalog();
-        updateConsumedProductslist();
+        refreshConsumedProductsList();
         //מיון לפי א"ב
         //sortArrayList();
     }
@@ -1201,12 +1199,15 @@ editConsumedDialog.close();
         mainSearchView.setVisibility(View.GONE);
     }
 
-    private void updateConsumedProductslist(){
+    private void refreshConsumedProductsList(){
         loadConsumedProductData(calendar);
-        consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProductManager.getConsumedProductsOfDay()));
-        if (!consumedProductManager.getConsumedProductsOfDay().isEmpty()){
-            consumedProductsRecyclerView.smoothScrollToPosition(consumedProductManager.getConsumedProductsOfDay().size()-1);}
         updateTotalCalories();
+
+        ArrayList<ConsumedProduct>consumedProducts=consumedProductManager.getConsumedProductsOfDay();
+        consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProducts));
+        if (!consumedProducts.isEmpty()){
+            consumedProductsRecyclerView.smoothScrollToPosition(consumedProducts.size()-1);}
+
     }
     private void backToMain() {
         mainSearchView.setVisibility( View.VISIBLE );
