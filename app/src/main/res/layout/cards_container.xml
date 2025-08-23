@@ -22,6 +22,7 @@
             android:layout_marginHorizontal="10dp"
             android:layout_gravity="right"
             android:background="@drawable/circle_orang"
+            android:contentDescription="@string/show_add_product_dialog"
             android:src="@drawable/baseline_arrow_drop_up_white"
             android:visibility="gone" />
 
