@@ -1,5 +1,6 @@
 package com.example.calories.data.storage;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -31,7 +32,7 @@ public class ConsumedProductStorageManager {
 
     public ArrayList<ConsumedProduct> loadByDay(Calendar calendar_day) {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String strDate = sdf.format(calendar_day.getTime());
 
         ArrayList<ConsumedProduct> consumedProductsAll = load();
