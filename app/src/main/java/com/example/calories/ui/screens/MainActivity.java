@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onLongItemClick(View view , int position) {
-                if (editConsumedProductDialog.isClose()){
+                if (editConsumedProductDialog.isClosed()){
                     String id = consumedProductManager.getConsumedProductsOfDay().get(position).getId();
                     deleteConsumedProductById(id);
                 }
@@ -383,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             scanCode();}
         if(view==btn_nextDay){
             //יקרה רק אם כל שאר המסכים סגורים
-            if (editConsumedProductDialog.isClose()&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE){
+            if (editConsumedProductDialog.isClosed()&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE){
                 calendar.add(Calendar.DAY_OF_MONTH, 1); //Adds a day
                 tv_date.setText( new SimpleDateFormat("dd-MM-yyyy").format(calendar.getTime()));
                 refreshConsumedProductsList();
@@ -391,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(view==btn_lastDay){
             //יקרה רק אם כל שאר המסכים סגורים
-            if (editConsumedProductDialog.isClose()&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE) {
+            if (editConsumedProductDialog.isClosed()&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE) {
                 calendar.add( Calendar.DAY_OF_MONTH , -1 ); //Goes to previous day
                 tv_date.setText( new SimpleDateFormat( "dd-MM-yyyy" ).format( calendar.getTime() ) );
                 refreshConsumedProductsList();
@@ -1355,7 +1355,7 @@ editConsumedProductDialog.close();
                 }
             }
 
-            if (!editConsumedProductDialog.isClose()) {
+            if (!editConsumedProductDialog.isClosed()) {
                 cancelEdit();
             }
             if (ly_settings.getVisibility() == View.VISIBLE) {
