@@ -37,6 +37,12 @@ public class EditConsumedProductDialog {
     private OnEditCompleteListener listener;
     private boolean listenersSetup = false;
 
+    private static final double UNIT_INCREMENT = 1.0;
+    private static final double UNIT_HALF = 0.5;
+    private static final double UNIT_QUARTER = 0.25;
+    private static final double WEIGHT_VOLUME_INCREMENT = 50.0;
+    private static final int CALCULATION_MOD_UNIT = 1;
+    private static final int CALCULATION_MOD_WEIGHT_VOLUME = 2;
     public interface OnEditCompleteListener {
         void onEditComplete();  // כשמשתמש שומר
     }
@@ -72,6 +78,9 @@ public class EditConsumedProductDialog {
     }
 
     public void show(ConsumedProduct consumedProduct, Calendar cld ,  ConsumedProductManager manager) {
+        if (consumedProduct == null || manager == null || cld == null) {
+            return;
+        }
         this.calendar = cld;
         this.consumedProduct = consumedProduct;
         this.consumedProductManager=manager;
@@ -81,22 +90,29 @@ public class EditConsumedProductDialog {
         setupListeners();
     }
     private void setupData() {
-        consumedProductNameTv.setText(consumedProduct.getProductItem().getName());
-        consumedProductNewAmountTv.setText(String.valueOf(consumedProduct.getAmount()));
+        if (consumedProduct != null && consumedProduct.getProductItem() != null) {
+            consumedProductNameTv.setText(consumedProduct.getProductItem().getName());
+            consumedProductNewAmountTv.setText(String.valueOf(consumedProduct.getAmount()));
+        }
     }
     private void setupListeners() {
         if (listenersSetup) return;
+
         saveEdit.setOnClickListener(v -> {
             String amountText = consumedProductNewAmountTv.getText().toString().trim();
-            if (!amountText.isEmpty()) {
+            if (!isValidAmount(amountText)) {
+                return;
+            }
+
+            try {
                 double newAmount = Double.parseDouble(amountText);
                 consumedProductManager.editItemAmountById(newAmount, consumedProduct.getId(), calendar);
-
                 if (listener != null) {
-                    listener.onEditComplete(); // קוראים למתודה
+                    listener.onEditComplete();
                 }
-
                 dialog.dismiss();
+            } catch (NumberFormatException e) {
+                // הודעת שגיאה
             }
         });
 
@@ -110,40 +126,70 @@ public class EditConsumedProductDialog {
         listenersSetup = true; }
 
     private void adjustAmount(boolean increase) {
-        String currentText = consumedProductNewAmountTv.getText().toString().trim();
-        double currentAmount = currentText.isEmpty() ? 0 : Double.parseDouble(currentText);
+        if (consumedProduct == null || consumedProduct.getProductItem() == null) {
+            return;
+        }
 
+        String currentText = consumedProductNewAmountTv.getText().toString().trim();
+        double currentAmount = 0;
+
+        if (!currentText.isEmpty()) {
+            try {
+                currentAmount = Double.parseDouble(currentText);
+            } catch (NumberFormatException e) {
+                currentAmount = 0; // ערך ברירת מחדל
+            }
+        }
         String unit = consumedProduct.getProductItem().getUnit();
         String newAmountText = calculateNewAmount(currentAmount, increase, unit);
         consumedProductNewAmountTv.setText(newAmountText);
     }
     private String calculateNewAmount(double currentAmount, boolean increase, String unit) {
-        if (calculationMod(unit) == 1) {
-            if (increase) {
-                if (currentAmount >= 1) return String.valueOf(currentAmount + 1);
-                if (currentAmount == 0.5) return "1";
-                if (currentAmount == 0.25) return "0.5";
-                if (currentAmount == 0) return "0.25";
-            } else {
-                if (currentAmount - 1 >= 1) return String.valueOf(currentAmount - 1);
-                if (currentAmount == 1) return "0.5";
-                if (currentAmount == 0.5) return "0.25";
-                if (currentAmount == 0.25) return "0";
-            }
-        } else if (calculationMod(unit) == 2) {
-            if (increase && currentAmount >= 0) return String.valueOf(currentAmount + 50);
-            if (!increase && currentAmount - 50 >= 0) return String.valueOf(currentAmount - 50);
+        if (calculationMod(unit) == CALCULATION_MOD_UNIT) {
+            return calculateUnitAmount(currentAmount, increase);
+
+        } else if (calculationMod(unit) == CALCULATION_MOD_WEIGHT_VOLUME) {
+            return calculateWeightVolumeAmount(currentAmount, increase);
         }
         return String.valueOf(currentAmount);
     }
+
+
+
+    private String calculateUnitAmount(double currentAmount, boolean increase) {
+        if (increase) {
+            if (currentAmount >= UNIT_INCREMENT) return String.valueOf(currentAmount + UNIT_INCREMENT);
+            if (currentAmount == UNIT_HALF) return String.valueOf(UNIT_INCREMENT);
+            if (currentAmount == UNIT_QUARTER) return String.valueOf(UNIT_HALF);
+            if (currentAmount == 0) return String.valueOf(UNIT_QUARTER);
+        } else {
+            if (currentAmount - UNIT_INCREMENT >= UNIT_INCREMENT) return String.valueOf(currentAmount - UNIT_INCREMENT);
+            if (currentAmount == UNIT_INCREMENT) return String.valueOf(UNIT_HALF);
+            if (currentAmount == UNIT_HALF) return String.valueOf(UNIT_QUARTER);
+            if (currentAmount == UNIT_QUARTER) return "0";
+        }
+        return String.valueOf(currentAmount);
+    }
+    private String calculateWeightVolumeAmount(double currentAmount, boolean increase) {
+        if (increase) {
+            return String.valueOf(currentAmount + WEIGHT_VOLUME_INCREMENT);
+        } else if (currentAmount >= WEIGHT_VOLUME_INCREMENT) {
+            return String.valueOf(currentAmount - WEIGHT_VOLUME_INCREMENT);
+        }
+        return String.valueOf(currentAmount);
+    }
+
     private int calculationMod(String unit) {
         return (unit.equals("100 גרם") || unit.equals("100 מל") || unit.equals("קלוריות")) ? 2 : 1;
+    }
+    private boolean isValidAmount(String amountText) {
+        return !amountText.isEmpty() && amountText.matches("\\d+(\\.\\d+)?");
     }
 
     public void close(){
         dialog.dismiss();
     }
-    public boolean isClose(){
+    public boolean isClosed(){
         return !dialog.isShowing();
     }
 }
