@@ -169,7 +169,7 @@ public class ProductSelectionDialog {
 
             @Override
             public void onTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
-                String st = null;
+                String st;
                 if ( amountEt.getText().toString().equals( "." )){ amountEt.setText( "" );}
                 if ( amountEt.getText().toString().matches("")){
                     st=calcolatyCAL(Double.parseDouble( caloriesHeaderTv.getText().toString() ),0, unitTv.getText().toString());
