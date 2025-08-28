@@ -49,7 +49,8 @@ import com.example.calories.data.models.ConsumedProduct;
 import com.example.calories.data.models.Product;
 import com.example.calories.data.storage.ProductStorageManager;
 import com.example.calories.ui.dialogs.BarcodeDialogHandler;
-import com.example.calories.ui.dialogs.EditConsumedProductDialog;
+import com.example.calories.ui.dialogs.ConsumedProductEditingDialog;
+import com.example.calories.ui.dialogs.ProductSelectionDialog;
 import com.example.calories.ui.utils.CaptureAct;
 import com.example.calories.ui.adapters.ConsumedItemAdapter;
 import com.example.calories.ui.adapters.ProductItemAdapter;
@@ -74,11 +75,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ConsumedProduct consumedProduct_edit;
 
-    EditConsumedProductDialog editConsumedProductDialog;
+    ConsumedProductEditingDialog consumedProductEditingDialog;
     private String lastClickedId;
 
     //--------------- ProductCatalogView ---------------
-
+ProductSelectionDialog productSelectionDialog;
     private ArrayList<Product> systemProductList = new ArrayList<>();//רשימת מוצרים (מערכת)
     private ArrayList<Product> customProducts = new ArrayList<>();//רשימת מוצרים שיצר המשתמש
     private ArrayList<Product> filteredProducts = new ArrayList<>();//רשימת מוצרים מסוננת (לפי חיפוש)
@@ -152,7 +153,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         barcodeDialogHandler =new BarcodeDialogHandler(this);
         productStorageManager  = new ProductStorageManager(this);
         consumedProductManager = new ConsumedProductManager(this);
-        editConsumedProductDialog =new EditConsumedProductDialog(MainActivity.this);
+        consumedProductEditingDialog =new ConsumedProductEditingDialog(MainActivity.this);
+        productSelectionDialog = new ProductSelectionDialog(MainActivity.this);
         //יצירת רשימת המוצרים
         updateMainList();
         //מיון לפי א"ב
@@ -199,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 //     if (TextUtils. isDigitsOnly(et_amounttt.getText().toString() )) {
                 btn_addToConsumption.setText( st+ "\n"+" הוסף " );
-                      //   }else{  btn_addFood.setText( " הוסף " );}
+                //   }else{  btn_addFood.setText( " הוסף " );}
 
             }
 
@@ -215,6 +217,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (!(filteredProducts.get( position ).getItemState() ==999)) {
                     temp_exampleItem= filteredProducts.get( position );
                     showFoodDitals(filteredProducts.get( position ));
+                    //productSelectionDialog.show(temp_exampleItem,calendar , consumedProductManager);
+
                     hideKeyboard();
                 }
                 else{
@@ -236,12 +240,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             {
                 //עריכת פריט
                 consumedProduct_edit = consumedProductManager.getConsumedProductsOfDay().get( position );
-                editConsumedProductDialog.show(consumedProduct_edit, calendar , consumedProductManager);
+                consumedProductEditingDialog.show(consumedProduct_edit, calendar , consumedProductManager);
             }
 
             @Override
             public void onLongItemClick(View view , int position) {
-                if (editConsumedProductDialog.isClosed()){
+                if (consumedProductEditingDialog.isClosed()){
                     String id = consumedProductManager.getConsumedProductsOfDay().get(position).getId();
                     deleteConsumedProductById(id);
                 }
@@ -340,13 +344,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // showDialog();
 
 
-        editConsumedProductDialog.setOnEditCompleteListener(new EditConsumedProductDialog.OnEditCompleteListener() {
+        consumedProductEditingDialog.setOnEditCompleteListener(new ConsumedProductEditingDialog.OnEditCompleteListener() {
             @Override
             public void onEditComplete() {
-                 // רענון הרשימה
+                // רענון הרשימה
                 refreshConsumedProductsList();
             }
         });
+
+        productSelectionDialog.setOnProductSelectedListener(new ProductSelectionDialog.OnProductSelectedListener() {
+            @Override
+            public void onSaveComplete() {
+                refreshConsumedProductsList();
+                mainSearchView.setVisibility( View.VISIBLE );
+                mainSearchView.setQuery( "" , true );
+                mainSearchView.setIconified( true );
+                hideKeyboard();
+                cancelFoodAdd();
+                rl_mainInformation.setVisibility( View.VISIBLE );
+                webview.setVisibility( View.GONE );
+                ly_customProductBottomSheet.setVisibility( View.GONE );
+                ly_productSelectionBottomSheet.setVisibility( View.GONE );
+                iv_backToMain.setVisibility( View.GONE );
+                productsRecyclerView.setVisibility( View.GONE );
+                rl_selfSearch.setVisibility( View.GONE );
+            }
+        });
+
     }
 
 
@@ -383,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             scanCode();}
         if(view==btn_nextDay){
             //יקרה רק אם כל שאר המסכים סגורים
-            if (editConsumedProductDialog.isClosed()&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE){
+            if (consumedProductEditingDialog.isClosed()&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE){
                 calendar.add(Calendar.DAY_OF_MONTH, 1); //Adds a day
                 tv_date.setText( new SimpleDateFormat("dd-MM-yyyy").format(calendar.getTime()));
                 refreshConsumedProductsList();
@@ -391,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(view==btn_lastDay){
             //יקרה רק אם כל שאר המסכים סגורים
-            if (editConsumedProductDialog.isClosed()&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE) {
+            if (consumedProductEditingDialog.isClosed()&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE) {
                 calendar.add( Calendar.DAY_OF_MONTH , -1 ); //Goes to previous day
                 tv_date.setText( new SimpleDateFormat( "dd-MM-yyyy" ).format( calendar.getTime() ) );
                 refreshConsumedProductsList();
@@ -441,6 +465,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         str_caloria = (String.format( String.valueOf( (int) (kal * amount /* +temp*/) ) ));
                     }
                     addConsumedProductToList( amount , Integer.parseInt( str_caloria ) );
+
                     updateTotalCalories();
                     mainSearchView.setVisibility( View.VISIBLE );
                     mainSearchView.setQuery( "" , true );
@@ -1004,10 +1029,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iv_settings=findViewById( R.id.iv_settings);
         iv_settings.setOnClickListener( this );
         ly_settings=findViewById( R.id.ly_settings);
-
-        iv_closeBottomSheet =findViewById( R.id.iv_closeBottomSheet);
-        iv_closeBottomSheet.setOnClickListener( this );
-
         tv_date=findViewById( R.id.tv_date);
         btn_nextDay=findViewById( R.id.btn_nextDay);
         btn_nextDay.setOnClickListener( this );
@@ -1113,7 +1134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //sortArrayList();
     }
     private void cancelEdit() {
-editConsumedProductDialog.close();
+        consumedProductEditingDialog.close();
     }
     private void cancelFoodAdd() {
         ly_customProductBottomSheet.setVisibility(View.GONE);
@@ -1355,7 +1376,7 @@ editConsumedProductDialog.close();
                 }
             }
 
-            if (!editConsumedProductDialog.isClosed()) {
+            if (!consumedProductEditingDialog.isClosed()) {
                 cancelEdit();
             }
             if (ly_settings.getVisibility() == View.VISIBLE) {
