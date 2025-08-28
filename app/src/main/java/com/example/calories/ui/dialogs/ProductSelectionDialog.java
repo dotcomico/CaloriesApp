@@ -41,7 +41,6 @@ public class ProductSelectionDialog {
     private boolean listenersSetup = false;
     private Calendar calendar;
 
-    private LinearLayout ly_productSelectionBottomSheet;
     private ImageView iv_expandProductInfo , iv_increaseAmount , iv_decreaseAmount;
     private TextView tv_caloriesHeader , tv_selectedProductName ,tv_barcodeInfo , tv_unit;
     private Button btn_addToConsumption;
@@ -80,7 +79,6 @@ public class ProductSelectionDialog {
 
     }
     private void initViews() {
-        ly_productSelectionBottomSheet = dialog.findViewById(R.id.ly_productSelectionBottomSheet);
         tv_selectedProductName = dialog.findViewById( R.id.tv_selectedProductName);
         tv_selectedProductName.setMovementMethod( new ScrollingMovementMethod() );
         tv_caloriesHeader = dialog.findViewById( R.id.tv_caloriesHeader);
