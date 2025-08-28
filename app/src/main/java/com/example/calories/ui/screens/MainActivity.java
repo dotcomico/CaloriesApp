@@ -15,19 +15,14 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.text.method.ScrollingMovementMethod;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -86,12 +81,7 @@ ProductSelectionDialog productSelectionDialog;
     private RecyclerView productsRecyclerView;
     private RecyclerView.Adapter productsAdapter;
     private RecyclerView.LayoutManager productsLayoutManager;
-    private LinearLayout ly_productSelectionBottomSheet;
-    private ImageView iv_closeBottomSheet , iv_expandProductInfo , iv_increaseAmount , iv_decreaseAmount;
-    private TextView tv_caloriesHeader , tv_selectedProductName ,tv_barcodeInfo , tv_unit;
     private SearchView mainSearchView;
-    private EditText et_addAmount;
-    private Button btn_addToConsumption;
     private Product temp_exampleItem=null;
 
     //--------------- CustomProductView  ---------------
@@ -114,7 +104,6 @@ ProductSelectionDialog productSelectionDialog;
     private ProductStorageManager productStorageManager;
 
     // dialog
-
     ConsumedProductManager consumedProductManager;
     // top bar
     private Button btn_lastDay,btn_nextDay;
@@ -122,19 +111,15 @@ ProductSelectionDialog productSelectionDialog;
     //  settings
     private LinearLayout ly_settings;
 
-
-    private ImageView iv_backFromSelfSearchToMain, iv_myProdacts_SS, iv_showSelfSearchBar, iv_selfSearch_round ,  iv_selfAdd, iv_barcodeScan, iv_goToSelfSearch,
-            iv_backToMain,iv_settings, iv_startBarcodescan;
+    private ImageView iv_backFromSelfSearchToMain, iv_myProducts_SS, iv_showSelfSearchBar, iv_selfSearch_round ,  iv_selfAdd, iv_barcodeScan, iv_goToSelfSearch,
+            iv_backToMain,iv_settings, iv_startBarcodeScan;
     private RelativeLayout rl_selfSearch,rl_top, rl_selfSearchTopBar,rl_mainInformation;
     private TextView tv_date, tv_returnToMainScreen;
-    private int calcolaty_mod;
-
 
     private TextView tv_clearMainCaloriesList, tv_totalCalories;
     private ImageView iv_myProducts;
 
-    private Animation slide_in_bottom,slide_out_bottom;
-    private Dialog dialog ;
+    private Animation slide_in_bottom;
 
 
 
@@ -143,7 +128,6 @@ ProductSelectionDialog productSelectionDialog;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main );
-
 
         calendar = Calendar.getInstance();
         calendar.setTime(calendar.getTime());
@@ -162,64 +146,15 @@ ProductSelectionDialog productSelectionDialog;
 
 
 
-        newProductCaloriesEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
-                if ( newProductCaloriesEditText.getText().toString().equals( "." )){
-                    et_addAmount.setText( "" );
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        } );
-        et_addAmount.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
-                String st = null;
-                if ( et_addAmount.getText().toString().equals( "." )){ et_addAmount.setText( "" );}
-                if ( et_addAmount.getText().toString().matches("")){     st=calcolatyCAL(Double.parseDouble( tv_caloriesHeader.getText().toString() ),0, tv_unit.getText().toString());
-                }else{
-                    //   if (TextUtils. isDigitsOnly(et_amounttt.getText().toString() )) {
-                    st = calcolatyCAL( Double.parseDouble( tv_caloriesHeader.getText().toString() ) ,
-                            Double.parseDouble( et_addAmount.getText().toString() ), tv_unit.getText().toString() );
-                    //    }
-
-                }
-                //     if (TextUtils. isDigitsOnly(et_amounttt.getText().toString() )) {
-                btn_addToConsumption.setText( st+ "\n"+" הוסף " );
-                //   }else{  btn_addFood.setText( " הוסף " );}
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
         //פעולות לחיצה על איברי הרשימה
         productsRecyclerView.addOnItemTouchListener( new RecyclerItemClickListener(MainActivity.this, productsRecyclerView
                 ,new RecyclerItemClickListener.OnItemClickListener() {
             @Override public void onItemClick(View view, int position) {
                 if (!(filteredProducts.get( position ).getItemState() ==999)) {
                     temp_exampleItem= filteredProducts.get( position );
-                    showFoodDitals(filteredProducts.get( position ));
-                    //productSelectionDialog.show(temp_exampleItem,calendar , consumedProductManager);
 
-                    hideKeyboard();
+                   openProductSelectionDialog();
                 }
                 else{
                     //פתח חיפוש עצמי
@@ -275,7 +210,7 @@ ProductSelectionDialog productSelectionDialog;
                     rl_mainInformation.setVisibility(View.VISIBLE);
                     iv_selfAdd.setVisibility(View.VISIBLE);
                     iv_selfSearch_round.setVisibility( View.GONE );
-                    iv_startBarcodescan.setVisibility( View.GONE );
+                    iv_startBarcodeScan.setVisibility( View.GONE );
                     rl_selfSearch.setVisibility(View.GONE);
                     productsRecyclerView.setVisibility(View.GONE);
                     iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_purple );
@@ -286,7 +221,7 @@ ProductSelectionDialog productSelectionDialog;
                     rl_mainInformation.setVisibility(View.GONE);
                     iv_selfAdd.setVisibility(View.GONE);
                     iv_selfSearch_round.setVisibility( View.VISIBLE );
-                    iv_startBarcodescan.setVisibility( View.GONE );
+                    iv_startBarcodeScan.setVisibility( View.GONE );
                     rl_selfSearch.setVisibility(View.VISIBLE);
                     productsRecyclerView.setVisibility(View.GONE);
                     iv_backToMain.setImageResource( R.drawable.baseline_arrow_circle_right_oreng );
@@ -296,7 +231,7 @@ ProductSelectionDialog productSelectionDialog;
                     rl_mainInformation.setVisibility(View.GONE);
                     iv_selfAdd.setVisibility(View.GONE);
                     iv_selfSearch_round.setVisibility( View.GONE );
-                    iv_startBarcodescan.setVisibility( View.VISIBLE );
+                    iv_startBarcodeScan.setVisibility( View.VISIBLE );
                     rl_selfSearch.setVisibility(View.GONE);
                     productsRecyclerView.setVisibility(View.VISIBLE);
                     iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_blue );
@@ -320,14 +255,12 @@ ProductSelectionDialog productSelectionDialog;
         //סגירת מסכים לא נחוצים בכניסה התחלתית למסך
         webview.setVisibility(View.GONE);
         ly_customProductBottomSheet.setVisibility(View.GONE);
-        ly_productSelectionBottomSheet.setVisibility(View.GONE);
         iv_backToMain.setVisibility(View.GONE);
         productsRecyclerView.setVisibility(View.GONE);
         rl_selfSearch.setVisibility(View.GONE);
         rl_mainInformation.setVisibility(View.VISIBLE);
 
-        et_addAmount.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
-        newProductCaloriesEditText.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
+          newProductCaloriesEditText.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //for decimal numbers
 
         Objects.requireNonNull(getSupportActionBar()).hide();
 
@@ -364,7 +297,6 @@ ProductSelectionDialog productSelectionDialog;
                 rl_mainInformation.setVisibility( View.VISIBLE );
                 webview.setVisibility( View.GONE );
                 ly_customProductBottomSheet.setVisibility( View.GONE );
-                ly_productSelectionBottomSheet.setVisibility( View.GONE );
                 iv_backToMain.setVisibility( View.GONE );
                 productsRecyclerView.setVisibility( View.GONE );
                 rl_selfSearch.setVisibility( View.GONE );
@@ -373,16 +305,18 @@ ProductSelectionDialog productSelectionDialog;
 
     }
 
+    private void openProductSelectionDialog() {
+        hideKeyboard();
+        mainSearchView.clearFocus();
+        // mainSearchView.setQuery("", false);
+        //mainSearchView.setIconified(true);
+        productSelectionDialog.show(temp_exampleItem,calendar , consumedProductManager);
+    }
+
 
     @SuppressLint("SimpleDateFormat")
     @Override
     public void onClick(View view) {
-        if (view == iv_expandProductInfo) {
-            if (tv_barcodeInfo.getVisibility() == View.GONE )
-                tv_barcodeInfo.setVisibility(  View.VISIBLE );
-            else
-                tv_barcodeInfo.setVisibility(  View.GONE );
-        }
 
         if(view== webSearchSuggestion){
             startinternetWebSearchDotan(webSearchSuggestion.getText().toString());
@@ -392,40 +326,42 @@ ProductSelectionDialog productSelectionDialog;
             iv_showSelfSearchBar.setVisibility( View.VISIBLE );
         }
 
-        if(view== iv_myProducts || view == iv_myProdacts_SS){
+        if(view== iv_myProducts || view == iv_myProducts_SS){
             startNewActivity(MainActivity.this, MyProductActivity.class);
 
         }
+
         if (view== iv_barcodeScan){
             showCustomDialog();
         }
+
         if (view==iv_selfAdd) {
             selfAddActions();
         }
-        if(view== iv_startBarcodescan){
+
+        if(view== iv_startBarcodeScan){
             openMain();
             scanCode();}
+
         if(view==btn_nextDay){
             //יקרה רק אם כל שאר המסכים סגורים
-            if (consumedProductEditingDialog.isClosed()&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE){
+            if (consumedProductEditingDialog.isClosed() && ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE){
                 calendar.add(Calendar.DAY_OF_MONTH, 1); //Adds a day
                 tv_date.setText( new SimpleDateFormat("dd-MM-yyyy").format(calendar.getTime()));
                 refreshConsumedProductsList();
             }
         }
+
         if(view==btn_lastDay){
             //יקרה רק אם כל שאר המסכים סגורים
-            if (consumedProductEditingDialog.isClosed()&& ly_productSelectionBottomSheet.getVisibility()==View.GONE&& ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE) {
+            if (consumedProductEditingDialog.isClosed() && ly_customProductBottomSheet.getVisibility()==View.GONE&&rl_selfSearch.getVisibility()==View.GONE) {
                 calendar.add( Calendar.DAY_OF_MONTH , -1 ); //Goes to previous day
                 tv_date.setText( new SimpleDateFormat( "dd-MM-yyyy" ).format( calendar.getTime() ) );
                 refreshConsumedProductsList();
             }
         }
-        if(view == iv_closeBottomSheet){cancelFoodAdd();
-        }
-        //  if(view == iv_delete2 || view == iv_backFromSelfSearchToMain){
-        if( view == iv_backFromSelfSearchToMain){
 
+        if( view == iv_backFromSelfSearchToMain){
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
                 boolean isSelfSearch = extras.getBoolean( "selfSearch" );
@@ -437,13 +373,13 @@ ProductSelectionDialog productSelectionDialog;
                 cancelNewFoodAdd();
                 openMain();
             }
-
-
         }
+
         if (view == iv_showSelfSearchBar){
             ly_productCreationForm.setVisibility( View.VISIBLE );
             iv_showSelfSearchBar.setVisibility( View.GONE );
         }
+
         if (view == iv_collapseBottomSheet){
             hideKeyboard();
             ly_productCreationForm.setVisibility( View.GONE );
@@ -451,64 +387,33 @@ ProductSelectionDialog productSelectionDialog;
 
         }
 
-        if (view == btn_addToConsumption) {
-            if (!isContainsLetters( et_addAmount.getText().toString() )) {
-                if (!et_addAmount.getText().toString().equals( "" ) && !et_addAmount.getText().toString().equals( "0" ) && !(Double.parseDouble( et_addAmount.getText().toString() ) < 0)) { //אם כמות לא כלום או 0
-                    //פעולה לחישוב קלוריות והוספה לכמות כוללת
-                    double kal = Double.parseDouble( tv_caloriesHeader.getText().toString() );
-                    double amount = Double.parseDouble( et_addAmount.getText().toString() );
-                    //     double temp=Double.parseDouble( str_caloria );
-                    String str_caloria;
-                    if (calcolaty_mod == 2) {
-                        str_caloria = (String.format( String.valueOf( (int) ((kal / 100) * amount  /* +temp*/) ) ));
-                    } else {
-                        str_caloria = (String.format( String.valueOf( (int) (kal * amount /* +temp*/) ) ));
-                    }
-                    addConsumedProductToList( amount , Integer.parseInt( str_caloria ) );
-
-                    updateTotalCalories();
-                    mainSearchView.setVisibility( View.VISIBLE );
-                    mainSearchView.setQuery( "" , true );
-                    mainSearchView.setIconified( true );
-                    hideKeyboard();
-                    cancelFoodAdd();
-                    rl_mainInformation.setVisibility( View.VISIBLE );
-                    webview.setVisibility( View.GONE );
-                    ly_customProductBottomSheet.setVisibility( View.GONE );
-                    ly_productSelectionBottomSheet.setVisibility( View.GONE );
-                    iv_backToMain.setVisibility( View.GONE );
-                    productsRecyclerView.setVisibility( View.GONE );
-                    rl_selfSearch.setVisibility( View.GONE );
-                    if (!consumedProductManager.getConsumedProductsOfDay().isEmpty()) {
-                        consumedProductsRecyclerView.smoothScrollToPosition( consumedProductManager.getConsumedProductsOfDay().size() - 1 );
-                    }
-                }
-            }
-        }
-
         if (view == saveAndStay){
             saveNewProduct();
         }
+
         if (view == saveNewProductItemButton){
-
             saveNewProduct();
-
             hideKeyboard();
             cancelFoodAdd();
             mainSearchView.setVisibility( View.VISIBLE );
             mainSearchView.setIconified(true);
-            showFoodDitals(getLastItem());
+            openProductSelectionDialog();
             openMain();
         }
+
         if (view == mainSearchView){
             //  mRecyclerView.setVisibility(View.VISIBLE);
             ///    et_food.setText( "" );
             //   rl_mainInformation.setVisibility(View.GONE);
-            mainSearchView.setIconified(false);
+            if (mainSearchView != null) {
+                mainSearchView.setIconified(false);
+            }
         }
+
         if (view == selfSearchSearchView){
             selfSearchSearchView.setIconified(false);
         }
+
         if (view== iv_goToSelfSearch){
             startWebSearch();
             /*
@@ -517,6 +422,7 @@ ProductSelectionDialog productSelectionDialog;
             startActivity( i );
              */
         }
+
         if (view==iv_selfSearch_round){
             startWebSearch();
             /*
@@ -525,9 +431,11 @@ ProductSelectionDialog productSelectionDialog;
             startActivity( i );
              */
         }
+
         if (view == iv_backToMain){
             backToMain();
         }
+
         if (view == tv_clearMainCaloriesList){
             //   str_caloria =("0");
             //  SharedPreferences.Editor editor = sp.edit();
@@ -539,48 +447,20 @@ ProductSelectionDialog productSelectionDialog;
             Toast.makeText( getBaseContext(), "רשימת קלוריות שנצרכו נמחקה (מסך ראשי)",Toast.LENGTH_SHORT).show();
             restartApp();
         }
+
         if (view== tv_returnToMainScreen){
             ly_settings.setVisibility( View.GONE );
         }
+
         if (view==iv_settings) {
             ly_settings.setVisibility( View.VISIBLE );
         }
-        if (view== iv_increaseAmount){
-            String st= et_addAmount.getText().toString();
-            if (!st.matches( "" )){
-                if (calculationMod(tv_unit.getText().toString())==1){
-                    if (Double.parseDouble(et_addAmount.getText().toString())>=1){   st= ""+(Double.parseDouble(et_addAmount.getText().toString())+1);}
-                    if (Double.parseDouble(et_addAmount.getText().toString())==0.5){ st="1";}
-                    if (Double.parseDouble(et_addAmount.getText().toString())==0.25){ st="0.5";}
-                    if (Double.parseDouble(et_addAmount.getText().toString())==0){st="0.25";}
-                }
-                if (calculationMod(tv_unit.getText().toString())==2&&Double.parseDouble(et_addAmount.getText().toString())>=0){st= ""+(Double.parseDouble(et_addAmount.getText().toString())+50);}
-            }else {st="0";}
-            et_addAmount.setText(st);
 
-        }
-        if (view== iv_decreaseAmount){
-            String st= et_addAmount.getText().toString();
-            if (!st.matches( "" )){
-                if (calculationMod(tv_unit.getText().toString())==1 ){
-                    if (Double.parseDouble(et_addAmount.getText().toString())-1>=1){
-                        st= ""+(Double.parseDouble(et_addAmount.getText().toString())-1); }
-                    if (Double.parseDouble(et_addAmount.getText().toString())==1){ st="0.5";}
-                    if (Double.parseDouble(et_addAmount.getText().toString())==0.5){ st="0.25";}
-                    if (Double.parseDouble(et_addAmount.getText().toString())==0.25){st="0";}
-                }
-                if (calculationMod(tv_unit.getText().toString())==2&&Double.parseDouble(et_addAmount.getText().toString())-50>=0){st= ""+(Double.parseDouble(et_addAmount.getText().toString())-50);}
-            }else {st="0";}
-            et_addAmount.setText(st);
-        }
-        if (view== tv_selectedProductName){
-            //העתק טקסט
-            clipData(tv_selectedProductName.getText().toString() , this);
-            Toast.makeText( getBaseContext(), "הועתק שם מוצר",Toast.LENGTH_SHORT).show();
-        }
-        if (view== newProductCaloriesEditText ||view== et_addAmount){
+        if (view== newProductCaloriesEditText){
             EditText  et_temp= (EditText) view;
-            et_temp.setText("");
+            if (et_temp != null) {
+                et_temp.setText("");
+            }
         }
     }
 
@@ -633,7 +513,6 @@ ProductSelectionDialog productSelectionDialog;
         rl_mainInformation.setVisibility( View.VISIBLE );
         webview.setVisibility( View.GONE );
         ly_customProductBottomSheet.setVisibility( View.GONE );
-        ly_productSelectionBottomSheet.setVisibility( View.GONE );
         iv_backToMain.setVisibility( View.GONE );
         productsRecyclerView.setVisibility( View.GONE );
         rl_selfSearch.setVisibility( View.GONE );
@@ -642,7 +521,7 @@ ProductSelectionDialog productSelectionDialog;
         }
         mainSearchView.setBackgroundResource( R.drawable.sty_3 );
         iv_selfAdd.setVisibility(View.GONE);
-        iv_startBarcodescan.setVisibility( View.VISIBLE );
+        iv_startBarcodeScan.setVisibility( View.VISIBLE );
 
     }
 
@@ -654,16 +533,6 @@ ProductSelectionDialog productSelectionDialog;
         barcodeDialogHandler.dismissDialog();
     }
 
-    //פעולה שתציג דיאלוג ספציפי מתחתית המסך
-    private void showDialog() {
-
-        dialog.getWindow().setLayout(  ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable( Color.TRANSPARENT));
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        dialog.getWindow().setGravity( Gravity.BOTTOM);
-        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        dialog.show();
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -721,8 +590,7 @@ ProductSelectionDialog productSelectionDialog;
                 j++;
             }
             if (temp) { //נמצאה התאמה
-                hideKeyboard();
-                showFoodDitals( examplel );
+                openProductSelectionDialog();
                 if (filteredProducts.size() == 2) {
                     openMain();
                 }
@@ -824,45 +692,6 @@ ProductSelectionDialog productSelectionDialog;
          */
     }
 
-    private void showFoodDitals(Product exampleItem) {
-        ly_productSelectionBottomSheet.startAnimation( slide_in_bottom );
-        temp_exampleItem=exampleItem ;
-
-        ly_customProductBottomSheet.setVisibility( View.GONE );
-        ly_productSelectionBottomSheet.setVisibility( View.VISIBLE );
-        mainSearchView.setVisibility( View.GONE );
-        tv_selectedProductName.setText(exampleItem.getName());
-        tv_caloriesHeader.setText(exampleItem.getCalorieText());
-        tv_unit.setText(  exampleItem.getUnit());
-
-        tv_barcodeInfo.setVisibility(  View.GONE );
-        String s = exampleItem.getBarcode();
-        if (s != null && s.isEmpty()){
-            s= "?";
-        }
-        tv_barcodeInfo.setText( "ברקוד מוצר: " + s );
-
-        //האדיט טקסט של כמות יעודכן ל1 אם מדובר בכמות וכו ורק אם מדובר ב100 גרם או מל אז יעודכן ל100
-        if ( exampleItem.getUnit().equals( "100 גרם" ) ||exampleItem.getUnit().equals( "100 מל" )  ){
-            et_addAmount.setText( "100" );
-            calcolaty_mod=2;
-        }
-        else{
-            et_addAmount.setText("1");
-            calcolaty_mod=1;
-        }
-
-    }
-    private int calculationMod(String string){
-        if ( string.equals( "100 גרם" ) ||string.equals( "100 מל" ) || string.equals( "קלוריות" ) ){
-            // calcolaty_mod=2;
-            return 2;
-        }
-        else{
-            //calcolaty_mod=1;
-            return 1;
-        }
-    }
     private void sortArrayList() {
         Collections.sort(systemProductList, new Comparator<Product>() {
             @Override
@@ -935,7 +764,7 @@ ProductSelectionDialog productSelectionDialog;
 
         ly_customProductBottomSheet.setVisibility(View.GONE);
         cancelEdit();
-        ly_productSelectionBottomSheet.setVisibility(View.GONE);
+
     }
     private void closeFood(){
         iv_backToMain.setVisibility(View.GONE);
@@ -959,7 +788,7 @@ ProductSelectionDialog productSelectionDialog;
         rl_selfSearch.setVisibility(View.GONE);
 
         cancelEdit();
-        ly_productSelectionBottomSheet.setVisibility(View.GONE);
+
 
     }
     private void closeNewProdact(){
@@ -971,18 +800,10 @@ ProductSelectionDialog productSelectionDialog;
 
         unitSelectorView = findViewById(R.id.unit_selector);
 
-        dialog= new Dialog(this);
-        dialog.setContentView(R.layout.new_privet_prodact_sheet);
-
-        tv_barcodeInfo =findViewById( R.id.tv_barcodeInfo);
-
-        iv_expandProductInfo = findViewById( R.id.iv_expandProductInfo);
-        iv_expandProductInfo.setOnClickListener( this );
-
         rl_top=findViewById(R.id.rl_top);
         rl_selfSearchTopBar =findViewById(R.id.rl_selfSearchTopBar);
-        iv_myProdacts_SS=findViewById(R.id.iv_myProdacts_SS);
-        iv_myProdacts_SS.setOnClickListener( this );
+        iv_myProducts_SS =findViewById(R.id.iv_myProdacts_SS);
+        iv_myProducts_SS.setOnClickListener( this );
         iv_backFromSelfSearchToMain =findViewById(R.id.iv_backFromSelfSearchToMain);
         iv_backFromSelfSearchToMain.setOnClickListener( this );
 
@@ -990,7 +811,6 @@ ProductSelectionDialog productSelectionDialog;
         webSearchSuggestion =findViewById( R.id.webSearchSuggestion);
         webSearchSuggestion.setOnClickListener( this );
         slide_in_bottom= AnimationUtils.loadAnimation( this,R.anim.slide_in_bottom );
-        slide_out_bottom= AnimationUtils.loadAnimation( this,R.anim.slide_out_bottom );
 
         iv_myProducts =findViewById( R.id.iv_myProducts);
         iv_myProducts.setOnClickListener( this );
@@ -1000,8 +820,8 @@ ProductSelectionDialog productSelectionDialog;
         consumedProductsRecyclerView.setLayoutManager(consumedProductsLayoutManager);
 
 
-        iv_startBarcodescan =findViewById( R.id.iv_barcodeSearch_round );
-        iv_startBarcodescan.setOnClickListener( this );
+        iv_startBarcodeScan =findViewById( R.id.iv_barcodeSearch_round );
+        iv_startBarcodeScan.setOnClickListener( this );
 
         ly_productCreationForm =findViewById( R.id.ly_productCreationForm);
         iv_showSelfSearchBar =findViewById( R.id.iv_showSelfSearchBar );
@@ -1014,12 +834,6 @@ ProductSelectionDialog productSelectionDialog;
         iv_selfAdd.setOnClickListener( this );
         iv_barcodeScan =findViewById( R.id.iv_barcodeScan);
         iv_barcodeScan.setOnClickListener( this );
-
-        iv_decreaseAmount =findViewById( R.id.iv_decreaseAmount);
-        iv_decreaseAmount.setOnClickListener( this );
-
-        iv_increaseAmount =findViewById( R.id.iv_increaseAmount);
-        iv_increaseAmount.setOnClickListener( this );
 
         saveAndStay =findViewById( R.id.saveAndStay);
         saveAndStay.setOnClickListener( this );
@@ -1040,7 +854,6 @@ ProductSelectionDialog productSelectionDialog;
         productsRecyclerView = findViewById(R.id.productsRecyclerView);
         tv_clearMainCaloriesList =findViewById( R.id.tv_clearMainCaloriesList);
         tv_clearMainCaloriesList.setOnClickListener( this );
-        et_addAmount =findViewById( R.id.et_addAmount);
 
         iv_backToMain =findViewById( R.id.iv_backToMain );
         iv_backToMain.setOnClickListener( this );
@@ -1090,17 +903,12 @@ ProductSelectionDialog productSelectionDialog;
             }
 
         });
-        tv_selectedProductName = findViewById( R.id.tv_selectedProductName);
-        tv_selectedProductName.setMovementMethod( new ScrollingMovementMethod() );
-        tv_selectedProductName.setOnClickListener( this );
-        tv_caloriesHeader = findViewById( R.id.tv_caloriesHeader);
-        tv_unit =findViewById( R.id.tv_unit);
+
         saveNewProductItemButton =findViewById( R.id.saveNewProductItemButton);
         saveNewProductItemButton.setOnClickListener( this );
-        btn_addToConsumption =findViewById( R.id.btn_addToConsumption);
-        btn_addToConsumption.setOnClickListener( this );
+
         ly_customProductBottomSheet =findViewById( R.id.ly_customProductBottomSheet);
-        ly_productSelectionBottomSheet =findViewById( R.id.ly_productSelectionBottomSheet);
+
         tv_totalCalories =findViewById( R.id.tv_totalCalories);
         tv_totalCalories.setOnClickListener( this );
         webview = findViewById( R.id.webview);
@@ -1121,7 +929,6 @@ ProductSelectionDialog productSelectionDialog;
         selfSearchSearchView = findViewById( R.id.selfSearchSearchView);
         selfSearchSearchView.setOnClickListener( this );
         newProductCaloriesEditText.setOnTouchListener( this );
-        et_addAmount.setOnTouchListener( this );
         //   et_kal.setOnClickListener( this );et_amounttt.setOnClickListener( this );et_spinnerEditT.setOnClickListener( this );et_newAmount.setOnClickListener( this );;
 //
     }
@@ -1138,7 +945,6 @@ ProductSelectionDialog productSelectionDialog;
     }
     private void cancelFoodAdd() {
         ly_customProductBottomSheet.setVisibility(View.GONE);
-        ly_productSelectionBottomSheet.setVisibility(View.GONE);
         mainSearchView.setVisibility(View.VISIBLE);
         iv_backToMain.setVisibility( View.VISIBLE );
 
@@ -1152,7 +958,7 @@ ProductSelectionDialog productSelectionDialog;
         webSearchSuggestion.setVisibility( View.GONE );
         iv_selfSearch_round.setVisibility( View.GONE );
         iv_showSelfSearchBar.setVisibility( View.GONE );
-        iv_startBarcodescan.setVisibility( View.VISIBLE );
+        iv_startBarcodeScan.setVisibility( View.VISIBLE );
 
         mainSearchView.setQuery( "" , false );
         newProductNameEditText.setText( "" );
@@ -1179,7 +985,6 @@ ProductSelectionDialog productSelectionDialog;
         webview.loadUrl("https://www.google.com/search?q=" + str);
     }
     private void startWebSearchForBarcode(String bCod) {
-        ly_productSelectionBottomSheet.setVisibility(View.GONE);
         barcodeDialogHandler.getBarcodeEditText().setText(bCod);
 
         if (Build.VERSION.SDK_INT >= 19) {
@@ -1206,7 +1011,6 @@ ProductSelectionDialog productSelectionDialog;
         rl_selfSearch.setVisibility( View.GONE );
         webview.setVisibility( View.VISIBLE );
         ly_customProductBottomSheet.setVisibility(View.VISIBLE);
-        ly_productSelectionBottomSheet.setVisibility(View.GONE);
 
         barcodeDialogHandler.getBarcodeEditText().setText("");
 
@@ -1260,18 +1064,7 @@ ProductSelectionDialog productSelectionDialog;
         }
         return false;
     }
-    private String calcolatyCAL(double kal, double amount,String type) {
-        //פעולה לחישוב קלוריות והוספה לכמות כוללת
 
-        String str_caloria;
-        if ( type.equals( "100 גרם" )  || type.equals( "100 מל" )  || type.equals( "קלוריות" ) ){
-            str_caloria=(String.format( String.valueOf( (int) ( (kal/100)*amount  /* +temp*/) )));
-        }
-        else{
-            str_caloria = (String.format( String.valueOf( (int) ( kal* amount /* +temp*/) )));
-        }
-        return str_caloria;
-    }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void changeBarColor(RelativeLayout relativeLayout) {
 
@@ -1364,17 +1157,6 @@ ProductSelectionDialog productSelectionDialog;
             if (ly_customProductBottomSheet.getVisibility() == View.VISIBLE) {
                 //   cancelNewFoodAdd();
             }
-            if (ly_productSelectionBottomSheet.getVisibility() == View.VISIBLE) {
-                cancelFoodAdd();
-            } else {
-                if (productsRecyclerView.getVisibility() == View.VISIBLE) {
-                    backToMain();
-                } else {
-                    if (rl_selfSearch.getVisibility() == View.VISIBLE) {
-                        backToMain();
-                    }
-                }
-            }
 
             if (!consumedProductEditingDialog.isClosed()) {
                 cancelEdit();
@@ -1389,7 +1171,7 @@ ProductSelectionDialog productSelectionDialog;
     }
     @Override
     public boolean onTouch(View view , MotionEvent motionEvent) {
-        if (view== newProductCaloriesEditText ||view== et_addAmount){
+        if (view== newProductCaloriesEditText ){
             EditText  et_temp= (EditText) view;
             et_temp.setText("");
             return false;}
