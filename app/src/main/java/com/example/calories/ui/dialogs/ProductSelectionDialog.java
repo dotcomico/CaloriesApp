@@ -1,8 +1,5 @@
 package com.example.calories.ui.dialogs;
 
-import static com.example.calories.utils.Utility.clipData;
-import static com.example.calories.utils.Utility.hideKeyboardFrom;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -18,16 +15,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.calories.ConsumedProductManager;
 import com.example.calories.R;
 import com.example.calories.data.models.Product;
-import com.example.calories.data.storage.ProductStorageManager;
 import com.example.calories.utils.Utility;
-
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -35,16 +28,16 @@ public class ProductSelectionDialog {
 
     private Dialog dialog;
     private final Context context;
-    private OnProductSelectedListener listener;
     private Product product;
     ConsumedProductManager consumedProductManager;
-    private boolean listenersSetup = false;
     private Calendar calendar;
+    private OnProductSelectedListener listener;
+    private boolean listenersSetup = false;
 
-    private ImageView iv_expandProductInfo , iv_increaseAmount , iv_decreaseAmount;
-    private TextView tv_caloriesHeader , tv_selectedProductName ,tv_barcodeInfo , tv_unit;
-    private Button btn_addToConsumption;
-    private EditText et_addAmount;
+    private ImageView expandDetailsImg, increaseEditImg, decreaseEditImg;
+    private TextView caloriesHeaderTv, productNameTv, barcodeInfoTv, unitTv;
+    private Button saveBtn;
+    private EditText amountEt;
 
     private static final double UNIT_INCREMENT = 1.0;
     private static final double UNIT_HALF = 0.5;
@@ -79,19 +72,19 @@ public class ProductSelectionDialog {
 
     }
     private void initViews() {
-        tv_selectedProductName = dialog.findViewById( R.id.tv_selectedProductName);
-        tv_selectedProductName.setMovementMethod( new ScrollingMovementMethod() );
-        tv_caloriesHeader = dialog.findViewById( R.id.tv_caloriesHeader);
-        tv_unit =dialog.findViewById( R.id.tv_unit);
-        btn_addToConsumption =dialog.findViewById( R.id.btn_addToConsumption);
-        et_addAmount =dialog.findViewById( R.id.et_addAmount);
-        iv_decreaseAmount =dialog.findViewById( R.id.iv_decreaseAmount);
+        productNameTv = dialog.findViewById( R.id.tv_selectedProductName);
+        productNameTv.setMovementMethod( new ScrollingMovementMethod() );
+        caloriesHeaderTv = dialog.findViewById( R.id.tv_caloriesHeader);
+        unitTv =dialog.findViewById( R.id.tv_unit);
+        saveBtn =dialog.findViewById( R.id.btn_addToConsumption);
+        amountEt =dialog.findViewById( R.id.et_addAmount);
+        decreaseEditImg =dialog.findViewById( R.id.iv_decreaseAmount);
 
-        iv_increaseAmount =dialog.findViewById( R.id.iv_increaseAmount);
+        increaseEditImg =dialog.findViewById( R.id.iv_increaseAmount);
 
-        tv_barcodeInfo =dialog.findViewById( R.id.tv_barcodeInfo);
+        barcodeInfoTv =dialog.findViewById( R.id.tv_barcodeInfo);
 
-        iv_expandProductInfo = dialog.findViewById( R.id.iv_expandProductInfo);
+        expandDetailsImg = dialog.findViewById( R.id.iv_expandProductInfo);
 
     }
 
@@ -105,31 +98,31 @@ public class ProductSelectionDialog {
         setupListeners();
     }
     private void setupData() {
-        tv_selectedProductName.setText(product.getName());
-        tv_caloriesHeader.setText(product.getCalorieText());
-        tv_unit.setText( product.getUnit());
+        productNameTv.setText(product.getName());
+        caloriesHeaderTv.setText(product.getCalorieText());
+        unitTv.setText( product.getUnit());
 
         String s = product.getBarcode();
         if (s != null && s.isEmpty()){
             s= "לא צורף מידע נוסף";
         }
-        tv_barcodeInfo.setText( "ברקוד מוצר: " + s );
-        tv_barcodeInfo.setVisibility(  View.GONE );
+        barcodeInfoTv.setText( "ברקוד מוצר: " + s );
+        barcodeInfoTv.setVisibility(  View.GONE );
 
         //האדיט טקסט של כמות יעודכן ל1 אם מדובר בכמות וכו ורק אם מדובר ב100 גרם או מל אז יעודכן ל100
         if ( product.getUnit().equals( "100 גרם" ) || product.getUnit().equals( "100 מל" )  ){
-            et_addAmount.setText( "100" );
+            amountEt.setText( "100" );
         }
         else{
-            et_addAmount.setText("1");
+            amountEt.setText("1");
         }
 
     }
     private void setupListeners() {
         if (listenersSetup) return;
 
-        btn_addToConsumption.setOnClickListener(v -> {
-            String amountText = et_addAmount.getText().toString().trim();
+        saveBtn.setOnClickListener(v -> {
+            String amountText = amountEt.getText().toString().trim();
             if (!isValidAmount(amountText)) {
                 return;
             }
@@ -151,24 +144,24 @@ public class ProductSelectionDialog {
         });
 
 
-        iv_increaseAmount.setOnClickListener(v -> adjustAmount(true));
-        iv_decreaseAmount.setOnClickListener(v -> adjustAmount(false));
+        increaseEditImg.setOnClickListener(v -> adjustAmount(true));
+        decreaseEditImg.setOnClickListener(v -> adjustAmount(false));
 
 
-        iv_expandProductInfo.setOnClickListener( view ->  {
-            if (tv_barcodeInfo.getVisibility() == View.GONE )
-                tv_barcodeInfo.setVisibility(View.VISIBLE );
+        expandDetailsImg.setOnClickListener(view ->  {
+            if (barcodeInfoTv.getVisibility() == View.GONE )
+                barcodeInfoTv.setVisibility(View.VISIBLE );
             else
-                tv_barcodeInfo.setVisibility(View.GONE );
+                barcodeInfoTv.setVisibility(View.GONE );
         });
 
-        tv_selectedProductName.setOnClickListener(v -> {
-            String productName=   tv_selectedProductName.getText().toString().trim();
+        productNameTv.setOnClickListener(v -> {
+            String productName=   productNameTv.getText().toString().trim();
             Utility.clipData(productName , context);
             Toast.makeText( context, "הועתק שם מוצר",Toast.LENGTH_SHORT).show();
         });
 
-        et_addAmount.addTextChangedListener(new TextWatcher() {
+        amountEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
 
@@ -177,15 +170,15 @@ public class ProductSelectionDialog {
             @Override
             public void onTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
                 String st = null;
-                if ( et_addAmount.getText().toString().equals( "." )){ et_addAmount.setText( "" );}
-                if ( et_addAmount.getText().toString().matches("")){
-                    st=calcolatyCAL(Double.parseDouble( tv_caloriesHeader.getText().toString() ),0, tv_unit.getText().toString());
+                if ( amountEt.getText().toString().equals( "." )){ amountEt.setText( "" );}
+                if ( amountEt.getText().toString().matches("")){
+                    st=calcolatyCAL(Double.parseDouble( caloriesHeaderTv.getText().toString() ),0, unitTv.getText().toString());
                 }else{
-                    st = calcolatyCAL( Double.parseDouble( tv_caloriesHeader.getText().toString() ) ,
-                            Double.parseDouble( et_addAmount.getText().toString() ), tv_unit.getText().toString() );
+                    st = calcolatyCAL( Double.parseDouble( caloriesHeaderTv.getText().toString() ) ,
+                            Double.parseDouble( amountEt.getText().toString() ), unitTv.getText().toString() );
 
                 }
-                btn_addToConsumption.setText( st+ "\n"+" הוסף " );
+                saveBtn.setText( st+ "\n"+" הוסף " );
 
             }
 
@@ -202,7 +195,7 @@ public class ProductSelectionDialog {
             return;
         }
 
-        String currentText = et_addAmount.getText().toString().trim();
+        String currentText = amountEt.getText().toString().trim();
         double currentAmount = 0;
 
         if (!currentText.isEmpty()) {
@@ -214,7 +207,7 @@ public class ProductSelectionDialog {
         }
         String unit = product.getUnit();
         String newAmountText = calculateNewAmount(currentAmount, increase, unit);
-        et_addAmount.setText(newAmountText);
+        amountEt.setText(newAmountText);
     }
     private String calculateNewAmount(double currentAmount, boolean increase, String unit) {
         if (calculationMod(unit) == CALCULATION_MOD_UNIT) {
