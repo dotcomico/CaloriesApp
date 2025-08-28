@@ -21,7 +21,7 @@ import java.util.Calendar;
 import java.util.Objects;
 
 
-public class EditConsumedProductDialog {
+public class ConsumedProductEditingDialog {
 
     private Dialog dialog;
     private final Context context;
@@ -43,6 +43,7 @@ public class EditConsumedProductDialog {
     private static final double WEIGHT_VOLUME_INCREMENT = 50.0;
     private static final int CALCULATION_MOD_UNIT = 1;
     private static final int CALCULATION_MOD_WEIGHT_VOLUME = 2;
+
     public interface OnEditCompleteListener {
         void onEditComplete();  // כשמשתמש שומר
     }
@@ -50,7 +51,7 @@ public class EditConsumedProductDialog {
     public void setOnEditCompleteListener(OnEditCompleteListener listener) {
         this.listener = listener;
     }
-    public EditConsumedProductDialog(Context context ) {
+    public ConsumedProductEditingDialog(Context context ) {
         this.context = context;
         createDialog();
     }
@@ -58,7 +59,7 @@ public class EditConsumedProductDialog {
     private void createDialog() {
         dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_consumed_edit);
+        dialog.setContentView(R.layout.dialog_editing_product_consumed);
 
         Objects.requireNonNull(dialog.getWindow()).setLayout(  ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable( Color.TRANSPARENT));
