@@ -16,16 +16,6 @@
         android:background="@drawable/sty_blue"
         android:visibility="visible">
 
-        <!-- Close Bottom Sheet Button -->
-        <ImageView
-            android:id="@+id/iv_closeBottomSheet"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="1dp"
-            android:src="@drawable/ic_baseline_clear_24_w"
-            android:visibility="visible" />
-
         <!-- Calories Display Header -->
         <TextView
             android:id="@+id/tv_caloriesHeader"
@@ -117,9 +107,9 @@
                 android:id="@+id/et_addAmount"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_marginHorizontal="3dp"
                 android:layout_gravity="center"
+                android:layout_marginHorizontal="3dp"
+                android:layout_weight="1"
                 android:background="@drawable/sty_2"
                 android:gravity="center"
                 android:hint="כמות"
