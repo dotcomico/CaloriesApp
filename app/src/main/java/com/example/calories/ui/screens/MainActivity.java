@@ -1,5 +1,6 @@
 package com.example.calories.ui.screens;
 
+import static androidx.core.content.ContextCompat.getSystemService;
 import static com.example.calories.utils.SystemProducts_Utils.getSystemProductsArr;
 import static com.example.calories.utils.Utility.clipData;
 import static com.example.calories.utils.Utility.isNumeric;
@@ -18,6 +19,8 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -67,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //--------------- CalorieTrackerView ---------------
     private RecyclerView consumedProductsRecyclerView;
     private RecyclerView.LayoutManager consumedProductsLayoutManager;
-
     private ConsumedProduct consumedProduct_edit;
 
     ConsumedProductEditingDialog consumedProductEditingDialog;
@@ -310,7 +312,13 @@ ProductSelectionDialog productSelectionDialog;
         mainSearchView.clearFocus();
         // mainSearchView.setQuery("", false);
         //mainSearchView.setIconified(true);
-        productSelectionDialog.show(temp_exampleItem,calendar , consumedProductManager);
+        // המתנה קצרה לפני הצגת הדיאלוג
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                productSelectionDialog.show(temp_exampleItem,calendar , consumedProductManager);
+            }
+        }, 200); // 200ms השהיה
     }
 
 
