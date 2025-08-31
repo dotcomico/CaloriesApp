@@ -83,7 +83,7 @@
                 android:textColor="#000"
                 android:ems="10"
                 android:maxLines="1"
-                android:inputType="text"
+                android:inputType="numberDecimal"
                 android:background="@drawable/sty_2"
                 />
 
