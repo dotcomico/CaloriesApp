@@ -45,4 +45,20 @@ public class ProductStorageManager {
         }
         return null;
     }
+    public void addProductAndSave(Product newProduct) {  // זה צריך להיות שייך למחלקה נוספת ניהול המוצרים (כמו שיש ניהול אחסון מוצרים שנצרכו וגם ניהול מוצרים שנצרכו
+        if (newProduct == null) {
+            // אופציונלי: אתה יכול לבחור לזרוק חריגה או פשוט להתעלם
+            // Log.w("ProductStorageManager", "Attempted to add a null product.");
+            return;
+        }
+
+        // 1. טען את הרשימה הקיימת
+        ArrayList<Product> currentProductList = load();
+
+        // 2. הוסף את המוצר החדש לרשימה
+        currentProductList.add(newProduct);
+
+        // 3. שמור את הרשימה המעודכנת
+        save(currentProductList);
+    }
 }
