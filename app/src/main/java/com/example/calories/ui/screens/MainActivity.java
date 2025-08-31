@@ -125,7 +125,6 @@ ProductSelectionDialog productSelectionDialog;
 
 
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -307,18 +306,29 @@ ProductSelectionDialog productSelectionDialog;
 
     }
 
-    private void openProductSelectionDialog() {
-        hideKeyboard();
-        mainSearchView.clearFocus();
+    private void openProductSelectionDialog() {  // פעולה לבדיקת םמקלדת פתוחה, לא עובדת
         // mainSearchView.setQuery("", false);
         //mainSearchView.setIconified(true);
-        // המתנה קצרה לפני הצגת הדיאלוג
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        if (imm.isActive()) {
+            // המקלדת פעילה - סוגרים ומחכים
+            mainSearchView.clearFocus();
+            hideKeyboardAndShowDialog();
+        } else {
+            productSelectionDialog.show(temp_exampleItem,calendar , consumedProductManager);
+        }
+    }
+
+    private void hideKeyboardAndShowDialog() {
+        hideKeyboard();
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                productSelectionDialog.show(temp_exampleItem,calendar , consumedProductManager);
-            }
-        }, 200); // 200ms השהיה
+        @Override
+        public void run() {
+            productSelectionDialog.show(temp_exampleItem,calendar , consumedProductManager);
+        }
+    }, 200); //
     }
 
 
@@ -639,10 +649,8 @@ ProductSelectionDialog productSelectionDialog;
         if (customProducts == null) {
             customProducts = new ArrayList<>();
         }else {
-            for (int i = 0; i < customProducts.size(); i++){
-                //הוספת איבי רשימה שלי לרשימה ראשית
-                systemProductList.add( customProducts.get( i ) );
-            }
+            //הוספת איבי רשימה שלי לרשימה ראשית
+            systemProductList.addAll(customProducts);
             productsRecyclerView.setAdapter(new ProductItemAdapter(systemProductList));
             // המצב הראשוני של רשימת החיפוש כרשימת המוצרים (ברירת מחדל)
             filteredProducts = systemProductList;
