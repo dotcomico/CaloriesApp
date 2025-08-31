@@ -72,7 +72,6 @@ public class ProductSelectionDialog {
 
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         initViews();
-
     }
     private void initViews() {
         productNameTv = dialog.findViewById( R.id.tv_selectedProductName);
@@ -262,6 +261,7 @@ public class ProductSelectionDialog {
         }
         return str_caloria;
     }
+
     public void close(){
         dialog.dismiss();
     }
