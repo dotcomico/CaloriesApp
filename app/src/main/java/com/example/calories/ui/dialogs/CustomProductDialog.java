@@ -4,6 +4,7 @@ import static com.example.calories.utils.Utility.makeToast;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
@@ -46,13 +47,16 @@ public class CustomProductDialog {
     private ImageView   saveAndStay;
     private UnitSelectorView unitSelectorView;
     private BarcodeDialogHandler barcodeDialogHandler;
+    private ImageView iv_barcodeScan;
 
 
     public interface OnCustomProductItemListener {
-        void onItemCreated();  // כשמשתמש שומר
+        void onItemCreated(Product customProduct);  // כשמשתמש שומר
+        void onSearch(String suggestion);
         void onSearchSuggestionClicked(String suggestion);
+        void onDialogClose();
     }
-    public void OnCustomProductCreatedListener(OnCustomProductItemListener listener) {
+    public void setOnCustomProductItemListener(OnCustomProductItemListener listener) {
         this.listener = listener;
     }
     public CustomProductDialog(Context context ) {
@@ -85,22 +89,27 @@ public class CustomProductDialog {
         webSearchSuggestion =dialog.findViewById( R.id.webSearchSuggestion);
         saveAndStay =dialog.findViewById( R.id.saveAndStay);
         unitSelectorView = dialog.findViewById(R.id.unit_selector);
+        iv_barcodeScan =dialog.findViewById( R.id.iv_barcodeScan);
     }
 
-    public void show(ProductStorageManager productStorageManager) {
+    public void show(ProductStorageManager productStorageManager , String nameQuery , String barcodeQuery  ) {
         this.productStorageManager= productStorageManager;
         barcodeDialogHandler =new BarcodeDialogHandler(context);
 
         dialog.show();
-        setupData();
+        setupData(nameQuery , barcodeQuery);
         setupListeners();
     }
-    private void setupData() {
-
+    private void setupData(String nameQuery , String barcodeQuery) {
+        //unitSelectorView.selectDefaultUnit();
+        if (!nameQuery.isEmpty()){
+        newProductNameEditText.setText( nameQuery );}
+        if (!barcodeQuery.isEmpty()){
+           barcodeDialogHandler.getBarcodeEditText().setText( barcodeQuery );}
     }
     private void setupListeners() {
         if (listenersSetup) return;
-
+        iv_barcodeScan.setOnClickListener( view -> {barcodeDialogHandler.showDialog();} );
         saveNewProductItemButton.setOnClickListener(this::saveNewProduct);
 
         saveAndStay.setOnClickListener(this::saveNewProduct);
@@ -118,6 +127,21 @@ public class CustomProductDialog {
         } );
 
         selfSearchSearchView.setOnClickListener( view -> {selfSearchSearchView.setIconified(false);} );
+
+        selfSearchSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                if (listener != null) {
+                    listener.onSearch(s);
+                }
+                return  false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
 
         newProductNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -179,29 +203,22 @@ public class CustomProductDialog {
             newProductCaloriesEditText.setBackgroundResource( R.drawable.sty_red );
             return;
         }
-
         if ( isValidAmount(newProductCalories)){
             newProductCaloriesEditText.setBackgroundResource( R.drawable.sty_red );
             return;
         }
 
-        addToFoodList();
-
         newProductNameEditText.setBackgroundResource( R.drawable.sty_2 );
         newProductCaloriesEditText.setBackgroundResource( R.drawable.sty_2 );
         newProductCaloriesEditText.setText( "" );
 
-        if (listener != null && v==saveNewProductItemButton) {
-            listener.onItemCreated();
-        }
+        addToFoodList(v);  // הליסינר בפנים חשוב אך ניתן לשנות את הפעולות על מנת לנקות את הקוד ולשפר ביצועיו
+
 
         makeToast( "\"" + newProductName +"\"" +" "+ newProductUnit +" נוסף למערכת!", context);
 
     }
-    private boolean isValidAmount(String amountText) {
-        return !amountText.isEmpty() && amountText.matches("\\d+(\\.\\d+)?");
-    }
-    private void addToFoodList(){
+    private void addToFoodList(View v){
         //הוסף מזון לרשימת מוצרים שלי (רק אם אני בחיפוש עצמי או עורך מוצר קיים)
         Product item;
         String name = newProductNameEditText.getText().toString().trim();
@@ -212,11 +229,28 @@ public class CustomProductDialog {
         item = new Product(   1 , name , unit , calories , barcode );
 
         productStorageManager.addProductAndSave(item);
+
+        if (listener != null && v == saveNewProductItemButton) {  // הליסטינר יכול לעבור למיקום אחר אבל יש לשים לב להגיון הפנימי
+            listener.onItemCreated(item);
+        }
     }
+
+    private boolean isValidAmount(String amountText) {
+        return !amountText.isEmpty() && amountText.matches("\\d+(\\.\\d+)?");
+    }
+
     public void close(){
+        if (listener != null){
+            listener.onDialogClose();
+        }
         dialog.dismiss();
     }
     public boolean isClosed(){
         return !dialog.isShowing();
+    }
+
+
+    public Dialog getDialog(){
+        return dialog;
     }
 }
