@@ -66,7 +66,6 @@ public class BarcodeDialogHandler {
             } else {
                 etBarcode.setText( et_text + " , " +barcode  );
             }
-
             // etBarcode.setText(barcode);
         } else {
             Toast.makeText(context, "אין תוצאה", Toast.LENGTH_SHORT).show();
