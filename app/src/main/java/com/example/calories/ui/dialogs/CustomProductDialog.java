@@ -5,6 +5,7 @@ import static com.example.calories.utils.Utility.makeToast;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
@@ -24,6 +25,8 @@ import com.example.calories.R;
 import com.example.calories.data.models.Product;
 import com.example.calories.data.storage.ProductStorageManager;
 import com.example.calories.ui.views.UnitSelectorView;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.Objects;
 
@@ -81,7 +84,6 @@ public class CustomProductDialog {
     private void initViews() {
         ly_productCreationForm =dialog.findViewById( R.id.ly_productCreationForm);
         ly_customProductBottomSheet = dialog.findViewById( R.id.ly_customProductBottomSheet);
-        iv_collapseBottomSheet =dialog.findViewById( R.id.iv_collapseBottomSheet);
         newProductNameEditText = dialog.findViewById( R.id.newProductNameEditText );
         newProductCaloriesEditText = dialog.findViewById( R.id.newProductCaloriesEditText );
         selfSearchSearchView = dialog.findViewById( R.id.selfSearchSearchView);
@@ -109,7 +111,9 @@ public class CustomProductDialog {
     }
     private void setupListeners() {
         if (listenersSetup) return;
+
         iv_barcodeScan.setOnClickListener( view -> {barcodeDialogHandler.showDialog();} );
+
         saveNewProductItemButton.setOnClickListener(this::saveNewProduct);
 
         saveAndStay.setOnClickListener(this::saveNewProduct);
@@ -199,20 +203,17 @@ public class CustomProductDialog {
             newProductNameEditText.setBackgroundResource( R.drawable.sty_red );
             return;
         }
-        if (newProductCalories.isEmpty()) {
+        if (newProductCalories.isEmpty() || !isValidAmount(newProductCalories)) {
             newProductCaloriesEditText.setBackgroundResource( R.drawable.sty_red );
             return;
         }
-        if ( isValidAmount(newProductCalories)){
-            newProductCaloriesEditText.setBackgroundResource( R.drawable.sty_red );
-            return;
-        }
+
+        addToFoodList(v);  // הליסינר בפנים חשוב אך ניתן לשנות את הפעולות על מנת לנקות את הקוד ולשפר ביצועיו
 
         newProductNameEditText.setBackgroundResource( R.drawable.sty_2 );
         newProductCaloriesEditText.setBackgroundResource( R.drawable.sty_2 );
         newProductCaloriesEditText.setText( "" );
 
-        addToFoodList(v);  // הליסינר בפנים חשוב אך ניתן לשנות את הפעולות על מנת לנקות את הקוד ולשפר ביצועיו
 
 
         makeToast( "\"" + newProductName +"\"" +" "+ newProductUnit +" נוסף למערכת!", context);
@@ -249,7 +250,11 @@ public class CustomProductDialog {
         return !dialog.isShowing();
     }
 
-
+    public void handleBarcodeResult(IntentResult result) {
+        if (barcodeDialogHandler != null && result != null) {
+            barcodeDialogHandler.handleActivityResult(result);
+        }
+    }
     public Dialog getDialog(){
         return dialog;
     }
