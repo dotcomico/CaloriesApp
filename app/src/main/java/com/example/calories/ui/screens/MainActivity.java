@@ -313,6 +313,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onDialogClose() {
             }
         });
+
+        MyProductActivity.setScreenCloseListener(new MyProductActivity.ScreenCloseListener() {
+            @Override
+            public void onScreenClosed() {
+                updateMain();
+            }
+        });
     }
 
     private void openProductSelectionDialog(Product product) {
