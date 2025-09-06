@@ -48,6 +48,7 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
     private BarcodeDialogHandler barcodeDialogHandler;
     private ProductItemDeletionHelper deletionHelper;
     private UnitSelectorView unitSelectorView;
+    private static ScreenCloseListener screenCloseListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,12 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
         });
     }
 
+    public interface ScreenCloseListener {
+        void onScreenClosed();
+    }
+    public static void setScreenCloseListener(ScreenCloseListener listener) {
+        screenCloseListener = listener;
+    }
     private void setRecyclerView() {
 
         customProducts = productStorageManager.load();
@@ -273,6 +280,14 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (screenCloseListener != null) {
+            screenCloseListener.onScreenClosed();
+        }
     }
 
 }
