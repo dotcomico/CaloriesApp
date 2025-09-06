@@ -21,17 +21,6 @@
             android:padding="5dp"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/iv_collapseBottomSheet"
-                android:visibility="visible"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center"
-                android:scaleX="1.8"
-                android:scaleY="1.8"
-                android:src="@drawable/baseline_arrow_drop_down_white2"
-                />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,6 +28,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="25sp"
                 android:textStyle="bold"
+                android:layout_gravity="center"
                 />
             <LinearLayout
                 android:layout_width="match_parent"
