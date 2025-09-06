@@ -27,8 +27,8 @@
             android:visibility="gone" />
 
         <!-- include כרטיסיות (הוספה, עריכה, חיפוש עצמי) -->
-        <include layout="@layout/dialog_product_custom"
-            />
+<!--        <include layout="@layout/dialog_product_custom"-->
+<!--            />-->
 
 
     </LinearLayout>
