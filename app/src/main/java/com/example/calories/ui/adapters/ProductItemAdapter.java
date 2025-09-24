@@ -1,9 +1,11 @@
 package com.example.calories.ui.adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
@@ -38,7 +40,10 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
         private final TextView productNameTextView;
         private final TextView productUnitTextView;
         private final TextView productCalorieValueTextView;
-        private final TextView calorieLabelTextView;
+        private final TextView productDescriptionTextView;
+        private final ConstraintLayout calorieContainer;
+
+        private final LinearLayout productUnitContainer;
 
         public ProductItemViewHolder(View itemView) {
             super(itemView);
@@ -47,7 +52,9 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
             productNameTextView = itemView.findViewById(R.id.productNameTextView);
             productUnitTextView = itemView.findViewById(R.id.productUnitTextView);
             productCalorieValueTextView = itemView.findViewById(R.id.productCalorieValueTextView);
-            calorieLabelTextView = itemView.findViewById(R.id.calorieLabelTextView);
+            productDescriptionTextView = itemView.findViewById(R.id.productDescriptionTextView);
+            calorieContainer = itemView.findViewById(R.id.calorieContainer);
+            productUnitContainer = itemView.findViewById(R.id.productUnitContainer);
         }
     }
 
@@ -69,12 +76,22 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
 
         int state = currentItem.getItemState();
         holder.mainLayout.setBackgroundResource(getCustomBackgroundForState(state));
-        holder.calorieLabelTextView.setVisibility(View.VISIBLE);
-        holder.productCalorieValueTextView.setScaleY(1.0f);
-        holder.productCalorieValueTextView.setTextSize(30);
+        holder.productCalorieValueTextView.setScaleY(1f);
+        holder.productCalorieValueTextView.setTextSize(25);
+        holder.productDescriptionTextView.setVisibility(View.GONE);
+        holder.productDescriptionTextView.setTextColor(Color.parseColor("#999999"));
+        holder.calorieContainer.setBackgroundResource(R.drawable.calories_product_item_display);
+        holder.productUnitContainer.setVisibility(View.VISIBLE);
 
         if (state == STATE_HIGHLIGHTED) {
+            holder.productNameTextView.setText("לא מה שחיפשת?");
+            holder.productDescriptionTextView.setText("המשך בחיפוש עצמי");
+            holder.productCalorieValueTextView.setText("\uD83D\uDD0D");
             applyHighlightStyle(holder);
+            holder.productDescriptionTextView.setVisibility(View.VISIBLE);
+            holder.productDescriptionTextView.setTextColor(Color.WHITE);
+            holder.calorieContainer.setBackground(null);
+            holder.productUnitContainer.setVisibility(View.GONE);
         }
     }
 
@@ -83,19 +100,19 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
     @DrawableRes
     private int getCustomBackgroundForState(int state) {
         switch (state) {
+            // message_sty1 , message_sty_delete , message_sty3
             case STATE_HIGHLIGHTED:
-                return R.drawable.message_sty3;
+                return R.drawable.product_item_background_self_search;
             case STATE_MARKED_FOR_DELETE:
-                return R.drawable.message_sty_delete;
+                return R.drawable.product_item_background_delete;
             case STATE_CUSTOM:
-                return R.drawable.message_sty2;
+                return R.drawable.product_item_background_custom;
             case STATE_NORMAL:
             default:
-                return R.drawable.message_sty1;
+                return R.drawable.product_item_background;
         }
     }
     private void applyHighlightStyle(ProductItemViewHolder holder) {
-        holder.calorieLabelTextView.setVisibility(View.GONE);
         holder.productCalorieValueTextView.setScaleY(1f);
         holder.productCalorieValueTextView.setTextSize(35);
     }
