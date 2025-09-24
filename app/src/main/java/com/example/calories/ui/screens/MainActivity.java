@@ -5,7 +5,6 @@ import static com.example.calories.utils.Utility.clipData;
 import static com.example.calories.utils.Utility.isNumeric;
 import static com.example.calories.utils.Utility.startNewActivity;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,15 +14,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -109,8 +105,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tv_clearMainCaloriesList, tv_totalCalories;
     private ImageView iv_myProducts;
 
-    private Animation slide_in_bottom;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,9 +127,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //      sortArrayList();
 
 
-
-
-        //פעולות לחיצה על איברי הרשימה
         productsRecyclerView.addOnItemTouchListener( new RecyclerItemClickListener(MainActivity.this, productsRecyclerView
                 ,new RecyclerItemClickListener.OnItemClickListener() {
             @Override public void onItemClick(View view, int position) {
@@ -155,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override public void onLongItemClick(View view, int position) {
             }
         }) );
-        //פעולות לחיצה על איברי הרשימה- קלוריות מסך ראשי
+
         consumedProductsRecyclerView.addOnItemTouchListener( new RecyclerItemClickListener(MainActivity.this, consumedProductsRecyclerView
                 , new RecyclerItemClickListener.OnItemClickListener() {
             @Override
@@ -298,12 +289,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onSearch(String suggestion) {
-                startinternetWebSearch(suggestion);
+                startInternetWebSearch(suggestion);
             }
 
             @Override
             public void onSearchSuggestionClicked(String suggestion) {
-                startinternetWebSearchDotan(suggestion);
+                startInternetWebSearchDotan(suggestion);
                 hideKeyboard();
                 customProductDialog.close();
                 iv_showSelfSearchBar.setVisibility( View.VISIBLE );
@@ -598,7 +589,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //    sortByAB(  filteredExampleList );
         }
         //הצג הודעה במקרה של חוסר תוצאות
-        if (filteredProducts.size()>0){ filteredProducts.add(new Product( 999, "לא מה שחיפשת?", "המשך בחיפוש עצמי","\uD83D\uDD0D",""));}
+        if (!filteredProducts.isEmpty()){ filteredProducts.add(new Product( 999, "", "","",""));}
         //עדכן רשימה
          RecyclerView.Adapter  newAdapter = new ProductItemAdapter(filteredProducts);
         productsRecyclerView.setAdapter(newAdapter);
@@ -730,8 +721,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iv_backFromSelfSearchToMain =findViewById(R.id.iv_backFromSelfSearchToMain);
         iv_backFromSelfSearchToMain.setOnClickListener( this );
 
-        slide_in_bottom= AnimationUtils.loadAnimation( this,R.anim.slide_in_bottom );
-
         iv_myProducts =findViewById( R.id.iv_myProducts);
         iv_myProducts.setOnClickListener( this );
 
@@ -824,13 +813,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updateMain();  /// האם זה בכלל נחוץ? נראה שאין סיבה לעדכן נראות מסך ראשי אם מדובר בביטול פעולה
 
     }
-    private void startinternetWebSearch(String query) {
+    private void startInternetWebSearch(String query) {
         webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webview.loadUrl("https://www.google.com/search?q=" + query +" "+ "קלוריות");
         //העלם עמודת חיפוש והצג אפשרות ביטול
         //   serchview_internet.setVisibility(View.GONE);
     }
-    private void startinternetWebSearchDotan(String SuggestionQuery) {
+    private void startInternetWebSearchDotan(String SuggestionQuery) {
         webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webview.loadUrl("https://www.google.com/search?q=" + SuggestionQuery);
     }
@@ -902,7 +891,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void changeBarColor(RelativeLayout relativeLayout) {
 
         ColorDrawable viewColor = (ColorDrawable) rl_top.getBackground();
