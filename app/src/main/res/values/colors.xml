@@ -3,21 +3,21 @@
     <color name="primaryText">#1A1A1A</color>
     <color name="secondaryText">#666666</color>
     <color name="tertiaryText">#999999</color>
-    <color name="background">#FAF9F6</color>
     <color name="error">#FF0000</color>
     <color name="success">#00FF00</color>
 
-    <color name="primary">#036CF6</color>
-    <color name="secondary">#4187FF</color>
-    <color name="tertiary">#679AFF</color>
+    <color name="primary">#FFFFFF</color>
+    <color name="secondary">#F1F1F1</color>
+    <color name="tertiary">#036CF6</color>
+
+
     <color name="selfSearch">#E6FFA63A</color>
     <color name="delete">#FF6262</color>
-
     <color name="sideItem">#FF6262</color>
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="offWhite">#FFFFFFFF</color>
+    <color name="offWhite">#FAF9F6</color>
     <color name="darkGray">#717171</color>
     <color name="lightGray">#A1A1A1</color>
     <color name="lavender">#8692f7</color>
