@@ -13,9 +13,9 @@
         android:layout_height="60dp">
 
         <Button
-            android:id="@+id/btn_lastDay"
+            android:id="@+id/lastDayBtn"
             android:text="〈  "
-            android:layout_toRightOf="@id/tv_date"
+            android:layout_toRightOf="@id/currentDateText"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:background="@drawable/sty_w_r"
@@ -23,10 +23,10 @@
             android:textColor="#434343" />
 
         <Button
-            android:id="@+id/btn_nextDay"
+            android:id="@+id/nextDayBtn"
             android:text="  〉"
             android:gravity="right"
-            android:layout_toLeftOf="@id/tv_date"
+            android:layout_toLeftOf="@id/currentDateText"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:background="@drawable/sty_w_r"
@@ -34,7 +34,7 @@
             android:textColor="#434343" />
 
         <TextView
-            android:id="@+id/tv_date"
+            android:id="@+id/currentDateText"
             android:layout_width="145dp"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -47,7 +47,7 @@
             android:textStyle="normal" />
 
         <ImageView
-            android:id="@+id/iv_settings"
+            android:id="@+id/settingsIcon"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_centerVertical="true"
@@ -55,7 +55,7 @@
             android:src="@drawable/ic_baseline_settings_24" />
 
         <ImageView
-            android:id="@+id/iv_myProducts"
+            android:id="@+id/customListIcon"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_centerVertical="true"
