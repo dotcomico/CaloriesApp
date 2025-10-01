@@ -92,18 +92,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // dialog
     ConsumedProductManager consumedProductManager;
     // top bar
-    private Button btn_lastDay,btn_nextDay;
+    private Button lastDayBtn, nextDayBtn;
 
     //  settings
     private LinearLayout ly_settings;
 
     private ImageView iv_backFromSelfSearchToMain, iv_myProducts_SS, iv_showSelfSearchBar, iv_selfSearch_round ,  iv_selfAdd, iv_goToSelfSearch,
-            iv_backToMain,iv_settings, iv_startBarcodeScan;
+            iv_backToMain, settingsIcon, barcodeIcon;
     private RelativeLayout rl_selfSearch,rl_top, rl_selfSearchTopBar,rl_mainInformation;
-    private TextView tv_date, tv_returnToMainScreen;
+    private TextView currentDateText, tv_returnToMainScreen;
 
-    private TextView tv_clearMainCaloriesList, tv_totalCalories;
-    private ImageView iv_myProducts;
+    private TextView tv_clearMainCaloriesList, caloriesViewText;
+    private ImageView customListIcon;
 
 
     @Override
@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     rl_mainInformation.setVisibility(View.VISIBLE);
                     iv_selfAdd.setVisibility(View.VISIBLE);
                     iv_selfSearch_round.setVisibility( View.GONE );
-                    iv_startBarcodeScan.setVisibility( View.GONE );
+                    barcodeIcon.setVisibility( View.GONE );
                     rl_selfSearch.setVisibility(View.GONE);
                     productsRecyclerView.setVisibility(View.GONE);
                     iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_purple );
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     rl_mainInformation.setVisibility(View.GONE);
                     iv_selfAdd.setVisibility(View.GONE);
                     iv_selfSearch_round.setVisibility( View.VISIBLE );
-                    iv_startBarcodeScan.setVisibility( View.GONE );
+                    barcodeIcon.setVisibility( View.GONE );
                     rl_selfSearch.setVisibility(View.VISIBLE);
                     productsRecyclerView.setVisibility(View.GONE);
                     iv_backToMain.setImageResource( R.drawable.baseline_arrow_circle_right_oreng );
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     rl_mainInformation.setVisibility(View.GONE);
                     iv_selfAdd.setVisibility(View.GONE);
                     iv_selfSearch_round.setVisibility( View.GONE );
-                    iv_startBarcodeScan.setVisibility( View.VISIBLE );
+                    barcodeIcon.setVisibility( View.VISIBLE );
                     rl_selfSearch.setVisibility(View.GONE);
                     productsRecyclerView.setVisibility(View.VISIBLE);
                     iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_blue );
@@ -344,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
 
-        if(view== iv_myProducts || view == iv_myProducts_SS){
+        if(view== customListIcon || view == iv_myProducts_SS){
             startNewActivity(MainActivity.this, MyProductActivity.class);
 
         }
@@ -353,24 +353,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             selfAddActions();
         }
 
-        if(view== iv_startBarcodeScan){
+        if(view== barcodeIcon){
             openMain();
             scanCode();}
 
-        if(view==btn_nextDay){
+        if(view== nextDayBtn){
             //יקרה רק אם כל שאר המסכים סגורים
             if (rl_selfSearch.getVisibility()==View.GONE){
                 calendar.add(Calendar.DAY_OF_MONTH, 1); //Adds a day
-                tv_date.setText( new SimpleDateFormat("dd-MM-yyyy").format(calendar.getTime()));
+                currentDateText.setText( new SimpleDateFormat("dd-MM-yyyy").format(calendar.getTime()));
                 refreshConsumedProductsList();
             }
         }
 
-        if(view==btn_lastDay){
+        if(view== lastDayBtn){
             //יקרה רק אם כל שאר המסכים סגורים
             if (rl_selfSearch.getVisibility()==View.GONE) {
                 calendar.add( Calendar.DAY_OF_MONTH , -1 ); //Goes to previous day
-                tv_date.setText( new SimpleDateFormat( "dd-MM-yyyy" ).format( calendar.getTime() ) );
+                currentDateText.setText( new SimpleDateFormat( "dd-MM-yyyy" ).format( calendar.getTime() ) );
                 refreshConsumedProductsList();
             }
         }
@@ -430,7 +430,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //         editor.putString( "caloria" , str_caloria );
             //     editor.commit();
             //   text.setText( str_caloria );
-            tv_totalCalories.setText("0");
+            caloriesViewText.setText("0");
             clearConsumedProductData();
             Toast.makeText( getBaseContext(), "רשימת קלוריות שנצרכו נמחקה (מסך ראשי)",Toast.LENGTH_SHORT).show();
             restartApp();
@@ -440,7 +440,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ly_settings.setVisibility( View.GONE );
         }
 
-        if (view==iv_settings) {
+        if (view== settingsIcon) {
             ly_settings.setVisibility( View.VISIBLE );
         }
     }
@@ -467,7 +467,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         mainSearchView.setBackgroundResource( R.drawable.sty_3 );
         iv_selfAdd.setVisibility(View.GONE);
-        iv_startBarcodeScan.setVisibility( View.VISIBLE );
+        barcodeIcon.setVisibility( View.VISIBLE );
 
 
     }
@@ -671,7 +671,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         iv_selfAdd.setVisibility(View.GONE);
         iv_selfSearch_round.setVisibility( View.GONE );
-        iv_startBarcodeScan.setVisibility( View.VISIBLE );
+        barcodeIcon.setVisibility( View.VISIBLE );
 
         rl_mainInformation.setVisibility(View.GONE);
         rl_top.setVisibility( View.VISIBLE );
@@ -702,7 +702,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iv_backToMain.setVisibility(View.GONE);
         productsRecyclerView.setVisibility(View.GONE);
         rl_selfSearch.setVisibility(View.GONE);
-        iv_startBarcodeScan.setVisibility(View.GONE);
+        barcodeIcon.setVisibility(View.GONE);
         cancelEdit();
 
         customProductDialog.show(productStorageManager , "" , barcode );
@@ -721,15 +721,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iv_backFromSelfSearchToMain =findViewById(R.id.iv_backFromSelfSearchToMain);
         iv_backFromSelfSearchToMain.setOnClickListener( this );
 
-        iv_myProducts =findViewById( R.id.iv_myProducts);
-        iv_myProducts.setOnClickListener( this );
+        customListIcon =findViewById( R.id.customListIcon);
+        customListIcon.setOnClickListener( this );
 
         consumedProductsRecyclerView =findViewById( R.id.consumedProductsRecyclerView);
         consumedProductsLayoutManager = new LinearLayoutManager(this);
         consumedProductsRecyclerView.setLayoutManager(consumedProductsLayoutManager);
 
-        iv_startBarcodeScan =findViewById( R.id.iv_barcodeSearch_round );
-        iv_startBarcodeScan.setOnClickListener( this );
+        barcodeIcon =findViewById( R.id.barcodeIcon);
+        barcodeIcon.setOnClickListener( this );
 
         iv_showSelfSearchBar =findViewById( R.id.iv_showSelfSearchBar );
         iv_showSelfSearchBar.setOnClickListener( this );
@@ -740,15 +740,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tv_returnToMainScreen =findViewById( R.id.tv_returnToMainScreen);
         tv_returnToMainScreen.setOnClickListener( this );
-        iv_settings=findViewById( R.id.iv_settings);
-        iv_settings.setOnClickListener( this );
+        settingsIcon =findViewById( R.id.settingsIcon);
+        settingsIcon.setOnClickListener( this );
         ly_settings=findViewById( R.id.ly_settings);
-        tv_date=findViewById( R.id.tv_date);
-        btn_nextDay=findViewById( R.id.btn_nextDay);
-        btn_nextDay.setOnClickListener( this );
+        currentDateText =findViewById( R.id.currentDateText);
+        nextDayBtn =findViewById( R.id.nextDayBtn);
+        nextDayBtn.setOnClickListener( this );
 
-        btn_lastDay=findViewById( R.id.btn_lastDay);
-        btn_lastDay.setOnClickListener( this );
+        lastDayBtn =findViewById( R.id.lastDayBtn);
+        lastDayBtn.setOnClickListener( this );
         ;
         rl_mainInformation=findViewById( R.id.rl_mainInformation );
         productsRecyclerView = findViewById(R.id.productsRecyclerView);
@@ -761,8 +761,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iv_goToSelfSearch =findViewById( R.id.iv_goToSelfSearch);
         iv_goToSelfSearch.setOnClickListener( this );
 
-        tv_totalCalories =findViewById( R.id.tv_totalCalories);
-        tv_totalCalories.setOnClickListener( this );
+        caloriesViewText =findViewById( R.id.caloriesViewText);
+        caloriesViewText.setOnClickListener( this );
         webview = findViewById( R.id.webview);
         webview.setWebViewClient( new WebViewClient() );
         WebSettings webSettings=webview.getSettings();
@@ -807,7 +807,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         productsRecyclerView.setVisibility(View.VISIBLE);
         iv_selfSearch_round.setVisibility( View.GONE );
         iv_showSelfSearchBar.setVisibility( View.GONE );
-        iv_startBarcodeScan.setVisibility( View.VISIBLE );
+        barcodeIcon.setVisibility( View.VISIBLE );
         mainSearchView.setQuery( "" , false );
         mainSearchView.setBackgroundResource( R.drawable.sty_3 );
         updateMain();  /// האם זה בכלל נחוץ? נראה שאין סיבה לעדכן נראות מסך ראשי אם מדובר בביטול פעולה
@@ -936,10 +936,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (totalCalories!=0){
             //  text.setText( "  "+totalCalories+"  " );
-            tv_totalCalories.setText( ""+totalCalories );
-            tv_totalCalories.setBackgroundResource( R.drawable.sty_blue_r ); }
-        else{    tv_totalCalories.setText( "");
-            tv_totalCalories.setBackgroundResource( R.drawable.sty_blue_r_sercle ); }
+            caloriesViewText.setText( ""+totalCalories );
+            caloriesViewText.setBackgroundResource( R.drawable.sty_blue_r ); }
+        else{    caloriesViewText.setText( "");
+            caloriesViewText.setBackgroundResource( R.drawable.sty_blue_r_sercle ); }
     }
     private void deleteConsumedProductById(String targetId){
         consumedProductManager.deleteItemById(targetId);
