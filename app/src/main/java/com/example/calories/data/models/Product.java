@@ -1,16 +1,12 @@
 package com.example.calories.data.models;
+import static com.example.calories.utils.AppConstants.*;
 
 public class Product {
-
-    // Constants for item states
-    public static final int ITEM_STATE_SYSTEM = 0;  // מוצר במערכת
-    public static final int ITEM_STATE_PRIVATE = 1; // מוצר פרטי
-
-
+    /// לשנות calorieText לInt
     private int itemState; // הבחנה בין מוצר פרטי למוצר במערכת (0=מערכת, 1=פרטי)
     private String name; // שם מוצר
     private String unit; // סוג המדד כמחרוזת
-    private String calorieText; // קלוריות
+    private String calorieText; /// קלוריות
     private String barcode;
 
     public Product() {
@@ -74,7 +70,7 @@ public class Product {
      * @return true אם מוצר מערכת, false אחרת
      */
     public boolean isSystemItem() {
-        return itemState == ITEM_STATE_SYSTEM;
+        return itemState == PRODUCT_STATE_SYSTEM;
     }
 
     /**
@@ -82,7 +78,7 @@ public class Product {
      * @return true אם מוצר פרטי, false אחרת
      */
     public boolean isPrivateItem() {
-        return itemState == ITEM_STATE_PRIVATE;
+        return itemState == PRODUCT_STATE_CUSTOM;
     }
 
     /**
@@ -106,7 +102,7 @@ public class Product {
      * איפוס כל השדות למצב ברירת מחדל
      */
     public void clear() {
-        itemState = ITEM_STATE_SYSTEM;
+        itemState = PRODUCT_STATE_SYSTEM;
         name = "";
         unit = "";
         calorieText = "";
