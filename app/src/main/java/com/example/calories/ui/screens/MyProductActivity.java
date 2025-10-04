@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +19,7 @@ import android.widget.LinearLayout;
 
 import com.example.calories.data.models.Product;
 import com.example.calories.ui.dialogs.BarcodeDialogHandler;
+import com.example.calories.ui.dialogs.CustomProductDialog;
 import com.example.calories.ui.views.UnitSelectorView;
 import com.example.calories.export.ProductExporter;
 import com.example.calories.ui.adapters.ProductItemAdapter;
@@ -79,12 +81,22 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Handle the FAB click
-                Intent i = new Intent(MyProductActivity.this, MainActivity.class);
-                i.putExtra("selfSearch", true );
-                startActivity( i );
+                startActivity(new Intent(MyProductActivity.this , ProductCreationActivity.class));
+//                Intent i = new Intent(MyProductActivity.this, MainActivity.class);
+//                i.putExtra("selfSearch", true );
+//                startActivity( i );
             }
         });
+
+        ProductStorageManager.setGlobalProductCreatedListener(new ProductStorageManager.GlobalProductCreatedListener() {
+            @Override
+            public void onGlobalProductCreated(Product newProduct) {
+                // ברגע שנוצר מוצר חדש, תרענן את הרשימה
+                refreshRecyclerView();
+//                recyclerView.setBackgroundColor(Color.RED);
+            }
+        });
+
     }
 
     public interface ScreenCloseListener {
@@ -138,7 +150,11 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
                 }));
 
     }
-
+    private void refreshRecyclerView() {
+        customProducts = productStorageManager.load();
+        productItemAdapter = new ProductItemAdapter(customProducts);
+        recyclerView.setAdapter(productItemAdapter);
+    }
     public void changeMenu(int myMenu) {
         currentMenuResourceId = myMenu;
         invalidateOptionsMenu();
