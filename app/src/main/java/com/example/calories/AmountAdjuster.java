@@ -1,5 +1,5 @@
 package com.example.calories;
-
+import static com.example.calories.utils.AppConstants.*;
 public class AmountAdjuster {
 
     private static final double UNIT_INCREMENT = 1.0;
@@ -8,7 +8,7 @@ public class AmountAdjuster {
     private static final double WEIGHT_VOLUME_INCREMENT = 50.0;
 
     public static String calculateNewAmount(double currentAmount, boolean increase, String unit) {
-        if (CalorieCalculator.getCalculationMode(unit) == CalorieCalculator.CALCULATION_MOD_UNIT) {
+        if (CalorieCalculator.getCalculationMode(unit) == CALCULATION_MOD_UNIT) {
             return calculateUnitAmount(currentAmount, increase);
         } else {
             return calculateWeightVolumeAmount(currentAmount, increase);
