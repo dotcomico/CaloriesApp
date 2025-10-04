@@ -1,14 +1,10 @@
 package com.example.calories;
 
+import static com.example.calories.utils.AppConstants.*;
+
+
 // יצירת מחלקת עזר לחישובי קלוריות
 public class CalorieCalculator {
-
-    private static final String UNIT_100_GRAM = "100 גרם";
-    private static final String UNIT_100_ML = "100 מל";
-    private static final String UNIT_CALORIES = "קלוריות";
-
-    public static final int CALCULATION_MOD_UNIT = 1;
-    public static final int CALCULATION_MOD_WEIGHT_VOLUME = 2;
 
     public static String calculateCalories(double caloriesPer100, double amount, String unit) {
         if (isWeightVolumeUnit(unit)) {
@@ -22,8 +18,8 @@ public class CalorieCalculator {
         return isWeightVolumeUnit(unit) ? CALCULATION_MOD_WEIGHT_VOLUME : CALCULATION_MOD_UNIT;
     }
 
-    public static String getDefaultAmount(String unit) {
-        return isWeightVolumeUnit(unit) ? "100" : "1";
+    public static int getDefaultAmount(String unit) {
+        return isWeightVolumeUnit(unit) ? DEFAULT_CALORIES : DEFAULT_AMOUNT;
     }
 
     private static boolean isWeightVolumeUnit(String unit) {
