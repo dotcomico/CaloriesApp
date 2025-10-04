@@ -59,16 +59,19 @@ public class BarcodeDialogHandler {
     public void handleActivityResult(IntentResult result) {
         if (result != null && result.getContents() != null) {
             String barcode = result.getContents();
-
+            addBarcode(barcode);
+        } else {
+            Toast.makeText(context, "אין תוצאה", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public  void  addBarcode(String barcode){
+        if ( !barcode.isEmpty()) {
             String et_text= etBarcode.getText().toString();
             if (et_text.isEmpty()){
                 etBarcode.setText( barcode );
             } else {
                 etBarcode.setText( et_text + " , " +barcode  );
             }
-            // etBarcode.setText(barcode);
-        } else {
-            Toast.makeText(context, "אין תוצאה", Toast.LENGTH_SHORT).show();
-        }
+    }
     }
 }
