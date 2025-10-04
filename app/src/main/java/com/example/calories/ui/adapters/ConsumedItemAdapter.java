@@ -7,40 +7,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calories.R;
 import com.example.calories.data.models.ConsumedProduct;
 import com.example.calories.data.models.Product;
 import com.example.calories.data.storage.UnitManager;
-
 import java.util.ArrayList;
 
 public class ConsumedItemAdapter extends RecyclerView.Adapter<ConsumedItemAdapter.ConsumedItemViewHolder> {
-
-    // Constants for UI styling
-    private static final float HIGHLIGHTED_SCALE_Y = 1.0f;
-    private static final int HIGHLIGHTED_TEXT_SIZE = 30;
 
     private final ArrayList<ConsumedProduct> consumedProducts;
 
     public static class ConsumedItemViewHolder extends RecyclerView.ViewHolder {
         private final ImageView unitImageView;
-        private final ConstraintLayout main;
         private final TextView productNameTextView;
         private final TextView unitTextView;
         private final TextView calorieValueTextView;
-        private final TextView calorieLabelTextView;
 
         public ConsumedItemViewHolder(View itemView) {
             super(itemView);
             unitImageView = itemView.findViewById(R.id.productUnitImageView);
-            main = itemView.findViewById(R.id.main);
             productNameTextView = itemView.findViewById(R.id.productNameTextView);
             unitTextView = itemView.findViewById(R.id.productUnitTextView);
             calorieValueTextView = itemView.findViewById(R.id.productCalorieValueTextView);
-            calorieLabelTextView = itemView.findViewById(R.id.calorieLabelTextView);
         }
     }
 
@@ -57,12 +47,12 @@ public class ConsumedItemAdapter extends RecyclerView.Adapter<ConsumedItemAdapte
     }
 
     @Override
-    public void onBindViewHolder(ConsumedItemViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ConsumedItemViewHolder holder, int position) {
         ConsumedProduct currentItem = consumedProducts.get(position);
 
         bindProductInfo(holder, currentItem);
         bindCalorieInfo(holder, currentItem);
-        applyItemStateStyle(holder, currentItem);
+        itemStyle(holder);
     }
 
     private void bindProductInfo(ConsumedItemViewHolder holder, ConsumedProduct item) {
@@ -80,27 +70,10 @@ public class ConsumedItemAdapter extends RecyclerView.Adapter<ConsumedItemAdapte
         holder.calorieValueTextView.setText(String.valueOf(totalCalories));
         holder.unitTextView.setText(unitDisplayText);
     }
-
-    private void applyItemStateStyle(ConsumedItemViewHolder holder, ConsumedProduct item) {
-        // Apply special styling for system items (itemState == 0)
-        if (item.getProductItem().getItemState() == Product.ITEM_STATE_SYSTEM) {
-            holder.main.setBackgroundResource(R.drawable.message_sty1);
-            holder.calorieLabelTextView.setVisibility(View.VISIBLE);
-            holder.calorieValueTextView.setScaleY(HIGHLIGHTED_SCALE_Y);
-            holder.calorieValueTextView.setTextSize(HIGHLIGHTED_TEXT_SIZE);
-        } else {
-            // Reset to default styling for private items
-            resetItemStyle(holder);
-        }
-    }
-
-    private void resetItemStyle(ConsumedItemViewHolder holder) {
-        holder.main.setBackgroundResource(R.drawable.message_sty1); // או רקע ברירת מחדל
-        holder.calorieLabelTextView.setVisibility(View.VISIBLE);
+    private void itemStyle(ConsumedItemViewHolder holder) {
         holder.calorieValueTextView.setScaleY(1.0f);
-        holder.calorieValueTextView.setTextSize(30); // גודל ברירת מחדל
+        holder.calorieValueTextView.setTextSize(30);
     }
-
     @Override
     public int getItemCount() {
         return consumedProducts.size();
