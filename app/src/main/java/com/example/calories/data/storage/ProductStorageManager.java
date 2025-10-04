@@ -17,6 +17,8 @@ public class ProductStorageManager {
     private final SharedPreferences sharedPreferences;
     private final Gson gson;
 
+    private static GlobalProductCreatedListener globalProductCreatedListener;
+
     public ProductStorageManager(Context context) {
         this.sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         this.gson = new Gson();
@@ -60,5 +62,17 @@ public class ProductStorageManager {
 
         // 3. שמור את הרשימה המעודכנת
         save(currentProductList);
+
+        if (globalProductCreatedListener != null) {
+            globalProductCreatedListener.onGlobalProductCreated(newProduct);
+        }
+    }
+
+    public interface GlobalProductCreatedListener {
+        void onGlobalProductCreated(Product newProduct);
+    }
+
+    public static void setGlobalProductCreatedListener(GlobalProductCreatedListener listener) {
+        globalProductCreatedListener = listener;
     }
 }
