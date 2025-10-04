@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">calקל</string>
 
+
+
+
     <!--  scan_barcode_dialog  -->
     <string name="add_code">הוסף קוד מוצר</string>
     <string name="product_code">קוד מוצר</string>
