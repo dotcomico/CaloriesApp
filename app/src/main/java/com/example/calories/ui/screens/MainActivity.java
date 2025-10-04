@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +22,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -45,6 +44,7 @@ import com.example.calories.ui.adapters.ConsumedItemAdapter;
 import com.example.calories.ui.adapters.ProductItemAdapter;
 import com.example.calories.R;
 import com.example.calories.ui.adapters.RecyclerItemClickListener;
+import com.example.calories.utils.Utility;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -80,8 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Product aProductItem =null;
 
     //--------------- CustomProductView  ---------------
-    private WebView webview;
-    CustomProductDialog customProductDialog;
+
 
     //--------------- others  ---------------
     private Calendar calendar;
@@ -97,26 +96,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //  settings
     private LinearLayout ly_settings;
 
-    private ImageView iv_backFromSelfSearchToMain, iv_myProducts_SS, iv_showSelfSearchBar, iv_selfSearch_round ,  iv_selfAdd, iv_goToSelfSearch,
+    private ImageView iv_selfSearch_round ,  iv_selfAdd, iv_goToSelfSearch,
             iv_backToMain, settingsIcon, barcodeIcon;
-    private RelativeLayout rl_selfSearch,rl_top, rl_selfSearchTopBar,rl_mainInformation;
+    private RelativeLayout rl_selfSearch,rl_top,rl_mainInformation;
     private TextView currentDateText, tv_returnToMainScreen;
 
     private TextView tv_clearMainCaloriesList, caloriesViewText;
     private ImageView customListIcon;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main );
 
+        Objects.requireNonNull(getSupportActionBar()).hide();
         calendar = Calendar.getInstance();
         calendar.setTime(calendar.getTime());
         findViewAndMore();
         changeBarColor(rl_top);
 
-        customProductDialog = new CustomProductDialog(this);
         productStorageManager  = new ProductStorageManager(this);
         consumedProductManager = new ConsumedProductManager(this);
         consumedProductEditingDialog =new ConsumedProductEditingDialog(MainActivity.this);
@@ -132,12 +130,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override public void onItemClick(View view, int position) {
                 if (!(filteredProducts.get( position ).getItemState() ==999)) {
                     aProductItem = filteredProducts.get( position );
-
                    openProductSelectionDialog(aProductItem);
                 }
                 else{
-                    //פתח חיפוש עצמי
-                    startWebSearch();
+                    //פתח מסך הוספת מוצר
+                    openCustomProductByName( mainSearchView.getQuery().toString());
                 }
             }
 
@@ -173,7 +170,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     selfAddActions();
                 }else if (filteredProducts.isEmpty()){
                     //אם הרשימה ריקה(מוצר לא נמצא) תפתח חיפוש עצמי
-                    startWebSearch(); }
+                    openCustomProductByName(s);
+                }
 
                 return false;
             }
@@ -221,26 +219,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } );
 
         //סגירת מסכים לא נחוצים בכניסה התחלתית למסך
-        webview.setVisibility(View.GONE);
         iv_backToMain.setVisibility(View.GONE);
         productsRecyclerView.setVisibility(View.GONE);
         rl_selfSearch.setVisibility(View.GONE);
         rl_mainInformation.setVisibility(View.VISIBLE);
 
-        Objects.requireNonNull(getSupportActionBar()).hide();
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            boolean isSelfSearch = extras.getBoolean( "selfSearch" );
-            if (isSelfSearch) {
-                startWebSearch();
-                rl_mainInformation.setVisibility(View.GONE);
-                closeMain();
-            }
-        }
 
-        // showDialog();
-
+//        Bundle extras = getIntent().getExtras();
+//        if (extras != null) {
+//            Long productID = extras.getBoolean( "newCustomProduct" );
+//            if (productID != null) {
+//                הצע להוסיף מוצר
+//            }
+//        }
 
         consumedProductEditingDialog.setOnEditCompleteListener(new ConsumedProductEditingDialog.OnEditCompleteListener() {
             @Override
@@ -253,56 +245,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         productSelectionDialog.setOnProductSelectedListener(new ProductSelectionDialog.OnProductSelectedListener() {
             @Override
             public void onSaveComplete() {
+                dismissCatalog();
                 refreshConsumedProductsList();
-                mainSearchView.setVisibility( View.VISIBLE );
-                mainSearchView.setQuery( "" , true );
-                mainSearchView.setIconified( true );
-                hideKeyboard();
-                cancelFoodAdd();
-                rl_mainInformation.setVisibility( View.VISIBLE );
-                webview.setVisibility( View.GONE );
-                iv_backToMain.setVisibility( View.GONE );
-                productsRecyclerView.setVisibility( View.GONE );
-                rl_selfSearch.setVisibility( View.GONE );
-            }
-        });
-        customProductDialog.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                if (webview.getVisibility()==View.VISIBLE){
-                    iv_showSelfSearchBar.setVisibility(View.VISIBLE);}
-            }
-        });
-
-        customProductDialog.setOnCustomProductItemListener(new CustomProductDialog.OnCustomProductItemListener() {
-            @Override
-            public void onItemCreated(Product customProduct) {
-                hideKeyboard();
-                cancelFoodAdd();
-                mainSearchView.setVisibility( View.VISIBLE );
-                mainSearchView.setIconified(true);
-
-                openMain();
-                updateMain();
-                openProductSelectionDialog(customProduct);
             }
 
-            @Override
-            public void onSearch(String suggestion) {
-                startInternetWebSearch(suggestion);
-            }
-
-            @Override
-            public void onSearchSuggestionClicked(String suggestion) {
-                startInternetWebSearchDotan(suggestion);
-                hideKeyboard();
-                customProductDialog.close();
-                iv_showSelfSearchBar.setVisibility( View.VISIBLE );
-            }
-
-            @Override
-            public void onDialogClose() {
-            }
         });
 
         MyProductActivity.setScreenCloseListener(new MyProductActivity.ScreenCloseListener() {
@@ -311,6 +257,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 updateMain();
             }
         });
+
+
+        ProductStorageManager.setGlobalProductCreatedListener(new ProductStorageManager.GlobalProductCreatedListener() {
+            @Override
+            public void onGlobalProductCreated(Product newProduct) {
+//                productsRecyclerView.setBackgroundColor(Color.RED);
+                dismissCatalog();
+                updateMain();
+                openProductSelectionDialog(newProduct);
+            }
+        });
+
     }
 
     private void openProductSelectionDialog(Product product) {
@@ -344,9 +302,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
 
-        if(view== customListIcon || view == iv_myProducts_SS){
+        if(view== customListIcon){
             startNewActivity(MainActivity.this, MyProductActivity.class);
-
         }
 
         if (view==iv_selfAdd) {
@@ -375,24 +332,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        if( view == iv_backFromSelfSearchToMain){
-            Bundle extras = getIntent().getExtras();
-            if (extras != null) {
-                boolean isSelfSearch = extras.getBoolean( "selfSearch" );
-                if (isSelfSearch) {
-                    finish();
-                }
-            }else {
-                cancelNewFoodAdd();
-                openMain();
-            }
-        }
-
-        if (view == iv_showSelfSearchBar){
-            iv_showSelfSearchBar.setVisibility( View.GONE );
-            customProductDialog.show(productStorageManager , "" , "");
-        }
-
         if (view == mainSearchView){
             //  mRecyclerView.setVisibility(View.VISIBLE);
             ///    et_food.setText( "" );
@@ -403,21 +342,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (view== iv_goToSelfSearch){
-            startWebSearch();
-            /*
-               Intent i = new Intent(this, MainActivity.class);
-            i.putExtra("selfSearch", true );
-            startActivity( i );
-             */
+            openCustomProductByName( mainSearchView.getQuery().toString());
         }
 
         if (view==iv_selfSearch_round){
-            startWebSearch();
-            /*
-               Intent i = new Intent(this, MainActivity.class);
-            i.putExtra("selfSearch", true );
-            startActivity( i );
-             */
+            openCustomProductByName( mainSearchView.getQuery().toString());
         }
 
         if (view == iv_backToMain){
@@ -456,9 +385,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainSearchView.setQuery( "" , true );
         mainSearchView.setIconified( true );
         hideKeyboard();
-        cancelFoodAdd();
         rl_mainInformation.setVisibility( View.VISIBLE );
-        webview.setVisibility( View.GONE );
         iv_backToMain.setVisibility( View.GONE );
         productsRecyclerView.setVisibility( View.GONE );
         rl_selfSearch.setVisibility( View.GONE );
@@ -479,12 +406,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         IntentResult result =IntentIntegrator.parseActivityResult( requestCode,resultCode,data );
         if(result != null){
             if (result.getContents() != null){
-                if (customProductDialog != null && !customProductDialog.isClosed()){
-                        customProductDialog.handleBarcodeResult(result);
-                }
-                else{
                     searchProductByBarcode(result.getContents());}
-            }
             else{
                 Toast.makeText( this, "אין תוצאה",Toast.LENGTH_SHORT ).show();
             }
@@ -535,38 +457,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             } else {//לא נמצא
                 //חפש באינטרנט
-                openCustomProductForBarcode(barcode.trim());
-                aProductItem = new Product(  0 , "" , "" , "" ,  barcode.trim() );
-                startWebSearchForBarcode( barcode.trim() );
+                openCustomProductByBarcode(barcode.trim());
             }
     }
 
-    //פעולות עדכון רשימות בסיס
-    private void updateSystemProductList()   {
-        systemProductList = new ArrayList<>();
-        systemProductList =getSystemProductsArr();
-        // המצב הראשוני של רשימת החיפוש כרשימת המוצרים (ברירת מחדל)
-        filteredProducts = systemProductList;
-    }
-    private void refreshProductCatalog(){
-        //עדכון הרשימה הפיזית במסך כרשימת המוצרים
-        productsLayoutManager = new LinearLayoutManager(this);
-        productsRecyclerView.setLayoutManager(productsLayoutManager);
-        productsAdapter = new ProductItemAdapter(systemProductList);
-        productsRecyclerView.setAdapter(productsAdapter);
-    }
-    private void addCustomProductListToProductCatalog() {
-        if (customProducts == null) {
-            customProducts = new ArrayList<>();
-        }else {
-            //הוספת איבי רשימה שלי לרשימה ראשית
-            systemProductList.addAll(customProducts);
-            productsRecyclerView.setAdapter(new ProductItemAdapter(systemProductList));
-            // המצב הראשוני של רשימת החיפוש כרשימת המוצרים (ברירת מחדל)
-            filteredProducts = systemProductList;
-        }
-    }
-    //פעולות מערכת
     private void searchInFoodList(String s) {
         //פעולת חיפוש ועדכון רשימת מזון
         filteredProducts = new ArrayList<>();
@@ -629,10 +523,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         productsAdapter.notifyDataSetChanged();
     }
 
-    //פעולות שרדפרפרנס רשימת מזון פרטית
-    private void loadCustomProductListData() {
-        customProducts = productStorageManager.load();
+    private void dismissCatalog() {
+        mainSearchView.setVisibility( View.VISIBLE );
+        mainSearchView.setQuery( "" , true );
+        mainSearchView.setIconified( true );
+        hideKeyboard();
+        rl_mainInformation.setVisibility( View.VISIBLE );
+        iv_backToMain.setVisibility( View.GONE );
+        productsRecyclerView.setVisibility( View.GONE );
+        rl_selfSearch.setVisibility( View.GONE );
     }
+
     private void saveData(){
         productStorageManager.save(customProducts);
     }
@@ -646,43 +547,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // פתיחת וסגירת מסכים
     private void openMain(){
-
         rl_mainInformation.setVisibility(View.VISIBLE);
         rl_top.setVisibility( View.VISIBLE );
-        rl_selfSearchTopBar.setVisibility( View.GONE );
         changeBarColor(rl_top);
-
         iv_backToMain.setVisibility(View.GONE);
         productsRecyclerView.setVisibility(View.GONE);
-
-        webview.setVisibility(View.GONE);
-
         rl_selfSearch.setVisibility(View.GONE);
-
-        //    ly_addNewPrivetFood.setVisibility(View.GONE);
-        //    ly_aditAmount.setVisibility(View.GONE);
-        //    ly_addFood.setVisibility(View.GONE);
     }
     private void closeMain(){
         rl_mainInformation.setVisibility(View.GONE);
     }
     private void openFood(){
         mainSearchView.setBackgroundResource( R.drawable.sty_3 );
-
         iv_selfAdd.setVisibility(View.GONE);
         iv_selfSearch_round.setVisibility( View.GONE );
         barcodeIcon.setVisibility( View.VISIBLE );
-
         rl_mainInformation.setVisibility(View.GONE);
         rl_top.setVisibility( View.VISIBLE );
-        rl_selfSearchTopBar.setVisibility( View.GONE );
         changeBarColor(rl_top);
         iv_backToMain.setVisibility(View.VISIBLE);
-
         productsRecyclerView.setVisibility(View.VISIBLE);
-
-        webview.setVisibility(View.GONE);
-
         rl_selfSearch.setVisibility(View.GONE);
         cancelEdit();
         productsRecyclerView.setVisibility(View.VISIBLE);
@@ -692,34 +576,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         productsRecyclerView.setVisibility(View.GONE);
     }
     /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    private void openCustomProductForBarcode( String barcode){   // יכול להיות שפעולה זו מיותרת מכיוון שיש כבר פעולה דומה לפתיחת מוצר מעוצב
-        rl_selfSearchTopBar.setVisibility( View.VISIBLE );
-        webview.setVisibility(View.VISIBLE);
-        changeBarColor(rl_selfSearchTopBar);
-
-        rl_mainInformation.setVisibility(View.GONE);
-        rl_top.setVisibility( View.GONE );
-        iv_backToMain.setVisibility(View.GONE);
-        productsRecyclerView.setVisibility(View.GONE);
-        rl_selfSearch.setVisibility(View.GONE);
-        barcodeIcon.setVisibility(View.GONE);
+    private void openCustomProductByBarcode(String barcode){
         cancelEdit();
+            Intent i = new Intent(MainActivity.this, ProductCreationActivity.class);
+        i.putExtra("barcode", barcode );
+        startActivity( i );
+    }
+    private void openCustomProductByName( String name){
+        cancelEdit();
+        Intent i = new Intent(MainActivity.this, ProductCreationActivity.class);
+        i.putExtra("name", name );
+        startActivity( i );
+    }
 
-        customProductDialog.show(productStorageManager , "" , barcode );
-    }
-    private void closeNewProduct(){
-        webview.setVisibility(View.VISIBLE);
-        customProductDialog.close();
-    }
-    //פעולות קטנות
     private void findViewAndMore() {
 
         rl_top=findViewById(R.id.rl_top);
-        rl_selfSearchTopBar =findViewById(R.id.rl_selfSearchTopBar);
-        iv_myProducts_SS =findViewById(R.id.iv_myProdacts_SS);
-        iv_myProducts_SS.setOnClickListener( this );
-        iv_backFromSelfSearchToMain =findViewById(R.id.iv_backFromSelfSearchToMain);
-        iv_backFromSelfSearchToMain.setOnClickListener( this );
+
 
         customListIcon =findViewById( R.id.customListIcon);
         customListIcon.setOnClickListener( this );
@@ -731,8 +604,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         barcodeIcon =findViewById( R.id.barcodeIcon);
         barcodeIcon.setOnClickListener( this );
 
-        iv_showSelfSearchBar =findViewById( R.id.iv_showSelfSearchBar );
-        iv_showSelfSearchBar.setOnClickListener( this );
         iv_selfSearch_round =findViewById( R.id.iv_selfSearch);
         iv_selfSearch_round.setOnClickListener( this );
         iv_selfAdd =findViewById( R.id.iv_selfAdd);
@@ -763,19 +634,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         caloriesViewText =findViewById( R.id.caloriesViewText);
         caloriesViewText.setOnClickListener( this );
-        webview = findViewById( R.id.webview);
-        webview.setWebViewClient( new WebViewClient() );
-        WebSettings webSettings=webview.getSettings();
-        webSettings.setJavaScriptEnabled( true );
-//ההוראה החשובה לעדכון דף באפליקציה עצמה
-        //      webSettings.setAppCacheEnabled( true );
-        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        //לא ברור מה אלו
-        webSettings.setDatabaseEnabled( true );
-        webSettings.setEnableSmoothTransition( true );
-        webSettings.setGeolocationEnabled( true );
-        webSettings.setDomStorageEnabled(  true);
-        webview.setWebViewClient(new MyWebViewClient());
+
         mainSearchView = findViewById( R.id.mainSearchView);
         mainSearchView.setOnClickListener( this );
     }
@@ -791,63 +650,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         loadCustomProductListData();
         addCustomProductListToProductCatalog();
     }
+    private void updateSystemProductList()   {
+        systemProductList = new ArrayList<>();
+        systemProductList =getSystemProductsArr();
+        // המצב הראשוני של רשימת החיפוש כרשימת המוצרים (ברירת מחדל)
+        filteredProducts = systemProductList;
+    }
+    private void refreshProductCatalog(){
+        //עדכון הרשימה הפיזית במסך כרשימת המוצרים
+        productsLayoutManager = new LinearLayoutManager(this);
+        productsRecyclerView.setLayoutManager(productsLayoutManager);
+        productsAdapter = new ProductItemAdapter(systemProductList);
+        productsRecyclerView.setAdapter(productsAdapter);
+    }
+    private void loadCustomProductListData() {
+        customProducts = productStorageManager.load();
+    }
+    private void addCustomProductListToProductCatalog() {
+        if (customProducts == null) {
+            customProducts = new ArrayList<>();
+        }else {
+            //הוספת איבי רשימה שלי לרשימה ראשית
+            systemProductList.addAll(customProducts);
+            productsRecyclerView.setAdapter(new ProductItemAdapter(systemProductList));
+            // המצב הראשוני של רשימת החיפוש כרשימת המוצרים (ברירת מחדל)
+            filteredProducts = systemProductList;
+        }
+    }
+
+
     private void cancelEdit() {
         consumedProductEditingDialog.close();
-    }
-    private void cancelFoodAdd() {
-        customProductDialog.close();
-        mainSearchView.setVisibility(View.VISIBLE);
-        iv_backToMain.setVisibility( View.VISIBLE );
-
-    }
-    private void cancelNewFoodAdd() {
-        hideKeyboard();
-        cancelFoodAdd();
-        iv_backToMain.setVisibility(View.GONE);
-        productsRecyclerView.setVisibility(View.VISIBLE);
-        iv_selfSearch_round.setVisibility( View.GONE );
-        iv_showSelfSearchBar.setVisibility( View.GONE );
-        barcodeIcon.setVisibility( View.VISIBLE );
-        mainSearchView.setQuery( "" , false );
-        mainSearchView.setBackgroundResource( R.drawable.sty_3 );
-        updateMain();  /// האם זה בכלל נחוץ? נראה שאין סיבה לעדכן נראות מסך ראשי אם מדובר בביטול פעולה
-
-    }
-    private void startInternetWebSearch(String query) {
-        webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        webview.loadUrl("https://www.google.com/search?q=" + query +" "+ "קלוריות");
-        //העלם עמודת חיפוש והצג אפשרות ביטול
-        //   serchview_internet.setVisibility(View.GONE);
-    }
-    private void startInternetWebSearchDotan(String SuggestionQuery) {
-        webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        webview.loadUrl("https://www.google.com/search?q=" + SuggestionQuery);
-    }
-    private void startWebSearchForBarcode(String bCod) {
-        webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        webview.loadUrl("https://www.google.com/search?q=" + bCod);
-
-        //העלם עמודת חיפוש והצג אפשרות ביטול
-        mainSearchView.setVisibility(View.GONE);
-    }
-    private void startWebSearch() {
-        iv_backToMain.setVisibility( View.GONE );
-        rl_mainInformation.setVisibility(View.GONE);
-        rl_top.setVisibility( View.GONE );
-        rl_selfSearchTopBar.setVisibility( View.VISIBLE );
-        changeBarColor(rl_selfSearchTopBar);
-        rl_selfSearch.setVisibility(View.GONE);
-        productsRecyclerView.setVisibility(View.GONE);
-        rl_selfSearch.setVisibility( View.GONE );
-        webview.setVisibility( View.VISIBLE );
-
-        customProductDialog.show(productStorageManager , mainSearchView.getQuery().toString() , "" );
-
-        webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        webview.loadUrl("https://www.google.com/search?q=" + mainSearchView.getQuery().toString() +" "+ "קלוריות");
-         //העלם עמודת חיפוש והצג אפשרות ביטול
-        mainSearchView.setVisibility(View.GONE);
-        iv_selfSearch_round.setVisibility( View.GONE );
     }
 
     private void refreshConsumedProductsList(){
@@ -865,7 +698,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainSearchView.setQuery( "",true );
         mainSearchView.setIconified(true);
         hideKeyboard();
-        cancelFoodAdd();
         openMain();
     }
     //פעולות כלליות
@@ -974,38 +806,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     @Override
     public void onBackPressed() {
-
-        if (webview.canGoBack() && webview.getVisibility() == View.VISIBLE) {
-            webview.goBack();
-        } else {
-
             if (!consumedProductEditingDialog.isClosed()) {
                 cancelEdit();
+                return;
             }
             if (ly_settings.getVisibility() == View.VISIBLE) {
                 ly_settings.setVisibility( View.GONE );
+                return;
             }
             super.onBackPressed();
-            //השורה למטה אומרת שתלך אחורה. בינתיים זה בעצם סוגר תאפליקציה
-            //      super.onBackPressed();
-        }
     }
-    private static class MyWebViewClient extends WebViewClient {
-        /*
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (Uri.parse(url).getHost().equals("www.newsweek.com")) {
-                //open url contents in webview
-                return false;
-            } else {
-                //here open external links in external browser or app
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
-                return true;
-            }
 
-        }
-         */
-    }
 
 }
