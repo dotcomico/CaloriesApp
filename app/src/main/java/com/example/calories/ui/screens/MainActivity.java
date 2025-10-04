@@ -54,6 +54,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
+import static com.example.calories.utils.AppConstants.*;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, TextWatcher {
     ///  יש לפעול לפיצול רשימות- יש רשימה אחת למוצרי מערכת ויש רשימה למוצרים אישיים אך יש לחברם יחד לרשימה כוללה
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         productsRecyclerView.addOnItemTouchListener( new RecyclerItemClickListener(MainActivity.this, productsRecyclerView
                 ,new RecyclerItemClickListener.OnItemClickListener() {
             @Override public void onItemClick(View view, int position) {
-                if (!(filteredProducts.get( position ).getItemState() ==999)) {
+                if (!(filteredProducts.get( position ).getItemState() ==PRODUCT_STATE_SELF_SEARCH)) {
                     aProductItem = filteredProducts.get( position );
                    openProductSelectionDialog(aProductItem);
                 }
@@ -262,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ProductStorageManager.setGlobalProductCreatedListener(new ProductStorageManager.GlobalProductCreatedListener() {
             @Override
             public void onGlobalProductCreated(Product newProduct) {
-//                productsRecyclerView.setBackgroundColor(Color.RED);
+//              productsRecyclerView.setBackgroundColor(Color.RED);
                 dismissCatalog();
                 updateMain();
                 openProductSelectionDialog(newProduct);
@@ -333,9 +334,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (view == mainSearchView){
-            //  mRecyclerView.setVisibility(View.VISIBLE);
-            ///    et_food.setText( "" );
-            //   rl_mainInformation.setVisibility(View.GONE);
             if (mainSearchView != null) {
                 mainSearchView.setIconified(false);
             }
@@ -354,11 +352,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (view == tv_clearMainCaloriesList){
-            //   str_caloria =("0");
-            //  SharedPreferences.Editor editor = sp.edit();
-            //         editor.putString( "caloria" , str_caloria );
-            //     editor.commit();
-            //   text.setText( str_caloria );
             caloriesViewText.setText("0");
             clearConsumedProductData();
             Toast.makeText( getBaseContext(), "רשימת קלוריות שנצרכו נמחקה (מסך ראשי)",Toast.LENGTH_SHORT).show();
@@ -375,7 +368,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void selfAddActions() {
-
         String str_caloria= mainSearchView.getQuery().toString().trim();
         aProductItem = new Product(0,"הוספת עצמית","קלוריות" ,"0","");
         aProductItem.setCalorieText("100");
@@ -467,23 +459,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //חפש לפי שייכים לי
         for (int j = 0; j < systemProductList.size(); j++){
             Product example2 = systemProductList.get(j);
-            if (example2.getName().toLowerCase().trim().contains( s.toLowerCase().trim() )&&example2.getItemState()==1 ){
+            if (example2.getName().toLowerCase().trim().contains( s.toLowerCase().trim() )&&example2.getItemState()==PRODUCT_STATE_CUSTOM ){
                 filteredProducts.add(example2);}
         }
         //חפש ברשימה כללית
         for (int i = 0; i < systemProductList.size(); i++){    //הכנס את מי שמתחילים בטקסט שהוקלד
             Product example = systemProductList.get(i);
-            if(example.getName().toLowerCase().trim().startsWith( s.toLowerCase().trim() )&&example.getItemState()==0){
+            if(example.getName().toLowerCase().trim().startsWith( s.toLowerCase().trim() )&&example.getItemState()==PRODUCT_STATE_SYSTEM){
                 filteredProducts.add(example);}
         }
         for (int i = 0; i < systemProductList.size(); i++){  //ורק אז הכנס את מי שנשאר ומכיל את הטקסט שהוקלד
             Product example = systemProductList.get(i);
-            if (example.getName().toLowerCase().trim().contains( s.toLowerCase().trim() )&&!example.getName().toLowerCase().trim().startsWith( s.toLowerCase().trim() ) &&example.getItemState()==0){
+            if (example.getName().toLowerCase().trim().contains( s.toLowerCase().trim() )&&!example.getName().toLowerCase().trim().startsWith( s.toLowerCase().trim() ) && example.getItemState()==PRODUCT_STATE_SYSTEM){
                 filteredProducts.add(example);}
             //    sortByAB(  filteredExampleList );
         }
         //הצג הודעה במקרה של חוסר תוצאות
-        if (!filteredProducts.isEmpty()){ filteredProducts.add(new Product( 999, "", "","",""));}
+        if (!filteredProducts.isEmpty()){ filteredProducts.add(new Product( PRODUCT_STATE_SELF_SEARCH, "", "","",""));}
         //עדכן רשימה
          RecyclerView.Adapter  newAdapter = new ProductItemAdapter(filteredProducts);
         productsRecyclerView.setAdapter(newAdapter);
@@ -579,13 +571,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void openCustomProductByBarcode(String barcode){
         cancelEdit();
             Intent i = new Intent(MainActivity.this, ProductCreationActivity.class);
-        i.putExtra("barcode", barcode );
+        i.putExtra(EXTRA_BARCODE, barcode );
         startActivity( i );
     }
     private void openCustomProductByName( String name){
         cancelEdit();
         Intent i = new Intent(MainActivity.this, ProductCreationActivity.class);
-        i.putExtra("name", name );
+        i.putExtra(EXTRA_NAME, name );
         startActivity( i );
     }
 
