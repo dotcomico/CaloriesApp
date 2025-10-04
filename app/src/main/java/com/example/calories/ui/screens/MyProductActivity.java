@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +18,6 @@ import android.widget.LinearLayout;
 
 import com.example.calories.data.models.Product;
 import com.example.calories.ui.dialogs.BarcodeDialogHandler;
-import com.example.calories.ui.dialogs.CustomProductDialog;
 import com.example.calories.ui.views.UnitSelectorView;
 import com.example.calories.export.ProductExporter;
 import com.example.calories.ui.adapters.ProductItemAdapter;
@@ -78,23 +76,12 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
         Objects.requireNonNull(getSupportActionBar()).show();
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MyProductActivity.this , ProductCreationActivity.class));
-//                Intent i = new Intent(MyProductActivity.this, MainActivity.class);
-//                i.putExtra("selfSearch", true );
-//                startActivity( i );
-            }
-        });
+        fab.setOnClickListener(view -> startActivity(new Intent(MyProductActivity.this , ProductCreationActivity.class)));
 
-        ProductStorageManager.setGlobalProductCreatedListener(new ProductStorageManager.GlobalProductCreatedListener() {
-            @Override
-            public void onGlobalProductCreated(Product newProduct) {
-                // ברגע שנוצר מוצר חדש, תרענן את הרשימה
-                refreshRecyclerView();
+        ProductStorageManager.setGlobalProductCreatedListener(newProduct -> {
+            // ברגע שנוצר מוצר חדש, תרענן את הרשימה
+            refreshRecyclerView();
 //                recyclerView.setBackgroundColor(Color.RED);
-            }
         });
 
     }
@@ -232,11 +219,6 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
 
     private void cancelEdit() {
         editProductLayout.setVisibility( View.GONE );
-    }
-
-    private void clearDataAndList() {
-        productStorageManager.clear();
-        customProducts = new ArrayList<>();
     }
 
     @Override
