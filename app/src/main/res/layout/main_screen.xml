@@ -4,14 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- מסך "יצירת מוצר חדש" (אתר) -->
-    <WebView
-        android:id="@+id/webview"
-        android:background="#FDB72A"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <!-- רשימת מוצרים כללית (חיפוש) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productsRecyclerView"
