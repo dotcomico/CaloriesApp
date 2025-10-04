@@ -47,7 +47,7 @@ public class CustomProductDialog {
     private EditText newProductCaloriesEditText;
     private SearchView selfSearchSearchView;
     private Button saveNewProductItemButton, webSearchSuggestion;
-    private ImageView   saveAndStay;
+    private ImageView saveAndStay;
     private UnitSelectorView unitSelectorView;
     private BarcodeDialogHandler barcodeDialogHandler;
     private ImageView iv_barcodeScan;
@@ -258,4 +258,11 @@ public class CustomProductDialog {
     public Dialog getDialog(){
         return dialog;
     }
+
+//    public void addBarcode(String barcode){
+//        if (barcodeDialogHandler != null && barcode != null) {
+//            barcodeDialogHandler.addBarcode(barcode);
+//        }
+//    }
+
 }
