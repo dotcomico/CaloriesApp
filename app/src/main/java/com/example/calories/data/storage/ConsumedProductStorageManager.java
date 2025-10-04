@@ -12,11 +12,8 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
+import static com.example.calories.utils.AppConstants.*;
 public class ConsumedProductStorageManager {
-    private static final String PREF_NAME = "shared preferences";
-    private static final String KEY_PRODUCT_LIST = "consumed_products";
-
     private final SharedPreferences sharedPreferences;
     private final Gson gson;
 
@@ -27,12 +24,12 @@ public class ConsumedProductStorageManager {
 
     public void save(ArrayList<ConsumedProduct> consumedProductList) {
         String json = gson.toJson(consumedProductList);
-        sharedPreferences.edit().putString(KEY_PRODUCT_LIST, json).apply();
+        sharedPreferences.edit().putString(KEY_CONSUMED_PRODUCT_LIST, json).apply();
     }
 
     public ArrayList<ConsumedProduct> loadByDay(Calendar calendar_day) {
 
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
         String strDate = sdf.format(calendar_day.getTime());
 
         ArrayList<ConsumedProduct> consumedProductsAll = load();
@@ -47,7 +44,7 @@ public class ConsumedProductStorageManager {
         return consumedProductsOfDay;
     }
     public ArrayList<ConsumedProduct> load() {
-        String json = sharedPreferences.getString(KEY_PRODUCT_LIST, null);
+        String json = sharedPreferences.getString(KEY_CONSUMED_PRODUCT_LIST, null);
         Type type = new TypeToken<ArrayList<ConsumedProduct>>() {}.getType();
         ArrayList<ConsumedProduct> list = gson.fromJson(json, type);
         return (list != null) ? list : new ArrayList<>();
@@ -59,7 +56,7 @@ public class ConsumedProductStorageManager {
         return loadByDay(calendar);
     }
     public void clear() {
-        sharedPreferences.edit().remove(KEY_PRODUCT_LIST).apply();
+        sharedPreferences.edit().remove(KEY_CONSUMED_PRODUCT_LIST).apply();
     }
 
 
