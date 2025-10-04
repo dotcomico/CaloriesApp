@@ -27,7 +27,7 @@ import com.example.calories.data.storage.ProductStorageManager;
 import com.example.calories.ui.dialogs.CustomProductDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-
+import static com.example.calories.utils.AppConstants.*;
 import java.util.Objects;
 
 public class ProductCreationActivity extends AppCompatActivity implements View.OnClickListener {
@@ -87,12 +87,12 @@ public class ProductCreationActivity extends AppCompatActivity implements View.O
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            String barcode = extras.getString( "barcode" );
+            String barcode = extras.getString( EXTRA_BARCODE);
             if (barcode != null) {
                 customProductDialog.show(productStorageManager , "" , barcode);
                 searchOnWeb(barcode);
             }
-            String name = extras.getString( "name" );
+            String name = extras.getString( EXTRA_NAME );
             if (name != null) {
                 customProductDialog.show(productStorageManager , name , "");
                 searchForCalories(name);
@@ -127,7 +127,7 @@ public class ProductCreationActivity extends AppCompatActivity implements View.O
         webview.loadUrl("https://www.google.com/search?q=" + query);
     }
     private void searchForCalories(String caloriesQuery) {
-        searchOnWeb(caloriesQuery + " "+ "קלוריות" );
+        searchOnWeb(caloriesQuery + " "+ UNIT_CALORIES );
     }
     private void searchForSuggestion(String SuggestionQuery) {
       searchOnWeb(SuggestionQuery);
