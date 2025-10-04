@@ -2,13 +2,10 @@ package com.example.calories.data.models;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import static com.example.calories.utils.AppConstants.*;
 
 public class ConsumedProduct {
 
-    // Constants for unit types
-    private static final String UNIT_100_GRAM = "100 גרם";
-    private static final String UNIT_100_ML = "100 מל";
-    private static final String UNIT_CALORIES = "קלוריות";
     private static final int STANDARD_UNIT_BASE = 100;
 
     private String id; // מזהה פנימי (למשל לשמירה במסד נתונים)
@@ -129,9 +126,9 @@ public class ConsumedProduct {
 
     private String getStandardUnitDisplayText(String unit, String formattedAmount) {
         if (UNIT_100_GRAM.equals(unit)) {
-            return formattedAmount + " גרם";
+            return formattedAmount + " " + GRAM;
         } else if (UNIT_100_ML.equals(unit)) {
-            return formattedAmount + " מל";
+            return formattedAmount + " " + ML;
         } else {
             return UNIT_CALORIES;
         }
