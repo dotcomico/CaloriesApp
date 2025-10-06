@@ -32,6 +32,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import static com.example.calories.utils.AppConstants.*;
 
 public class MyProductActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     private ArrayList<Product> customProducts = new ArrayList<>();
@@ -150,19 +151,19 @@ public class MyProductActivity extends AppCompatActivity implements View.OnClick
 
     private void dotanAll() {
 
-        customProducts.add( new Product(  1 , "נס קפה קר,  חלב סויה וניל" , "כוס זכוכית" , "90" , "" ) );
-        customProducts.add( new Product(  1 , "נס קפה קר" , "כוס זכוכית" , "100" , "" ) );
-        customProducts.add( new Product(  1 , "ציפס תפוח אדמה בנינגה" , "יחידה" , "8" , "" ) );
-        customProducts.add( new Product(  1 , "בורקס בשר 250 גרם" , "יחידה" , "625"  , "" ) );
+        customProducts.add( new Product(  1 , "נס קפה קר,  חלב סויה וניל" , UNIT_CUP , "90" , "" ) );
+        customProducts.add( new Product(  1 , "נס קפה קר" , UNIT_CUP , "100" , "" ) );
+        customProducts.add( new Product(  1 , "ציפס תפוח אדמה בנינגה" , UNIT_UNIT , "8" , "" ) );
+        customProducts.add( new Product(  1 , "בורקס בשר 250 גרם" , UNIT_UNIT , "625"  , "" ) );
         customProducts.add( new Product(  1 , "בולגרית יוונית לבן" , "קוביה" , "14"  , "" ) );
-        customProducts.add( new Product(  1 , "בולגרית יוונית לבן" , "100 גרם" , "282"  , "" ) );
-        customProducts.add( new Product(  1 , "טונה ירקות- עגבניה שום בצל פטריות תבלינים" , "יחידה" , "200"  , "" ) );
-        customProducts.add( new Product(  1 , "טונה ירקות של דותן" , "100 גרם" , "91"  , "" ) );
+        customProducts.add( new Product(  1 , "בולגרית יוונית לבן" , UNIT_100_GRAM , "282"  , "" ) );
+        customProducts.add( new Product(  1 , "טונה ירקות- עגבניה שום בצל פטריות תבלינים" , UNIT_UNIT , "200"  , "" ) );
+        customProducts.add( new Product(  1 , "טונה ירקות של דותן" , UNIT_100_GRAM , "91"  , "" ) );
         customProducts.add( new Product(  1 , "מרק ירקות- תפוד גזר בצל פקק שמן ותבלינים" , "סיר קטן" , "220"  , "" ) );
-        customProducts.add( new Product(  1 , "טוסט גבינה 28 אחוז" , "יחידה" , "250"  , "" ) );
-        customProducts.add( new Product(  1 , "קציצת גונדי" , "יחידה" , "60"  , "" ) );
+        customProducts.add( new Product(  1 , "טוסט גבינה 28 אחוז" , UNIT_UNIT , "250"  , "" ) );
+        customProducts.add( new Product(  1 , "קציצת גונדי" , UNIT_UNIT , "60"  , "" ) );
         customProducts.add( new Product(  1 , "המבורגר דאבל וציפס" , "מנה" , "900"  , "" ) );
-        customProducts.add( new Product(  1 , "טוסט חיילים-חצי פיתה" , "יחידה" , "350"  , "" ) );
+        customProducts.add( new Product(  1 , "טוסט חיילים-חצי פיתה" , UNIT_UNIT , "350"  , "" ) );
 
         productStorageManager.save(customProducts);
 
