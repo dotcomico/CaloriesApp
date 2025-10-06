@@ -26,7 +26,7 @@ import com.example.calories.data.models.Product;
 import com.example.calories.utils.Utility;
 import java.util.Calendar;
 import java.util.Objects;
-
+import static com.example.calories.utils.AppConstants.*;
 public class ProductSelectionDialog {
 
     private Dialog dialog;
@@ -46,8 +46,6 @@ public class ProductSelectionDialog {
     private static final double UNIT_HALF = 0.5;
     private static final double UNIT_QUARTER = 0.25;
     private static final double WEIGHT_VOLUME_INCREMENT = 50.0;
-    private static final int CALCULATION_MOD_UNIT = 1;
-    private static final int CALCULATION_MOD_WEIGHT_VOLUME = 2;
 
     public interface OnProductSelectedListener {
         void onSaveComplete();  // כשמשתמש שומר
@@ -112,11 +110,11 @@ public class ProductSelectionDialog {
         barcodeInfoTv.setVisibility(  View.GONE );
 
         //האדיט טקסט של כמות יעודכן ל1 אם מדובר בכמות וכו ורק אם מדובר ב100 גרם או מל אז יעודכן ל100
-        if ( product.getUnit().equals( "100 גרם" ) || product.getUnit().equals( "100 מל" )  ){
-            amountEt.setText( "100" );
+        if ( product.getUnit().equals( UNIT_100_GRAM ) || product.getUnit().equals( UNIT_100_ML )  ){
+            amountEt.setText( String.valueOf(DEFAULT_CALORIES) );
         }
         else{
-            amountEt.setText("1");
+            amountEt.setText(String.valueOf(DEFAULT_AMOUNT));
         }
 
     }
@@ -243,7 +241,7 @@ public class ProductSelectionDialog {
         return String.valueOf(currentAmount);
     }
     private int calculationMod(String unit) {
-        return (unit.equals("100 גרם") || unit.equals("100 מל") || unit.equals("קלוריות")) ? 2 : 1;
+        return (unit.equals(UNIT_100_GRAM) || unit.equals(UNIT_100_ML) || unit.equals(UNIT_CALORIES)) ? CALCULATION_MOD_WEIGHT_VOLUME : CALCULATION_MOD_UNIT;
     }
 
     private boolean isValidAmount(String amountText) {
@@ -253,7 +251,7 @@ public class ProductSelectionDialog {
         //פעולה לחישוב קלוריות והוספה לכמות כוללת
 
         String str_caloria;
-        if ( type.equals( "100 גרם" )  || type.equals( "100 מל" )  || type.equals( "קלוריות" ) ){
+        if ( type.equals( UNIT_100_GRAM )  || type.equals( UNIT_100_ML )  || type.equals( UNIT_CALORIES ) ){
             str_caloria=(String.format( String.valueOf( (int) ( (kal/100)*amount  /* +temp*/) )));
         }
         else{
