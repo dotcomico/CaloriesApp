@@ -1,47 +1,46 @@
 package com.example.calories;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import com.example.calories.data.models.ConsumedProduct;
 import com.example.calories.data.models.Product;
-import com.example.calories.data.storage.ConsumedProductStorageManager;
+import com.example.calories.data.storage.ConsumedProductsStorageManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
-
+import static com.example.calories.utils.AppConstants.*;
 public class ConsumedProductManager {
 
     private ArrayList<ConsumedProduct> consumedProductsOfDay;
     private ArrayList<ConsumedProduct> consumedProductsAll;
 
-    private final ConsumedProductStorageManager consumedProductStorageManager;
+    private final ConsumedProductsStorageManager consumedProductsStorageManager;
 
     public ConsumedProductManager( Context context) {
-        this.consumedProductStorageManager = new ConsumedProductStorageManager(context);
-        this.consumedProductsAll = consumedProductStorageManager.load();
-        this.consumedProductsOfDay = consumedProductStorageManager.loadToday();
+        this.consumedProductsStorageManager = new ConsumedProductsStorageManager(context);
+        this.consumedProductsAll = consumedProductsStorageManager.load();
+        this.consumedProductsOfDay = consumedProductsStorageManager.loadToday();
     }
 
     public void loadItemsData(Calendar calendarDayParameter) {
-        consumedProductsAll = consumedProductStorageManager.load();
-        consumedProductsOfDay = consumedProductStorageManager.loadByDay(calendarDayParameter);
+        consumedProductsAll = consumedProductsStorageManager.load();
+        consumedProductsOfDay = consumedProductsStorageManager.loadByDay(calendarDayParameter);
     }
 
     public void saveItemsData(){
-        consumedProductStorageManager.save(consumedProductsAll);
+        consumedProductsStorageManager.save(consumedProductsAll);
     }
 
     public void clearItemsData(){
-        consumedProductStorageManager.clear();
+        consumedProductsStorageManager.clear();
         consumedProductsAll.clear();
     }
 
     public void addItem(double amount, Product product , Calendar calendarDayParameter){
-        //  Calendar c = Calendar.getInstance(); //   SimpleDateFormat hour = new SimpleDateFormat("HH");
-
-        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat date = new SimpleDateFormat(DATE_PATTERN);
 
         ConsumedProduct listItem=new ConsumedProduct(amount,product, date.format(calendarDayParameter.getTime()));
         consumedProductsAll.add(listItem );
