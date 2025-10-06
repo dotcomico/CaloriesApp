@@ -19,7 +19,7 @@ import com.example.calories.data.models.ConsumedProduct;
 
 import java.util.Calendar;
 import java.util.Objects;
-
+import static com.example.calories.utils.AppConstants.*;
 
 public class ConsumedProductEditingDialog {
 
@@ -181,7 +181,7 @@ public class ConsumedProductEditingDialog {
     }
 
     private int calculationMod(String unit) {
-        return (unit.equals("100 גרם") || unit.equals("100 מל") || unit.equals("קלוריות")) ? 2 : 1;
+        return (unit.equals(UNIT_100_GRAM) || unit.equals(UNIT_100_ML) || unit.equals(UNIT_CALORIES)) ? CALCULATION_MOD_WEIGHT_VOLUME : CALCULATION_MOD_UNIT;
     }
     private boolean isValidAmount(String amountText) {
         return !amountText.isEmpty() && amountText.matches("\\d+(\\.\\d+)?");
