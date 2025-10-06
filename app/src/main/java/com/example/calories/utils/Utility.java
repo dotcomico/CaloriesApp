@@ -13,7 +13,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
+import static com.example.calories.utils.AppConstants.*;
 public class Utility {
 
     public  static void makeToast(String string ,Context context){
@@ -33,7 +33,7 @@ public class Utility {
     public static void emailSend(String detailsString , Context context) {
         //       emailSend( detailsString , this );
 
-        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy/MM/dd__HH:mm" , Locale.getDefault() );
+        SimpleDateFormat sdf = new SimpleDateFormat( DATE_PATTERN_FOR_SHOW , Locale.getDefault() );
         String currentDateandTime = sdf.format( new Date() );
 
         Intent i = new Intent( Intent.ACTION_SEND );
