@@ -18,15 +18,8 @@ import com.example.calories.data.models.Product;
 import com.example.calories.data.storage.UnitManager;
 
 import java.util.ArrayList;
-
+import static com.example.calories.utils.AppConstants.*;
 public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.ProductItemViewHolder> {
-
-    // קבועים ברורים במקום מספרים קסומים
-    private static final int STATE_NORMAL = 0;
-    private static final int STATE_CUSTOM = 1;
-    private static final int STATE_MARKED_FOR_DELETE = 100;
-    private static final int STATE_HIGHLIGHTED = 999;
-
 
     private final ArrayList<Product> customProducts;
 
@@ -83,7 +76,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
         holder.calorieContainer.setBackgroundResource(R.drawable.calories_product_item_display);
         holder.productUnitContainer.setVisibility(View.VISIBLE);
 
-        if (state == STATE_HIGHLIGHTED) {
+        if (state == PRODUCT_STATE_SELF_SEARCH) {
             holder.productNameTextView.setText("לא מה שחיפשת?");
             holder.productDescriptionTextView.setText("המשך בחיפוש עצמי");
             holder.productCalorieValueTextView.setText("\uD83D\uDD0D");
@@ -101,13 +94,13 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
     private int getCustomBackgroundForState(int state) {
         switch (state) {
             // message_sty1 , message_sty_delete , message_sty3
-            case STATE_HIGHLIGHTED:
+            case PRODUCT_STATE_SELF_SEARCH:
                 return R.drawable.product_item_background_self_search;
-            case STATE_MARKED_FOR_DELETE:
+            case PRODUCT_STATE_MARKED_FOR_DELETE:
                 return R.drawable.product_item_background_delete;
-            case STATE_CUSTOM:
+            case PRODUCT_STATE_CUSTOM:
                 return R.drawable.product_item_background_custom;
-            case STATE_NORMAL:
+            case PRODUCT_STATE_SYSTEM:
             default:
                 return R.drawable.product_item_background;
         }
@@ -132,23 +125,23 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
     }
 
     public void markItem(int position) {
-        customProducts.get(position).setItemState(STATE_MARKED_FOR_DELETE);
+        customProducts.get(position).setItemState(PRODUCT_STATE_MARKED_FOR_DELETE);
         notifyItemChanged(position);
     }
 
     public void unMarkItem(int position) {
-        customProducts.get(position).setItemState(STATE_CUSTOM);
+        customProducts.get(position).setItemState(PRODUCT_STATE_CUSTOM);
         notifyItemChanged(position);
     }
 
     public boolean isMarkedForDelete(int position) {
-        return customProducts.get(position).getItemState() == STATE_MARKED_FOR_DELETE;
+        return customProducts.get(position).getItemState() == PRODUCT_STATE_MARKED_FOR_DELETE;
     }
 
     public int getDeleteMarkCount() {
         int count = 0;
         for (Product item : customProducts) {
-            if (item.getItemState() == STATE_MARKED_FOR_DELETE) {
+            if (item.getItemState() == PRODUCT_STATE_MARKED_FOR_DELETE) {
                 count++;
             }
         }
@@ -157,7 +150,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
 
     public void removeMarkedItems() {
         for (int i = customProducts.size() - 1; i >= 0; i--) {
-            if (customProducts.get(i).getItemState() == STATE_MARKED_FOR_DELETE) {
+            if (customProducts.get(i).getItemState() == PRODUCT_STATE_MARKED_FOR_DELETE) {
                 customProducts.remove(i);
                 notifyItemRemoved(i);
             }
