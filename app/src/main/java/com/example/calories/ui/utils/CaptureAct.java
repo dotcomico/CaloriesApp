@@ -12,7 +12,7 @@ public class CaptureAct extends CaptureActivity {
         integrator.setCaptureActivity(CaptureAct.class);
         integrator.setOrientationLocked(false);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-        integrator.setPrompt("לחץ על מקשי צליל להפעלת פנס");
+        integrator.setPrompt("לחץ על מקשי הצליל להפעלת פנס");
         integrator.initiateScan();
     }
 }
