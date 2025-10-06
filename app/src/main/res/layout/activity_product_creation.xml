@@ -9,14 +9,14 @@
     tools:context=".ui.screens.ProductCreationActivity">
     <!-- כותרת עליונה - כתומה (חיפוש עצמי) -->
     <RelativeLayout
-        android:id="@+id/rl_selfSearchTopBar"
+        android:id="@+id/topBar"
         android:visibility="visible"
         android:background="@color/orange"
         android:layout_width="match_parent"
         android:layout_height="60dp">
 
         <ImageView
-            android:id="@+id/iv_backFromSelfSearchToMain"
+            android:id="@+id/backBtn"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_centerVertical="true"
@@ -38,7 +38,7 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/iv_myProdacts_SS"
+            android:id="@+id/moveToCustomProductActivity"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_centerVertical="true"
@@ -49,7 +49,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rl_selfSearchTopBar">
+        android:layout_below="@id/topBar">
 
         <WebView
         android:id="@+id/webview"
@@ -74,7 +74,7 @@
 
                 <!-- כפתור לפתיחת כרטיסיית חיפוש עצמי (כתום) -->
                 <ImageView
-                    android:id="@+id/iv_showSelfSearchBar"
+                    android:id="@+id/showDialogSheet"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_margin="8dp"
