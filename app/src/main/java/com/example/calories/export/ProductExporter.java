@@ -9,7 +9,7 @@ import static com.example.calories.utils.Utility.clipData;
 import static com.example.calories.utils.Utility.emailSend;
 
 import com.example.calories.data.models.Product;
-
+import static com.example.calories.utils.AppConstants.*;
 public class ProductExporter {
 
     private final Context context;
@@ -46,7 +46,7 @@ public class ProductExporter {
                 Product itemJ = tempList.get(j);
                 if (itemJ.getName() == null || itemJ.getUnit() == null) continue;
 
-                if (itemJ.getName().equals(itemI.getName()) && itemJ.getUnit().equals("יחידה")) {
+                if (itemJ.getName().equals(itemI.getName()) && itemJ.getUnit().equals(UNIT_UNIT)) {
                     result.add(copyItem(itemJ));
                     tempList.set(j, new Product()); // לנטרל כפילויות
                 }
@@ -58,8 +58,8 @@ public class ProductExporter {
                 if (itemJ.getName() == null || itemJ.getUnit() == null) continue;
 
                 if (itemJ.getName().equals(itemI.getName()) &&
-                        !itemJ.getUnit().equals("100 גרם") &&
-                        !itemJ.getUnit().equals("100 מל")) {
+                        !itemJ.getUnit().equals(UNIT_100_GRAM) &&
+                        !itemJ.getUnit().equals(UNIT_100_ML)) {
                     result.add(copyItem(itemJ));
                     tempList.set(j, new Product());
                 }
@@ -71,7 +71,7 @@ public class ProductExporter {
                 if (itemJ.getName() == null || itemJ.getUnit() == null) continue;
 
                 if (itemJ.getName().equals(itemI.getName()) &&
-                        (itemJ.getUnit().equals("100 גרם") || itemJ.getUnit().equals("100 מל"))) {
+                        (itemJ.getUnit().equals(UNIT_100_GRAM) || itemJ.getUnit().equals(UNIT_100_ML))) {
                     result.add(copyItem(itemJ));
                     tempList.set(j, new Product());
                 }
@@ -83,7 +83,6 @@ public class ProductExporter {
 
     private Product copyItem(Product item) {
         return new Product(
-
                 item.getItemState(),
                 item.getName(),
                 item.getUnit(),
@@ -103,7 +102,7 @@ public class ProductExporter {
             }
 
             sb.append("\nSystemProductArr.add(new Product(")
-                    .append(0).append(", \"")
+                    .append(PRODUCT_STATE_SYSTEM).append(", \"")
                     .append(item.getName()).append("\", \"")
                     .append(item.getUnit()).append("\", \"")
                     .append(item.getCalorieText()).append("\", ")
