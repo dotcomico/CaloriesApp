@@ -13,11 +13,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import static com.example.calories.utils.AppConstants.*;
-public class ConsumedProductStorageManager {
+public class ConsumedProductsStorageManager {
     private final SharedPreferences sharedPreferences;
     private final Gson gson;
 
-        public ConsumedProductStorageManager(Context context) {
+        public ConsumedProductsStorageManager(Context context) {
         this.sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         this.gson = new Gson();
     }
@@ -25,6 +25,13 @@ public class ConsumedProductStorageManager {
     public void save(ArrayList<ConsumedProduct> consumedProductList) {
         String json = gson.toJson(consumedProductList);
         sharedPreferences.edit().putString(KEY_CONSUMED_PRODUCT_LIST, json).apply();
+    }
+
+    public ArrayList<ConsumedProduct> loadToday() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(calendar.getTime());
+
+        return loadByDay(calendar);
     }
 
     public ArrayList<ConsumedProduct> loadByDay(Calendar calendar_day) {
@@ -37,7 +44,7 @@ public class ConsumedProductStorageManager {
 
         for (int i = 0; i < consumedProductsAll.size(); i++) {
             //אם זה היום הנכון לפי התאריך
-            if (strDate.equals(consumedProductsAll.get(i).getDate())) {
+            if (strDate.equals(consumedProductsAll.get(i).getFormattedDate())) {
                 consumedProductsOfDay.add(consumedProductsAll.get(i));
             }
         }
@@ -49,12 +56,7 @@ public class ConsumedProductStorageManager {
         ArrayList<ConsumedProduct> list = gson.fromJson(json, type);
         return (list != null) ? list : new ArrayList<>();
     }
-    public ArrayList<ConsumedProduct> loadToday() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(calendar.getTime());
 
-        return loadByDay(calendar);
-    }
     public void clear() {
         sharedPreferences.edit().remove(KEY_CONSUMED_PRODUCT_LIST).apply();
     }
