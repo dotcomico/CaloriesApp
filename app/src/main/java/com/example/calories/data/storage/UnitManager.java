@@ -10,20 +10,11 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-
+import static com.example.calories.utils.AppConstants.*;
 public class UnitManager {
-    private static final String PREF_NAME = "measurement_units";
-    private static final String KEY_CUSTOM_UNITS = "custom_units";
     private static UnitManager instance;
     private final SharedPreferences sharedPreferences;
     private final Gson gson;
-
-    private static final String GRAMS_100 ="100 גרם";
-    private static final String UNIT ="יחידה";
-    private static final String TABLESPOON ="כף";
-    private static final String TEASPOON ="כפית";
-    private static final String CUP ="כוס";
-    private static final String SLICE ="פרוסה";
 
     private static final int GRAMS_100_RID = R.drawable.t_grame;
     private static final int  UNIT_RID = R.drawable.t_single;
@@ -47,12 +38,12 @@ public class UnitManager {
 
     public List<Unit> getDefaultUnits() {
         List<Unit> defaultUnits = new ArrayList<>();
-        defaultUnits.add(new Unit("default_1", GRAMS_100, false, 0));
-        defaultUnits.add(new Unit("default_2", UNIT, false, 1));
-        defaultUnits.add(new Unit("default_3", TABLESPOON, false, 2));
-        defaultUnits.add(new Unit("default_4", TEASPOON, false, 3));
-        defaultUnits.add(new Unit("default_5", CUP, false, 4));
-        defaultUnits.add(new Unit("default_6", SLICE, false, 5));
+        defaultUnits.add(new Unit("default_1", UNIT_100_GRAM, false, 0));
+        defaultUnits.add(new Unit("default_2", UNIT_UNIT, false, 1));
+        defaultUnits.add(new Unit("default_3", UNIT_TABLESPOON, false, 2));
+        defaultUnits.add(new Unit("default_4", UNIT_TEASPOON, false, 3));
+        defaultUnits.add(new Unit("default_5", UNIT_CUP, false, 4));
+        defaultUnits.add(new Unit("default_6", UNIT_SLICE, false, 5));
         return defaultUnits;
     }
 
@@ -72,17 +63,17 @@ public class UnitManager {
 
     public static int getUnitImageResId(String unit) {
         switch (unit) {
-            case GRAMS_100:
+            case UNIT_100_GRAM:
                 return GRAMS_100_RID;
-            case UNIT:
+            case UNIT_UNIT:
                 return UNIT_RID;
-            case TABLESPOON:
+            case UNIT_TABLESPOON:
                 return TABLESPOON_RID;
-            case TEASPOON:
+            case UNIT_TEASPOON:
                 return TEASPOON_RID;
-            case CUP:
+            case UNIT_CUP:
                 return CUP_RID;
-            case SLICE:
+            case UNIT_SLICE:
                 return SLICE_RID;
         }
 
