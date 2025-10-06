@@ -31,8 +31,8 @@ import static com.example.calories.utils.AppConstants.*;
 import java.util.Objects;
 
 public class ProductCreationActivity extends AppCompatActivity implements View.OnClickListener {
-    private RelativeLayout rl_selfSearch, rl_selfSearchTopBar;
-    private ImageView iv_backFromSelfSearchToMain,iv_showSelfSearchBar, iv_myProducts_SS;
+    private RelativeLayout rl_selfSearch, topBar;
+    private ImageView backBtn, showDialogSheet, moveToCustomProductActivity;
     private WebView webview;
     CustomProductDialog customProductDialog;
     private ProductStorageManager productStorageManager;
@@ -56,7 +56,7 @@ public class ProductCreationActivity extends AppCompatActivity implements View.O
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
                 if (webview.getVisibility()== View.VISIBLE){
-                    iv_showSelfSearchBar.setVisibility(View.VISIBLE);}
+                    showDialogSheet.setVisibility(View.VISIBLE);}
             }
         });
         customProductDialog.setOnCustomProductItemListener(new CustomProductDialog.OnCustomProductItemListener() {
@@ -77,7 +77,7 @@ public class ProductCreationActivity extends AppCompatActivity implements View.O
                 searchForSuggestion(suggestion);
                 hideKeyboard();
                 customProductDialog.close();
-                iv_showSelfSearchBar.setVisibility( View.VISIBLE );
+                showDialogSheet.setVisibility( View.VISIBLE );
             }
 
             @Override
@@ -100,13 +100,13 @@ public class ProductCreationActivity extends AppCompatActivity implements View.O
         }
     }
     private void initViews() {
-        rl_selfSearchTopBar =findViewById(R.id.rl_selfSearchTopBar);
-        iv_myProducts_SS =findViewById(R.id.iv_myProdacts_SS);
-        iv_myProducts_SS.setOnClickListener( this );
-        iv_backFromSelfSearchToMain =findViewById(R.id.iv_backFromSelfSearchToMain);
-        iv_backFromSelfSearchToMain.setOnClickListener( this );
-        iv_showSelfSearchBar =findViewById( R.id.iv_showSelfSearchBar );
-        iv_showSelfSearchBar.setOnClickListener( this );
+        topBar =findViewById(R.id.topBar);
+        moveToCustomProductActivity =findViewById(R.id.moveToCustomProductActivity);
+        moveToCustomProductActivity.setOnClickListener( this );
+        backBtn =findViewById(R.id.backBtn);
+        backBtn.setOnClickListener( this );
+        showDialogSheet =findViewById( R.id.showDialogSheet);
+        showDialogSheet.setOnClickListener( this );
         webview = findViewById( R.id.webview);
         webview.setWebViewClient( new WebViewClient() );
         WebSettings webSettings=webview.getSettings();
@@ -124,7 +124,7 @@ public class ProductCreationActivity extends AppCompatActivity implements View.O
 
     private void searchOnWeb(String query){
         webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        webview.loadUrl("https://www.google.com/search?q=" + query);
+        webview.loadUrl(GOOGLE_SEARCH_URL + query);
     }
     private void searchForCalories(String caloriesQuery) {
         searchOnWeb(caloriesQuery + " "+ UNIT_CALORIES );
@@ -152,7 +152,7 @@ public class ProductCreationActivity extends AppCompatActivity implements View.O
                 customProductDialog.handleBarcodeResult(result);
 
             }else{
-                Toast.makeText( this, "אין תוצאה",Toast.LENGTH_SHORT ).show();
+                Toast.makeText( this, TEXT_NO_RESULT,Toast.LENGTH_SHORT ).show();
             }
 
         }else{
@@ -161,16 +161,16 @@ public class ProductCreationActivity extends AppCompatActivity implements View.O
 
     @Override
     public void onClick(View view) {
-        if(view == iv_myProducts_SS){
+        if(view == moveToCustomProductActivity){
             startNewActivity(ProductCreationActivity.this, MyProductActivity.class);
         }
 
-        if( view == iv_backFromSelfSearchToMain){
+        if( view == backBtn){
             finish();
         }
 
-        if (view == iv_showSelfSearchBar){
-            iv_showSelfSearchBar.setVisibility( View.GONE );
+        if (view == showDialogSheet){
+            showDialogSheet.setVisibility( View.GONE );
             customProductDialog.show(productStorageManager , "" , "");
         }
     }
