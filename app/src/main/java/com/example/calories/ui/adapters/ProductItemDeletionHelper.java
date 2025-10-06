@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.example.calories.data.models.Product;
 
 import java.util.ArrayList;
-
+import static com.example.calories.utils.AppConstants.*;
 public class ProductItemDeletionHelper {
 
     private final Context context;
@@ -55,7 +55,7 @@ public class ProductItemDeletionHelper {
     @SuppressLint("NotifyDataSetChanged")
     public void deleteSelectedItems() {
         for (int i = 0; i < productList.size(); i++) {
-            if (productList.get(i).getItemState() == 100) {
+            if (productList.get(i).getItemState() == PRODUCT_STATE_MARKED_FOR_DELETE) {
                 productList.remove(i);
                 i--; // חשוב לא לדלג על איברים
             }
