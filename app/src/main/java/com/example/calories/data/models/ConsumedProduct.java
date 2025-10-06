@@ -1,29 +1,49 @@
 package com.example.calories.data.models;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.UUID;
 import static com.example.calories.utils.AppConstants.*;
 
-public class ConsumedProduct {
+import android.annotation.SuppressLint;
 
+public class ConsumedProduct {
+//יש להוסיף שמירה של שעה או הגדרה של סוג הארוחה כבוקר צהריים או ערב.
     private static final int STANDARD_UNIT_BASE = 100;
 
     private String id; // מזהה פנימי (למשל לשמירה במסד נתונים)
     private double amount; // כמות שנצרכה
     private Product product; // המוצר שנצרך
-    private String date; // תאריך כטקסט (לצורך תאימות לאחור)
-
-    private LocalDateTime dateTime; // מתי נאכל
+    private String formattedDate; // תאריך כטקסט (לצורך תאימות לאחור)
+    private long timestamp; // מתי נאכל
 
     public ConsumedProduct() {
     }
 
-    public ConsumedProduct(double amount, Product product, String date) {
+    public ConsumedProduct(double amount, Product product, String formattedDate) {
         this.amount = amount;
         this.product = product;
-        this.date = date;
-        this.id = UUID.randomUUID().toString();;
+        this.formattedDate = formattedDate;
+        this.id = UUID.randomUUID().toString();
+        this.timestamp = System.currentTimeMillis(); // שומר את הזמן הנוכחי
+//        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+//        this.formattedDate = sdf.format(Calendar.getInstance().getTime()); // שומר רק תאריך עכשיווי ולא תאריך שמתקבל.
     }
+
+//    public LocalDateTime getDateTime() {
+//        return Instant.ofEpochMilli(timestamp)
+//                .atZone(ZoneId.systemDefault())
+//                .toLocalDateTime();
+//    }
+//
+//    // פעולת עזר שמחזירה תאריך בפורמט יפה להצגה
+//    public String getFormattedDate() {
+//        Date date = new Date(timestamp);
+//        @SuppressLint("SimpleDateFormat")
+//        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+//        return sdf.format(date);
+//    }
 
     // Getters and Setters
     public double getAmount() {
@@ -42,12 +62,20 @@ public class ConsumedProduct {
         this.product = product;
     }
 
-    public String getDate() {
-        return date;
+    public String getFormattedDate() {
+        return formattedDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setFormattedDate(String formattedDate) {
+        this.formattedDate = formattedDate;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getId() {
@@ -56,14 +84,6 @@ public class ConsumedProduct {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
     }
 
     /**
