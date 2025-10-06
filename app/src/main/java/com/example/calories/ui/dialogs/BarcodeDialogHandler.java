@@ -12,7 +12,7 @@ import com.example.calories.R;
 import com.example.calories.ui.screens.MyProductActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-
+import static com.example.calories.utils.AppConstants.*;
 public class BarcodeDialogHandler {
 
     private final Context context;
@@ -61,7 +61,7 @@ public class BarcodeDialogHandler {
             String barcode = result.getContents();
             addBarcode(barcode);
         } else {
-            Toast.makeText(context, "אין תוצאה", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, TEXT_NO_RESULT, Toast.LENGTH_SHORT).show();
         }
     }
     public  void  addBarcode(String barcode){
