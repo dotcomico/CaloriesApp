@@ -6,11 +6,11 @@ import static com.example.calories.utils.AppConstants.*;
 // יצירת מחלקת עזר לחישובי קלוריות
 public class CalorieCalculator {
 
-    public static String calculateCalories(double caloriesPer100, double amount, String unit) {
+    public static int calculateTotalCalories(double baseCalories, double amount, String unit) {
         if (isWeightVolumeUnit(unit)) {
-            return String.valueOf((int) ((caloriesPer100 / 100) * amount));
+            return (int) ((baseCalories / 100) * amount);
         } else {
-            return String.valueOf((int) (caloriesPer100 * amount));
+            return (int) (baseCalories * amount);
         }
     }
 
