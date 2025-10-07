@@ -24,7 +24,7 @@ public class ConsumedProduct {
     public ConsumedProduct(double amount, Product product, String formattedDate) {
         this.amount = amount;
         this.product = product;
-        this.formattedDate = formattedDate;
+        this.formattedDate = formattedDate.trim();
         this.id = UUID.randomUUID().toString();
         this.timestamp = System.currentTimeMillis(); // שומר את הזמן הנוכחי
 //        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
@@ -67,7 +67,7 @@ public class ConsumedProduct {
     }
 
     public void setFormattedDate(String formattedDate) {
-        this.formattedDate = formattedDate;
+        this.formattedDate = formattedDate.trim();
     }
 
     public long getTimestamp() {
@@ -83,7 +83,7 @@ public class ConsumedProduct {
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.id = id.trim();
     }
 
     /**
