@@ -9,15 +9,15 @@ public class Unit {
     private int position;
 
     public Unit(String id, String name, boolean isCustom, int position) {
-        this.id = id;
-        this.name = name;
+        this.id = id.trim();
+        this.name = name.trim();
         this.isCustom = isCustom;
         this.position = position;
     }
 
     public Unit(String name, boolean isCustom) {
         this.id = generateId();
-        this.name = name;
+        this.name = name.trim();
         this.isCustom = isCustom;
         this.position = 0;
     }
@@ -32,7 +32,7 @@ public class Unit {
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.id = id.trim();
     }
 
     public String getName() {
@@ -40,7 +40,7 @@ public class Unit {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.trim();
     }
 
     public boolean isCustom() {
