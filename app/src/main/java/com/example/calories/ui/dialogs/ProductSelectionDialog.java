@@ -20,6 +20,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.calories.AmountAdjuster;
+import com.example.calories.CalorieCalculator;
 import com.example.calories.ConsumedProductManager;
 import com.example.calories.R;
 import com.example.calories.data.models.Product;
@@ -166,19 +169,17 @@ public class ProductSelectionDialog {
             public void beforeTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
 
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
-                String st;
-                if ( amountEt.getText().toString().equals( "." )){ amountEt.setText( "" );}
-                if ( amountEt.getText().toString().matches("")){
-                    st=calcolatyCAL(Double.parseDouble( caloriesHeaderTv.getText().toString() ),0, unitTv.getText().toString());
-                }else{
-                    st = calcolatyCAL( Double.parseDouble( caloriesHeaderTv.getText().toString() ) ,
-                            Double.parseDouble( amountEt.getText().toString() ), unitTv.getText().toString() );
+                int totalCalories = 0;
+                String amountText = amountEt.getText().toString().trim();
+                if ( amountText.equals( "." )){ amountEt.setText( "" );}
+                else if ( !amountText.matches("")){
+                    totalCalories = CalorieCalculator.calculateTotalCalories( Double.parseDouble( caloriesHeaderTv.getText().toString() ) ,
+                            Double.parseDouble( amountText ), unitTv.getText().toString() );
 
                 }
-                saveBtn.setText( st+ "\n"+" הוסף " );
+                saveBtn.setText( totalCalories+ "\n"+" הוסף " );
 
             }
 
@@ -206,42 +207,8 @@ public class ProductSelectionDialog {
             }
         }
         String unit = product.getUnit();
-        String newAmountText = calculateNewAmount(currentAmount, increase, unit);
+        String newAmountText = AmountAdjuster.getNewAmountFormatedText(currentAmount, increase, unit);
         amountEt.setText(newAmountText);
-    }
-    private String calculateNewAmount(double currentAmount, boolean increase, String unit) {
-        if (calculationMod(unit) == CALCULATION_MOD_UNIT) {
-            return calculateUnitAmount(currentAmount, increase);
-
-        } else if (calculationMod(unit) == CALCULATION_MOD_WEIGHT_VOLUME) {
-            return calculateWeightVolumeAmount(currentAmount, increase);
-        }
-        return String.valueOf(currentAmount);
-    }
-    private String calculateUnitAmount(double currentAmount, boolean increase) {
-        if (increase) {
-            if (currentAmount >= UNIT_INCREMENT) return String.valueOf(currentAmount + UNIT_INCREMENT);
-            if (currentAmount == UNIT_HALF) return String.valueOf(UNIT_INCREMENT);
-            if (currentAmount == UNIT_QUARTER) return String.valueOf(UNIT_HALF);
-            if (currentAmount == 0) return String.valueOf(UNIT_QUARTER);
-        } else {
-            if (currentAmount - UNIT_INCREMENT >= UNIT_INCREMENT) return String.valueOf(currentAmount - UNIT_INCREMENT);
-            if (currentAmount == UNIT_INCREMENT) return String.valueOf(UNIT_HALF);
-            if (currentAmount == UNIT_HALF) return String.valueOf(UNIT_QUARTER);
-            if (currentAmount == UNIT_QUARTER) return "0";
-        }
-        return String.valueOf(currentAmount);
-    }
-    private String calculateWeightVolumeAmount(double currentAmount, boolean increase) {
-        if (increase) {
-            return String.valueOf(currentAmount + WEIGHT_VOLUME_INCREMENT);
-        } else if (currentAmount >= WEIGHT_VOLUME_INCREMENT) {
-            return String.valueOf(currentAmount - WEIGHT_VOLUME_INCREMENT);
-        }
-        return String.valueOf(currentAmount);
-    }
-    private int calculationMod(String unit) {
-        return (unit.equals(UNIT_100_GRAM) || unit.equals(UNIT_100_ML) || unit.equals(UNIT_CALORIES)) ? CALCULATION_MOD_WEIGHT_VOLUME : CALCULATION_MOD_UNIT;
     }
 
     private boolean isValidAmount(String amountText) {
@@ -259,7 +226,6 @@ public class ProductSelectionDialog {
         }
         return str_caloria;
     }
-
     public void close(){
         dialog.dismiss();
     }
