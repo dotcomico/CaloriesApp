@@ -214,18 +214,6 @@ public class ProductSelectionDialog {
     private boolean isValidAmount(String amountText) {
         return !amountText.isEmpty() && amountText.matches("\\d+(\\.\\d+)?");
     }
-    private String calcolatyCAL(double kal, double amount,String type) {
-        //פעולה לחישוב קלוריות והוספה לכמות כוללת
-
-        String str_caloria;
-        if ( type.equals( UNIT_100_GRAM )  || type.equals( UNIT_100_ML )  || type.equals( UNIT_CALORIES ) ){
-            str_caloria=(String.format( String.valueOf( (int) ( (kal/100)*amount  /* +temp*/) )));
-        }
-        else{
-            str_caloria = (String.format( String.valueOf( (int) ( kal* amount /* +temp*/) )));
-        }
-        return str_caloria;
-    }
     public void close(){
         dialog.dismiss();
     }
