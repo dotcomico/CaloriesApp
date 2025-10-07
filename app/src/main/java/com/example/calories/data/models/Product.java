@@ -17,10 +17,10 @@ public class Product {
                    String calorieText, String barcode) {
 
         this.itemState = itemState;
-        this.name = name;
-        this.unit = unit;
-        this.calorieText = calorieText;
-        this.barcode = barcode;
+        this.name = name.trim();
+        this.unit = unit.trim();
+        this.calorieText = calorieText.trim();
+        this.barcode = barcode.trim();
     }
 
     // Getters and Setters
@@ -38,7 +38,7 @@ public class Product {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.trim();
     }
 
     public String getUnit() {
@@ -46,7 +46,7 @@ public class Product {
     }
 
     public void setUnit(String unit) {
-        this.unit = unit;
+        this.unit = unit.trim();
     }
 
     public String getCalorieText() {
@@ -54,7 +54,7 @@ public class Product {
     }
 
     public void setCalorieText(String calorieText) {
-        this.calorieText = calorieText;
+        this.calorieText = calorieText.trim();
     }
 
     public String getBarcode() {
@@ -62,7 +62,7 @@ public class Product {
     }
 
     public void setBarcode(String barcode) {
-        this.barcode = barcode;
+        this.barcode = barcode.trim();
     }
 
     /**
