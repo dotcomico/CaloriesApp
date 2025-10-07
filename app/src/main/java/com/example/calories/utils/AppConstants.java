@@ -24,11 +24,6 @@ public class AppConstants {
     public static final int CALCULATION_MOD_UNIT = 1;
     public static final int CALCULATION_MOD_WEIGHT_VOLUME = 2;
 
-    // === הגדרות כלליות ===
-    public static final int DEFAULT_CALORIES = 100;
-    public static final int DEFAULT_AMOUNT = 1;
-
-
     // itemState - הגדרת סוג איבר מסוג מוצר product;
     public static final int PRODUCT_STATE_SYSTEM = 0;
     public static final int PRODUCT_STATE_CUSTOM = 1;
@@ -38,7 +33,6 @@ public class AppConstants {
     //אקסטרות מעבר בין מסכים - Extra
     public static final String EXTRA_BARCODE = "barcode";
     public static final String EXTRA_NAME = "name";
-
 
 
     // === מפתחות לשמירה ב-SharedPreferences ===
@@ -53,6 +47,15 @@ public class AppConstants {
     public static final String DATE_PATTERN= "dd-MM-yyyy";
     public static final String DATE_PATTERN_FOR_SHOW = "yyyy/MM/dd__HH:mm";
 
+    // === ברירת מחדל ===
+    public static final int DEFAULT_CALORIES = 100;
+    public static final int DEFAULT_AMOUNT = 1;
+
+    // גדלים קבועים
+    public static final double UNIT_INCREMENT = 1.0;
+    public static final double UNIT_HALF = 0.5;
+    public static final double UNIT_QUARTER = 0.25;
+    public static final double WEIGHT_VOLUME_INCREMENT = 50.0;
 
     //
     public static final String GOOGLE_SEARCH_URL = "https://www.google.com/search?q=";
