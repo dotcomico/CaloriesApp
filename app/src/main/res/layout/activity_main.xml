@@ -3,18 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary"
+    android:id="@+id/main"
     tools:context=".ui.screens.MainActivity">
-
-    <!-- סרגלים עליונים -->
-    <include layout="@layout/top_bar" />
 
     <!-- תוכן עיקרי של המסך (רשימות, מידע, התראות) -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rl_tops_all"
         android:layout_above="@+id/bottomActionMenu">
-
         <include layout="@layout/main_screen" />
     </RelativeLayout>
 
