@@ -40,6 +40,8 @@ public class AppConstants {
     public static final String KEY_PRODUCT_LIST = "products";
     public static final String KEY_CONSUMED_PRODUCT_LIST = "consumed_products";
     public static final String KEY_CUSTOM_UNITS = "custom_units";
+    public static final String KEY_DARK_MODE = "dark_mode";
+    public static final String KEY_LANGUAGE = "language";
 
 
     ///
