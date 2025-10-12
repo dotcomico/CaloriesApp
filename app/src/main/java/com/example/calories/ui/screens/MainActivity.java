@@ -6,7 +6,9 @@ import static com.example.calories.utils.Utility.startNewActivity;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
+import androidx.core.os.LocaleListCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +36,8 @@ import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.calories.BaseActivity;
 import com.example.calories.ConsumedProductManager;
 import com.example.calories.data.models.ConsumedProduct;
 import com.example.calories.data.models.Product;
@@ -56,7 +60,7 @@ import java.util.Comparator;
 import java.util.Objects;
 import static com.example.calories.utils.AppConstants.*;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, TextWatcher {
+public class MainActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, TextWatcher {
     ///  יש לפעול לפיצול רשימות- יש רשימה אחת למוצרי מערכת ויש רשימה למוצרים אישיים אך יש לחברם יחד לרשימה כוללה
     /// כרגע מסיבה מסויימת הם מתחברים יחדיו לרשימת מוצרי המערכת מסיבה לא ברורה
     /// ראה ערך בפעולה addCustomProductListToProductCatalog()
@@ -139,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         productsRecyclerView.setVisibility(View.GONE);
         rl_selfSearch.setVisibility(View.GONE);
         updateMain();
+
     }
     private void setupListeners() {
         consumedProductEditingDialog.setOnEditCompleteListener(new ConsumedProductEditingDialog.OnEditCompleteListener() {
@@ -336,6 +341,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startNewActivity(MainActivity.this, MyProductActivity.class);
         }
 
+        if (view == settingsIcon){
+//            ly_settings.setVisibility( View.VISIBLE );
+            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+        }
+
         if (view==iv_selfAdd) {
             selfAddActions();
         }
@@ -393,10 +403,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (view== tv_returnToMainScreen){
             ly_settings.setVisibility( View.GONE );
-        }
-
-        if (view== settingsIcon) {
-            ly_settings.setVisibility( View.VISIBLE );
         }
     }
     private void flipCaloriesView() {
