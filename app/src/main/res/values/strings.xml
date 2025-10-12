@@ -1,29 +1,52 @@
 <resources>
-    <string name="app_name">calקל</string>
-
-
+    <string name="app_name">CalCal</string>
 
 
     <!--  scan_barcode_dialog  -->
-    <string name="add_code">הוסף קוד מוצר</string>
-    <string name="product_code">קוד מוצר</string>
-    <string name="edit_product">עריכת מוצר</string>
-    <string name="product">מוצר</string>
-    <string name="measure">מדד</string>
+    <string name="add_code">Add Product Code</string>
+    <string name="product_code">Product Code</string>
+    <string name="edit_product">Edit Product</string>
+    <string name="product">Product</string>
+    <string name="measure">Measure</string>
     <string name="dot">DOT</string>
     <string name="one">1</string>
-    <string name="amount">כמות</string>
-    <string name="decrease">decrease</string>
-    <string name="add">add</string>
-    <string name="save_changes">שמור שינויים</string>
-    <string name="back_to_main_activity">back to main activity</string>
-    <string name="show_add_product_dialog">show add product dialog</string>
-    <string name="delete">מחיקה</string>
-    <string name="scan_barcode">סריקת ברקוד</string>
-    <string name="calories">קלוריות</string>
-    <string name="save_product">שמור מוצר</string>
-    <string name="add_product">הוסף מוצר</string>
-    <string name="add_self_calorie_value">הוסף ערך קלורי עצמי</string>
-    <string name="move_to_custom_product_view">המשך להוספת מוצר</string>
-    <string name="add_dotan_self_product">הוספת פריטים של דותן לסל האישי</string>
+    <string name="amount">Amount</string>
+    <string name="decrease">Decrease</string>
+    <string name="add">Add</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="back_to_main_activity">Back to main activity</string>
+    <string name="show_add_product_dialog">Show add product dialog</string>
+    <string name="delete">Delete</string>
+    <string name="scan_barcode">Scan Barcode</string>
+    <string name="calories">Calories</string>
+    <string name="save_product">Save Product</string>
+    <string name="add_product">Add Product</string>
+    <string name="add_self_calorie_value">Add Self Calorie Value</string>
+    <string name="move_to_custom_product_view">Continue to Add Product</string>
+    <string name="add_dotan_self_product">Add Dotan items to personal cart</string>
+    <string name="today">Today</string>
+    <string name="calorie_tracker">Calorie Tracker</string>
+    <string name="settings">Settings</string>
+    <string name="custom_list_icon">Custom List Icon</string>
+    <string name="shopping_bag_icon">Shopping Bag Icon</string>
+    <string name="breakfast">Breakfast</string>
+    <string name="lunch">Lunch</string>
+    <string name="dinner">Dinner</string>
+    <string name="back">Back</string>
+    <string name="display">Display</string>
+    <string name="night_mod">Night Mode</string>
+    <string name="language">Language</string>
+    <string name="enable_dark_theme">Enable Dark Theme</string>
+    <string name="choose_a_language">Choose a language</string>
+    <string name="hebrew">Hebrew</string>
+    <string name="arrow">Arrow</string>
+    <string name="information">Information</string>
+    <string name="about">About</string>
+    <string name="about_the_app">About the app</string>
+    <string name="version">Version 1.0.0</string>
+    <string name="ok">OK</string>
+    <string name="about_message">This is an amazing app!\\n\\nDeveloped by: Dotcomico\\nVersion: 1.0.0</string>
+    <string name="arabic">arabic</string>
+    <string name="english">English</string>
+    <string name="cancel">Cancel</string>
 </resources>
