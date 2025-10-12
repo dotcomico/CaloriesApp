@@ -55,14 +55,9 @@ public class BaseActivity extends AppCompatActivity {
                 ? AppCompatDelegate.MODE_NIGHT_YES
                 : AppCompatDelegate.MODE_NIGHT_NO;
 
-        // !!! הוספת בדיקה זו היא הקריטית !!!
-        // קבל את מצב הלילה הנוכחי של האפליקציה כפי ש-AppCompatDelegate מבין אותו.
         int currentMode = AppCompatDelegate.getDefaultNightMode();
 
         if (currentMode != desiredMode) {
-            // רק אם המצב שונה מהרצוי - שנה אותו.
-            // הקריאה הזו עדיין תגרום ל-Recreation, אבל רק כשהמשתמש באמת משנה את ההגדרות,
-            // לא בכל פתיחה מיותרת.
             AppCompatDelegate.setDefaultNightMode(desiredMode);
         }
     }
