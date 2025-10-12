@@ -19,7 +19,7 @@
         android:id="@+id/iv_backToMain"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_above="@+id/bottomActionMenu"
         android:layout_marginHorizontal="10dp"
         android:contentDescription="@string/back_to_main_activity"
