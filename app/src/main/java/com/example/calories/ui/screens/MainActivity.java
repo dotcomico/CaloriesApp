@@ -50,6 +50,7 @@ import com.example.calories.ui.adapters.ProductItemAdapter;
 import com.example.calories.R;
 import com.example.calories.ui.adapters.RecyclerItemClickListener;
 import com.example.calories.ui.views.CircularProgressView;
+import com.example.calories.utils.Utility;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -191,6 +192,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mainSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override//כאשר לוחצים חפש
             public boolean onQueryTextSubmit(String s) {
+
                 if (isNumeric( s )){
                     selfAddActions();
                 }else if (filteredProducts.isEmpty()){
@@ -200,6 +202,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                 return false;
             }
+            ///  פעולה זו מתקיימת בכל עדכון של מצב יום או לילה מסיבה מסויימת.
             @Override//כאשר החיפוש מתבצע
             public boolean onQueryTextChange(String s) {
                 handleSearchTextChange(s);
@@ -209,6 +212,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void handleSearchTextChange(String query) {
+        if (query.isEmpty()){ //ללא הבדיקה הזו, בכל מצב של שינוי המצב יום או לילה של האפליקציה
+            productsRecyclerView.setVisibility(View.GONE);
+            mainSearchView.setBackgroundResource( R.drawable.search_background );
+            iv_selfAdd.setVisibility(View.GONE);
+            iv_selfSearch_round.setVisibility( View.GONE );
+            barcodeIcon.setVisibility( View.VISIBLE );
+            rl_selfSearch.setVisibility(View.GONE);
+            iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_blue );
+            return;
+        }
         // עדכון רשימת מזון לפי חיפוש בזמן הקלדה
         iv_backToMain.setVisibility(View.VISIBLE);
         searchInFoodList(query);
@@ -233,7 +246,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             iv_backToMain.setImageResource( R.drawable.baseline_arrow_circle_right_oreng );
 
         } else {
-            mainSearchView.setBackgroundResource( R.drawable.sty_3 );
+            mainSearchView.setBackgroundResource( R.drawable.search_background );
             iv_selfAdd.setVisibility(View.GONE);
             iv_selfSearch_round.setVisibility( View.GONE );
             barcodeIcon.setVisibility( View.VISIBLE );
@@ -297,6 +310,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             return insets;
         });
     }
+/// כך ניתן לגרום לשורת חיפוש לרחף מעל מקלדת
+/// עובד כאשר הסטייל במניפסט הוא android:theme="@style/Base.Theme.Calories"
+/// כלומר: <style name="Base.Theme.Calories" parent="Theme.Material3.DayNight.NoActionBar"> </style>
+//    private void setupSystemUI() {
+//        View rootLayout = findViewById(R.id.main);
+//        ViewCompat.setOnApplyWindowInsetsListener(rootLayout, (v, insets) -> {
+//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+//            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+//            int bottomPadding = imeInsets.bottom + 0;
+//            v.setPadding(
+//                    systemBars.left,
+//                    v.getPaddingTop(), // שומרים על ה-Padding העליון
+//                    systemBars.right,
+//                    bottomPadding
+//            );
+//            return WindowInsetsCompat.CONSUMED;
+//        });
+//
+//        // שמירת הטיפול בשורת הסטטוס בנפרד (כפי שהיה לך)
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.appBarLayout), (v, insets) -> {
+//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+//            v.setPadding(0, systemBars.top, 0, 0);
+//            return insets;
+//        });
+//    }
     private void initManagersAndDialogs() {
         productStorageManager = new ProductStorageManager(this);
         consumedProductManager = new ConsumedProductManager(this);
