@@ -93,6 +93,13 @@ public class ConsumedProductManager {
         //לשקול ממש כאן את הפעולה loadItemsData(calendarDayParameter); ולהפוך אותה לפרטית
         return consumedProductsOfDay;
     }
+    public int getConsumedCaloriesOfDay(){
+        int calories=0;
+        for(int i = 0; i <  consumedProductsOfDay.size(); i++){
+            calories += consumedProductsOfDay.get( i ).getTotalCalories();
+        }
+        return  calories;
+    }
 
     public ArrayList<ConsumedProduct> getConsumedProductsAll() {
         return consumedProductsAll;
