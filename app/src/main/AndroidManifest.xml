@@ -15,9 +15,12 @@
         android:icon="@mipmap/icon3_v2"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/icon3_v2_round"
-        android:supportsRtl="false"
+        android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.screens.SettingsActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.screens.ProductCreationActivity"
             android:exported="false" />
