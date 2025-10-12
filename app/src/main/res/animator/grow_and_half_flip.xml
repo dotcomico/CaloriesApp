@@ -1,0 +1,28 @@
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:ordering="sequentially">
+
+    <!-- הגדלה -->
+    <set android:ordering="together">
+        <objectAnimator
+            android:propertyName="scaleX"
+            android:valueFrom="1"
+            android:valueTo="1.15"
+            android:duration="200"
+            android:interpolator="@android:interpolator/accelerate_decelerate" />
+        <objectAnimator
+            android:propertyName="scaleY"
+            android:valueFrom="1"
+            android:valueTo="1.15"
+            android:duration="200"
+            android:interpolator="@android:interpolator/accelerate_decelerate" />
+    </set>
+
+    <!-- סיבוב חצי ראשון -->
+    <objectAnimator
+        android:propertyName="rotationY"
+        android:valueFrom="0"
+        android:valueTo="90"
+        android:duration="250"
+        android:interpolator="@android:interpolator/accelerate_decelerate" />
+
+</set>
