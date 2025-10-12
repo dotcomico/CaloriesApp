@@ -45,7 +45,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Wed 19"
+                            android:text="@string/today"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:textColor="@color/primaryText"
@@ -55,7 +55,7 @@
                             android:id="@+id/collapsedCaloriesText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="675 Remaining"
+                            android:text="@string/calories"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:textColor="@color/tertiary"
@@ -84,7 +84,7 @@
                             android:id="@+id/titleText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Calorie Tracker"
+                            android:text="@string/calorie_tracker"
                             android:textSize="20sp"
                             android:textStyle="bold"
                             android:textColor="@color/primaryText"
@@ -101,7 +101,7 @@
                             android:layout_alignParentEnd="true"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:padding="0dp"
-                            android:contentDescription="Settings" />
+                            android:contentDescription="@string/settings" />
 
                         <!-- אייקון רשימת מוצרים אישית -->
                         <ImageView
@@ -114,7 +114,7 @@
                             android:layout_marginEnd="16dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:padding="0dp"
-                            android:contentDescription="Custom List" />
+                            android:contentDescription="@string/custom_list_icon" />
                         <ImageView
                             android:id="@+id/shopIcon"
                             android:layout_width="wrap_content"
@@ -125,7 +125,7 @@
                             android:layout_marginEnd="16dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:padding="0dp"
-                            android:contentDescription="Custom List" />
+                            android:contentDescription="@string/shopping_bag_icon" />
                     </RelativeLayout>
 
                     <!-- בחירת תאריך -->
@@ -140,6 +140,7 @@
                             android:id="@+id/lastDayBtn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackgroundBorderless"
                             android:src="@drawable/round_chevron_left_date_bar"
                             android:padding="8dp" />
 
@@ -149,6 +150,7 @@
                             android:layout_weight="1"
                             android:text="Tue 18"
                             android:textSize="16sp"
+                            android:foreground="?attr/selectableItemBackground"
                             android:textColor="@color/secondaryText"
                             android:gravity="center" />
 
@@ -160,6 +162,7 @@
                             android:text="Wed 19"
                             android:textSize="16sp"
                             android:textColor="#FFFFFF"
+                            android:foreground="?attr/selectableItemBackground"
                             android:background="@drawable/selected_date_bg"
                             android:gravity="center"
                             android:padding="4dp" />
@@ -170,6 +173,7 @@
                             android:layout_weight="1"
                             android:text="Thu 20"
                             android:textSize="16sp"
+                            android:foreground="?attr/selectableItemBackground"
                             android:textColor="@color/secondaryText"
                             android:gravity="center" />
 
@@ -177,6 +181,7 @@
                             android:id="@+id/nextDayBtn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackgroundBorderless"
                             android:src="@drawable/round_chevron_right_date_bar"
                             android:padding="8dp" />
 
@@ -215,7 +220,7 @@
                                 android:id="@+id/caloriesDescriptionText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="calories"
+                                android:text="@string/calories"
                                 android:textSize="20sp"
                                 android:textColor="@color/secondaryText" />
 
@@ -241,7 +246,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Breakfast"
+                                android:text="@string/breakfast"
                                 android:textSize="14sp"
                                 android:textColor="@color/tertiaryText"
                                 android:layout_marginBottom="4dp" />
@@ -267,7 +272,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Lunch"
+                                android:text="@string/lunch"
                                 android:textSize="14sp"
                                 android:textColor="@color/tertiaryText"
                                 android:layout_marginBottom="4dp" />
@@ -293,7 +298,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Dinner"
+                                android:text="@string/dinner"
                                 android:textSize="14sp"
                                 android:textColor="@color/tertiaryText"
                                 android:layout_marginBottom="4dp" />
@@ -336,9 +341,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productsRecyclerView"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"
+        android:background="@color/primary"
         android:scrollbars="vertical"
         android:scrollbarSize="5dp"
         app:stackFromEnd="false"
