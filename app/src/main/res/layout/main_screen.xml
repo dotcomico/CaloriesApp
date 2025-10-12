@@ -4,7 +4,336 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- מידע יומי ורשימת מוצרים שנצרכו -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/primary">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            app:elevation="0dp">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsingToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:contentScrim="@color/primary"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <!-- Toolbar שמחזיק את ה-layout המצומצם -->
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin">
+                    <LinearLayout
+                        android:id="@+id/collapsedLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="12dp"
+                        android:visibility="gone"
+                        android:alpha="1">
+
+                        <TextView
+                            android:id="@+id/collapsedDateText"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Wed 19"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/primaryText"
+                            android:gravity="start" />
+
+                        <TextView
+                            android:id="@+id/collapsedCaloriesText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="675 Remaining"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/tertiary"
+                            android:gravity="end" />
+
+                    </LinearLayout>
+                </androidx.appcompat.widget.Toolbar>
+
+                <!-- headerLayout - תצוגה מלאה -->
+                <LinearLayout
+                    android:id="@+id/headerLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="12dp"
+                    app:layout_collapseMode="parallax">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="12dp">
+
+                        <!-- כותרת בצד שמאל -->
+                        <TextView
+                            android:id="@+id/titleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Calorie Tracker"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/primaryText"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true" />
+
+                        <!-- אייקון הגדרות -->
+                        <ImageView
+                            android:id="@+id/settingsIcon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/round_settings"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:padding="0dp"
+                            android:contentDescription="Settings" />
+
+                        <!-- אייקון רשימת מוצרים אישית -->
+                        <ImageView
+                            android:id="@+id/customListIcon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/outline_lists"
+                            android:layout_centerVertical="true"
+                            android:layout_toStartOf="@id/shopIcon"
+                            android:layout_marginEnd="16dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:padding="0dp"
+                            android:contentDescription="Custom List" />
+                        <ImageView
+                            android:id="@+id/shopIcon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/round_shopping_bag"
+                            android:layout_centerVertical="true"
+                            android:layout_toStartOf="@id/settingsIcon"
+                            android:layout_marginEnd="16dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:padding="0dp"
+                            android:contentDescription="Custom List" />
+                    </RelativeLayout>
+
+                    <!-- בחירת תאריך -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginBottom="32dp">
+
+                        <ImageView
+                            android:id="@+id/lastDayBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/round_chevron_left_date_bar"
+                            android:padding="8dp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tue 18"
+                            android:textSize="16sp"
+                            android:textColor="@color/secondaryText"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:id="@+id/currentDateText"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Wed 19"
+                            android:textSize="16sp"
+                            android:textColor="#FFFFFF"
+                            android:background="@drawable/selected_date_bg"
+                            android:gravity="center"
+                            android:padding="4dp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Thu 20"
+                            android:textSize="16sp"
+                            android:textColor="@color/secondaryText"
+                            android:gravity="center" />
+
+                        <ImageView
+                            android:id="@+id/nextDayBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/round_chevron_right_date_bar"
+                            android:padding="8dp" />
+
+                    </LinearLayout>
+
+                    <!-- המד המרכזי -->
+                    <RelativeLayout
+                        android:id="@+id/caloriesLayout"
+                        android:layout_width="230dp"
+                        android:layout_height="230dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="4dp">
+
+                        <com.example.calories.ui.views.CircularProgressView
+                            android:id="@+id/calorieProgressView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/caloriesViewText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="54sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/primaryText" />
+
+                            <TextView
+                                android:id="@+id/caloriesDescriptionText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="calories"
+                                android:textSize="20sp"
+                                android:textColor="@color/secondaryText" />
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                    <!-- סיכום ארוחות -->
+                    <LinearLayout
+                        android:id="@+id/meals"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Breakfast"
+                                android:textSize="14sp"
+                                android:textColor="@color/tertiaryText"
+                                android:layout_marginBottom="4dp" />
+
+                            <TextView
+                                android:id="@+id/breakfastCalories"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="-"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/secondaryText" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Lunch"
+                                android:textSize="14sp"
+                                android:textColor="@color/tertiaryText"
+                                android:layout_marginBottom="4dp" />
+
+                            <TextView
+                                android:id="@+id/lunchCalories"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="-"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/secondaryText" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Dinner"
+                                android:textSize="14sp"
+                                android:textColor="@color/tertiaryText"
+                                android:layout_marginBottom="4dp" />
+
+                            <TextView
+                                android:id="@+id/dinnerCalories"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="-"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/secondaryText" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- רשימה עם padding תחתון לשדה החיפוש -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/consumedProductsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="80dp"
+            android:clipToPadding="false"
+            android:background="@color/primary"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
     <!-- רשימת מוצרים כללית (חיפוש) -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productsRecyclerView"
         android:layout_width="match_parent"
@@ -14,49 +343,6 @@
         android:scrollbarSize="5dp"
         app:stackFromEnd="false"
         android:transcriptMode="alwaysScroll" />
-
-    <!-- מידע יומי ורשימת מוצרים שנצרכו -->
-    <RelativeLayout
-        android:id="@+id/rl_mainInformation"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
-        <!-- סך הקלוריות היומי -->
-        <RelativeLayout
-            android:id="@+id/rl_mainCal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/caloriesViewText"
-                app:drawableLeftCompat="@drawable/ic_baseline_local_fire_department_24_w"
-                app:drawableStartCompat="@drawable/ic_baseline_local_fire_department_24_w"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="cl"
-                android:textSize="28sp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="3dp"
-                android:paddingVertical="3dp"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/sty_blue_r"
-                android:textStyle="bold" />
-        </RelativeLayout>
-
-        <!-- רשימת מוצרים שנצרכו -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/consumedProductsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/rl_mainCal"
-            android:background="#00CCD7FF"
-            android:scrollbars="vertical"
-            android:scrollbarSize="5dp"
-            app:stackFromEnd="false"
-            android:transcriptMode="alwaysScroll" />
-    </RelativeLayout>
-
-
 
     <!-- הודעה: מוצר לא קיים במערכת -->
     <RelativeLayout
