@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">CalCal</string>
+
+
+
+
+    <!--  scan_barcode_dialog  -->
+    <string name="add_code">הוסף קוד מוצר</string>
+    <string name="product_code">קוד מוצר</string>
+    <string name="edit_product">עריכת מוצר</string>
+    <string name="product">מוצר</string>
+    <string name="measure">מדד</string>
+    <string name="dot">דות</string>
+    <string name="one">1</string>
+    <string name="amount">כמות</string>
+    <string name="decrease">הפחת</string>
+    <string name="add">הוסף</string>
+    <string name="save_changes">שמור שינויים</string>
+    <string name="back_to_main_activity">חזור למסך ראשי</string>
+    <string name="show_add_product_dialog">הצג דיאלוג הוספת מוצר</string>
+    <string name="delete">מחיקה</string>
+    <string name="scan_barcode">סריקת ברקוד</string>
+    <string name="calories">קלוריות</string>
+    <string name="save_product">שמור מוצר</string>
+    <string name="add_product">הוסף מוצר</string>
+    <string name="add_self_calorie_value">הוסף ערך קלורי עצמי</string>
+    <string name="move_to_custom_product_view">המשך להוספת מוצר</string>
+    <string name="add_dotan_self_product">הוספת פריטים של דותן לסל האישי</string>
+    <string name="today">היום</string>
+    <string name="calorie_tracker">מעקב קלוריות</string>
+    <string name="settings">הגדרות</string>
+    <string name="custom_list_icon"> אייקון רשימה מעוצבת</string>
+    <string name="shopping_bag_icon">אייקון שקית קניות</string>
+    <string name="breakfast">בוקר</string>
+    <string name="lunch">צהריים</string>
+    <string name="dinner">ערב</string>
+    <string name="back">חזור</string>
+    <string name="display">תצוגה</string>
+    <string name="night_mod">מצב לילה</string>
+    <string name="language">שפה</string>
+    <string name="enable_dark_theme">הפעל עיצוב כהה</string>
+    <string name="choose_a_language">בחר שפה</string>
+    <string name="hebrew">עברית</string>
+    <string name="arrow">חץ</string>
+    <string name="information">מידע</string>
+    <string name="about">אודות</string>
+    <string name="about_the_app">אודות האפליקציה</string>
+    <string name="version">גרסה  1.0.0</string>
+    <string name="ok">ok</string>
+    <string name="about_message">זוהי אפליקציה מדהימה!\\n\\nפותחה על ידי: [השם שלך]\\nגרסה: 1.0.0</string>
+    <string name="arabic">arabic</string>
+    <string name="english">English</string>
+    <string name="cancel">cancel</string>
+</resources>
