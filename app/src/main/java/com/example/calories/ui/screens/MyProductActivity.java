@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.example.calories.BaseActivity;
 import com.example.calories.data.models.Product;
 import com.example.calories.ui.dialogs.BarcodeDialogHandler;
 import com.example.calories.ui.views.UnitSelectorView;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import static com.example.calories.utils.AppConstants.*;
 
-public class MyProductActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class MyProductActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     private ArrayList<Product> customProducts = new ArrayList<>();
     private Product product;
     private ProductItemAdapter productItemAdapter;
