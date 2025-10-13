@@ -48,9 +48,14 @@
     <string name="version">גרסה  1.0.0</string>
     <string name="ok">ok</string>
     <string name="about_message">זוהי אפליקציה מדהימה!\\n\\nפותחה על ידי: [השם שלך]\\nגרסה: 1.0.0</string>
-    <string name="arabic">arabic</string>
-    <string name="english">English</string>
-    <string name="cancel">cancel</string>
+    <string name="arabic">ערבית</string>
+    <string name="english">אנגלית</string>
+    <string name="cancel">מחק</string>
     <string name="ex_product_name">שם המוצר המלא</string>
     <string name="ex_unit_amount">1 יחידה / 150 גרם</string>
+    <string name="barcode_info">פרטי ברקוד:</string>
+    <string name="expand_more">הרחב עוד</string>
+    <string name="plus_icon">אייקון פלוס</string>
+    <string name="minus_icon">אייקון מינוס</string>
+    <string name="_1">1</string>
 </resources>
