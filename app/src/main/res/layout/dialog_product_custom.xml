@@ -49,7 +49,7 @@
                     android:hint="מוצר"
                     android:imeOptions="actionNext"
                     android:inputType="textShortMessage"
-                    android:background="@drawable/sty_2"
+                    android:background="@drawable/edit_text_background"
                     />
                 <ImageView
                     android:id="@+id/iv_barcodeScan"
@@ -57,13 +57,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_baseline_qr_code_2_24"
+                    android:src="@drawable/ic_baseline_qr_code"
                     />
             </LinearLayout>
             <EditText
                 android:id="@+id/newProductCaloriesEditText"
-                android:hint="קלוריות"  android:drawableRight="@drawable/ic_baseline_local_fire_department_24"
-                android:drawableEnd="@drawable/ic_baseline_local_fire_department_24"
+                android:hint="קלוריות"  android:drawableRight="@drawable/ic_baseline_local_fire_department"
+                android:drawableEnd="@drawable/ic_baseline_local_fire_department"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -74,7 +74,7 @@
                 android:ems="10"
                 android:maxLines="1"
                 android:inputType="numberDecimal"
-                android:background="@drawable/sty_2"
+                android:background="@drawable/edit_text_background"
                 />
 
 
@@ -127,7 +127,7 @@
                 android:layout_height="35dp"
                 android:layout_gravity="center"
                 android:background="@drawable/sty_blue_serch"
-                android:drawableRight="@drawable/ic_baseline_search_24_white"
+                android:drawableRight="@drawable/ic_baseline_search"
                 />
             <android.widget.SearchView
                 android:id="@+id/selfSearchSearchView"
