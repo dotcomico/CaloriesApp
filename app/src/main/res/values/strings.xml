@@ -50,5 +50,10 @@
     <string name="english">English</string>
     <string name="cancel">Cancel</string>
     <string name="ex_product_name">Full product name</string>
-    <string name="ex_unit_amount">1 יחידה / 150 גרם</string>
+    <string name="ex_unit_amount">1 unit / 150 gram</string>
+    <string name="barcode_info">barcode info</string>
+    <string name="expand_more">expand more</string>
+    <string name="plus_icon">plus icon</string>
+    <string name="minus_icon">minus icon</string>
+    <string name="_1">1</string>
 </resources>
