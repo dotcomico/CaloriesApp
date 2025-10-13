@@ -21,6 +21,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.calories.BaseActivity;
 import com.example.calories.R;
 import com.example.calories.data.models.Product;
 import com.example.calories.data.storage.ProductStorageManager;
@@ -30,9 +31,9 @@ import com.google.zxing.integration.android.IntentResult;
 import static com.example.calories.utils.AppConstants.*;
 import java.util.Objects;
 
-public class ProductCreationActivity extends AppCompatActivity implements View.OnClickListener {
+public class ProductCreationActivity extends BaseActivity implements View.OnClickListener {
     private RelativeLayout rl_selfSearch, topBar;
-    private ImageView backBtn, showDialogSheet, moveToCustomProductActivity;
+    private ImageView backBtn, showDialogSheet;
     private WebView webview;
     CustomProductDialog customProductDialog;
     private ProductStorageManager productStorageManager;
@@ -101,8 +102,6 @@ public class ProductCreationActivity extends AppCompatActivity implements View.O
     }
     private void initViews() {
         topBar =findViewById(R.id.topBar);
-        moveToCustomProductActivity =findViewById(R.id.moveToCustomProductActivity);
-        moveToCustomProductActivity.setOnClickListener( this );
         backBtn =findViewById(R.id.backBtn);
         backBtn.setOnClickListener( this );
         showDialogSheet =findViewById( R.id.showDialogSheet);
@@ -161,10 +160,6 @@ public class ProductCreationActivity extends AppCompatActivity implements View.O
 
     @Override
     public void onClick(View view) {
-        if(view == moveToCustomProductActivity){
-            startNewActivity(ProductCreationActivity.this, MyProductActivity.class);
-        }
-
         if( view == backBtn){
             finish();
         }
