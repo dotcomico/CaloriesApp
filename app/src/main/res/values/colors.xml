@@ -9,8 +9,8 @@
     <color name="secondary">#F1F1F1</color>
     <color name="tertiary">#036CF6</color>
 
-    <color name="dialogBackground">#CFD8FF</color>
-    <color name="dialogBorder">#E0E0E0</color>
+    <color name="dialogBackground">#E0E0E0</color>
+    <color name="dialogBorder">#BCBCBC</color>
 
     <color name="error">#FF0000</color>
     <color name="success">#00FF00</color>
