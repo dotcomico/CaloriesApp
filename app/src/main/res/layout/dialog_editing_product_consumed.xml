@@ -12,8 +12,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:background="@drawable/sty_green"
+        android:background="@drawable/dialog_background"
         >
         <TextView
             android:layout_width="wrap_content"
@@ -35,7 +34,7 @@
             android:ems="10"
             android:gravity="center"
             android:textColor="#000"
-            android:background="@drawable/sty_2"
+            android:background="@drawable/edit_text_background"
             />
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,7 +53,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:textColor="#000"
-                android:background="@drawable/sty_2"
+                android:background="@drawable/edit_text_background"
                 />
             <ImageView
                 android:contentDescription="@string/dot"
@@ -81,7 +80,7 @@
                 android:maxLines="1"
                 android:hint="@string/amount"
                 android:inputType="numberDecimal"
-                android:background="@drawable/sty_2"
+                android:background="@drawable/edit_text_background"
 
                 />
         </LinearLayout>
@@ -118,7 +117,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_width="120dp"
                 android:layout_height="45dp"
-                android:background="@drawable/sty_w_r"
+                android:background="@drawable/rounded_btn_background"
                 android:text="@string/save_changes"
                 android:textColor="@color/black"
                 />
