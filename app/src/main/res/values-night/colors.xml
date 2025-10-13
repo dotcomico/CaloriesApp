@@ -9,7 +9,7 @@
     <color name="tertiary">#015FE0</color>
 
     <color name="dialogBackground">#2C2C2C</color>
-    <color name="dialogBorder">#545454</color>
+    <color name="dialogBorder">#232323</color>
 
     <color name="error">#FF0000</color>
     <color name="success">#00FF00</color>
