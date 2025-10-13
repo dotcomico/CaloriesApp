@@ -3,13 +3,16 @@
     <color name="primaryText">#F8F8F8</color>
     <color name="secondaryText">#ADADAD</color>
     <color name="tertiaryText">#7E7E7E</color>
-    <color name="error">#FF0000</color>
-    <color name="success">#00FF00</color>
 
     <color name="primary">#000000</color>
     <color name="secondary">#2A2A2A</color>
     <color name="tertiary">#015FE0</color>
 
+    <color name="dialogBackground">#0D0D0D</color>
+    <color name="dialogBorder">#2A2A2A</color>
+
+    <color name="error">#FF0000</color>
+    <color name="success">#00FF00</color>
 
     <color name="selfSearch">#E6FFA63A</color>
     <color name="delete">#FF6262</color>
