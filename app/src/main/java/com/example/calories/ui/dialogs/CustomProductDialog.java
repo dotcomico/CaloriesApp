@@ -4,8 +4,6 @@ import static com.example.calories.utils.Utility.makeToast;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
@@ -25,7 +23,6 @@ import com.example.calories.R;
 import com.example.calories.data.models.Product;
 import com.example.calories.data.storage.ProductStorageManager;
 import com.example.calories.ui.views.UnitSelectorView;
-import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.Objects;
@@ -154,7 +151,7 @@ public class CustomProductDialog {
             }
             @Override
             public void onTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
-                newProductNameEditText.setBackgroundResource( R.drawable.sty_2 );
+                newProductNameEditText.setBackgroundResource( R.drawable.edit_text_background);
 
             }
             @Override
@@ -182,7 +179,7 @@ public class CustomProductDialog {
             }
             @Override
             public void onTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
-                newProductCaloriesEditText.setBackgroundResource( R.drawable.sty_2 );
+                newProductCaloriesEditText.setBackgroundResource( R.drawable.edit_text_background);
             }
             @Override
             public void afterTextChanged(Editable editable) {
@@ -210,8 +207,8 @@ public class CustomProductDialog {
 
         addToFoodList(v);  // הליסינר בפנים חשוב אך ניתן לשנות את הפעולות על מנת לנקות את הקוד ולשפר ביצועיו
 
-        newProductNameEditText.setBackgroundResource( R.drawable.sty_2 );
-        newProductCaloriesEditText.setBackgroundResource( R.drawable.sty_2 );
+        newProductNameEditText.setBackgroundResource( R.drawable.edit_text_background);
+        newProductCaloriesEditText.setBackgroundResource( R.drawable.edit_text_background);
         newProductCaloriesEditText.setText( "" );
 
 
