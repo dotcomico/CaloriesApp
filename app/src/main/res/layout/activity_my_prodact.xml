@@ -5,11 +5,12 @@
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/primary"
     tools:context=".ui.screens.MyProductActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productsRecyclerView"
+        android:background="@android:color/transparent"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scrollbars="vertical"
@@ -25,11 +26,11 @@
     <LinearLayout
         android:id="@+id/layoutEditProduct"
         android:visibility="gone"
+        android:elevation="8dp"
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/sty_other"
-        android:padding="8dp"
+        android:background="@drawable/dialog_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -40,13 +41,13 @@
             android:layout_height="25dp"
             android:layout_gravity="center"
             android:contentDescription="@string/delete"
-            android:src="@drawable/ic_baseline_clear_24_w" />
+            android:src="@drawable/ic_baseline_clear" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/edit_product"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/primaryText"
             android:textSize="20sp"
             android:layout_gravity="center"
             android:textStyle="bold" />
@@ -68,17 +69,17 @@
                 android:maxLines="1"
                 android:imeOptions="actionNext"
                 android:inputType="text"
-                android:background="@drawable/sty_2"
-                android:textColor="#000"
-                android:textColorHint="#CCCCCC"
-                android:gravity="right" />
+                android:background="@drawable/edit_text_background"
+                android:textColor="@color/primaryText"
+                android:textColorHint="@color/tertiaryText"
+                android:gravity="start" />
 
             <ImageView
                 android:id="@+id/iv_barcodeScan"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:contentDescription="@string/scan_barcode"
-                android:src="@drawable/ic_baseline_qr_code_2_24"
+                android:src="@drawable/ic_baseline_qr_code"
                 android:layout_gravity="center_vertical" />
         </LinearLayout>
 
@@ -89,11 +90,11 @@
             android:autofillHints="קלוריות"
             android:hint="@string/calories"
             android:layout_marginTop="10dp"
-            android:background="@drawable/sty_2"
-            android:drawableRight="@drawable/ic_baseline_local_fire_department_24"
-            android:textColor="#000"
-            android:textColorHint="#CCCCCC"
-            android:gravity="right"
+            android:background="@drawable/edit_text_background"
+            android:drawableEnd="@drawable/ic_baseline_local_fire_department"
+            android:textColor="@color/primaryText"
+            android:textColorHint="@color/tertiaryText"
+            android:gravity="start"
             android:maxLines="1"
             android:inputType="number" />
 
@@ -110,8 +111,8 @@
             android:layout_height="wrap_content"
             android:text="@string/save_product"
             android:layout_marginTop="13dp"
-            android:textColor="@color/black"
-            android:background="@android:color/white" />
+            android:textColor="@color/primaryText"
+           android:backgroundTint="@color/tertiary" />
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -120,8 +121,8 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/add_product"
         android:src="@drawable/baseline_add_white"
-        app:backgroundTint="@color/blue"
-        app:tint="@android:color/white"
+        app:backgroundTint="@color/tertiary"
+        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="16dp" />
