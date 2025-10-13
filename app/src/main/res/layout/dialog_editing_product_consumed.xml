@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:background="@android:color/transparent"
+    android:elevation="8dp"
     android:windowSoftInputMode="adjustResize">
     <!--ירוק -   כרטיסיית עריכת מוצר פרטי     -->
     <LinearLayout
@@ -19,8 +20,8 @@
             android:layout_height="wrap_content"
             android:text="@string/edit_product"
             android:layout_gravity="center"
-            android:textColor="#FFFFFF"
-            android:textSize="25sp"
+            android:textColor="@color/primaryText"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginBottom="15dp"
             />
@@ -30,11 +31,11 @@
             android:layout_width="match_parent"
             android:layout_height="32dp"
             android:layout_marginTop="0dp"
-            android:layout_marginHorizontal="3dp"
+            android:layout_marginHorizontal="8dp"
             android:ems="10"
-            android:gravity="center"
-            android:textColor="#000"
-            android:background="@drawable/edit_text_background"
+            android:gravity="start"
+            android:textSize="16sp"
+            android:textColor="@color/primaryText"
             />
         <LinearLayout
             android:layout_width="match_parent"
@@ -61,7 +62,7 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_baseline_circle_24dot"
+                android:src="@drawable/ic_baseline_circle"
                 />
 
             <EditText
@@ -74,9 +75,10 @@
                 android:layout_marginHorizontal="3dp"
                 android:ems="10"
                 android:gravity="center"
-                android:textColorHint="#CCCCCC"
-                android:textColor="#000"
+                android:textColorHint="@color/tertiaryText"
+                android:textColor="@color/primaryText"
                 android:layout_gravity="center"
+                android:textSize="20dp"
                 android:maxLines="1"
                 android:hint="@string/amount"
                 android:inputType="numberDecimal"
@@ -92,34 +94,34 @@
             android:layout_marginTop="25dp">
             <ImageView
                 android:id="@+id/decreaseEditImg"
-                android:layout_toRightOf="@+id/increaseEditImg"
+                android:layout_toEndOf="@+id/increaseEditImg"
                 android:contentDescription="@string/decrease"
                 android:padding="8dp"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_marginHorizontal="15dp"
-                android:background="@drawable/white_circle"
-                android:src="@drawable/ic_baseline_horizontal_rule_24"
+                android:background="@drawable/circle_background_button"
+                android:src="@drawable/ic_baseline_horizontal_rule"
                 />
             <ImageView
                 android:id="@+id/increaseEditImg"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:contentDescription="@string/add"
                 android:padding="8dp"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:background="@drawable/white_circle"
-                android:src="@drawable/ic_baseline_add_24"
+                android:background="@drawable/circle_background_button"
+                android:src="@drawable/ic_baseline_add"
                 />
             <Button
                 android:id="@+id/saveEdit"
                 android:layout_gravity="center"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_width="120dp"
                 android:layout_height="45dp"
                 android:background="@drawable/rounded_btn_background"
                 android:text="@string/save_changes"
-                android:textColor="@color/black"
+                android:textColor="@color/primaryText"
                 />
 
         </RelativeLayout>
