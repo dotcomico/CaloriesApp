@@ -9,7 +9,7 @@
     android:background="@drawable/product_item_background"
     android:elevation="2dp"
     android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground"
+    android:foreground="?attr/selectableItemBackground"
     android:clickable="true"
     android:paddingRight="6dp">
 
