@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:background="@android:color/transparent"
+    android:elevation="8dp"
     android:windowSoftInputMode="adjustResize">
 
     <!-- Product Selection Bottom Sheet -->
@@ -12,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="5dp"
         android:background="@drawable/dialog_background"
         android:visibility="visible">
 
@@ -22,12 +23,11 @@
             android:layout_width="120dp"
             android:layout_height="28dp"
             android:layout_gravity="center"
-            android:layout_marginHorizontal="3dp"
             android:layout_marginTop="5dp"
             android:background="@drawable/sty_2_half"
             android:gravity="center"
-            android:text="קלוריות"
-            android:textColor="#000" />
+            android:text="@string/calories"
+            android:textColor="@color/primaryText" />
 
         <!-- Product Information Section -->
         <RelativeLayout
@@ -45,9 +45,9 @@
                 android:layout_height="30dp"
                 android:layout_centerHorizontal="true"
                 android:paddingHorizontal="30dp"
-                android:text="מוצר"
+                android:text="@string/product"
                 android:textSize="16sp"
-                android:textColor="#000"
+                android:textColor="@color/primaryText"
                 android:gravity="center"
                 android:maxLines="1"
                 android:scrollbars="horizontal" />
@@ -57,18 +57,22 @@
                 android:id="@+id/iv_expandProductInfo"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_alignParentStart="true"
-                android:src="@drawable/baseline_expand_more_24" />
+                android:layout_alignParentEnd="true"
+                android:contentDescription="@string/expand_more"
+                android:src="@drawable/baseline_expand_more"
+                app:tint="@color/primaryText" />
 
             <!-- QR Code Information (Hidden by default) -->
             <TextView
                 android:id="@+id/tv_barcodeInfo"
+                android:paddingStart="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_selectedProductName"
-                android:text=" פרטי ברקוד: "
-                android:textSize="14sp"
-                android:textColor="#333333"
+                android:text="@string/barcode_info"
+                android:textSize="16sp"
+                android:textColor="@color/secondaryText"
+                android:gravity="start"
                 android:visibility="gone" />
 
         </RelativeLayout>
@@ -81,6 +85,34 @@
             android:layout_marginTop="22dp"
             android:orientation="horizontal">
 
+            <!-- Amount Input Field -->
+            <EditText
+                android:id="@+id/et_addAmount"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="3dp"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:background="@drawable/edit_text_background"
+                android:gravity="center"
+                android:hint="@string/amount"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:text="@string/_1"
+                android:textColor="@color/primaryText"
+                android:textColorHint="@color/tertiaryText" />
+
+            <!-- Separator Dot -->
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/dot"
+                android:src="@drawable/ic_baseline_circle"
+                android:visibility="visible"
+                app:tint="@color/primary" />
+
             <!-- Serving Size Unit Display -->
             <TextView
                 android:id="@+id/tv_unit"
@@ -91,33 +123,8 @@
                 android:layout_gravity="center"
                 android:background="@drawable/edit_text_background"
                 android:gravity="center"
-                android:text="מדד"
-                android:textColor="#000" />
-
-            <!-- Separator Dot -->
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_baseline_circle_24dot"
-                android:visibility="visible" />
-
-            <!-- Amount Input Field -->
-            <EditText
-                android:id="@+id/et_addAmount"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginHorizontal="3dp"
-                android:layout_weight="1"
-                android:background="@drawable/edit_text_background"
-                android:gravity="center"
-                android:hint="כמות"
-                android:inputType="numberDecimal"
-                android:maxLines="1"
-                android:text="1"
-                android:textColor="#000"
-                android:textColorHint="#CCCCCC" />
+                android:text="@string/measure"
+                android:textColor="@color/secondaryText" />
 
         </LinearLayout>
 
@@ -135,31 +142,35 @@
                 android:id="@+id/iv_increaseAmount"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/white_circle"
+                android:layout_alignParentStart="true"
+                android:background="@drawable/circle_background_button"
+                android:contentDescription="@string/plus_icon"
                 android:padding="8dp"
-                android:src="@drawable/ic_baseline_add_24" />
+                android:src="@drawable/ic_baseline_add"
+                app:tint="@color/primaryText" />
 
             <!-- Minus Button -->
             <ImageView
                 android:id="@+id/iv_decreaseAmount"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:layout_toRightOf="@id/iv_increaseAmount"
+                android:layout_toEndOf="@id/iv_increaseAmount"
                 android:layout_marginHorizontal="15dp"
-                android:background="@drawable/white_circle"
+                android:background="@drawable/circle_background_button"
+                android:contentDescription="@string/minus_icon"
                 android:padding="8dp"
-                android:src="@drawable/ic_baseline_horizontal_rule_24" />
+                android:src="@drawable/ic_baseline_horizontal_rule"
+                app:tint="@color/primaryText"/>
 
             <!-- Add to Consumption Button -->
             <Button
                 android:id="@+id/btn_addToConsumption"
                 android:layout_width="120dp"
                 android:layout_height="45dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_gravity="center"
                 android:background="@drawable/rounded_btn_background"
-                android:text="הוסף"
+                android:text="@string/add"
                 android:textColor="@color/primaryText" />
 
         </RelativeLayout>
