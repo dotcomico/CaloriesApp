@@ -5,8 +5,11 @@ import static com.example.calories.utils.Utility.startNewActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -35,6 +38,7 @@ public class ProductCreationActivity extends BaseActivity implements View.OnClic
     private RelativeLayout rl_selfSearch, topBar;
     private ImageView backBtn, showDialogSheet;
     private WebView webview;
+    WebSettings webSettings;
     CustomProductDialog customProductDialog;
     private ProductStorageManager productStorageManager;
 
@@ -108,10 +112,8 @@ public class ProductCreationActivity extends BaseActivity implements View.OnClic
         showDialogSheet.setOnClickListener( this );
         webview = findViewById( R.id.webview);
         webview.setWebViewClient( new WebViewClient() );
-        WebSettings webSettings=webview.getSettings();
-        webSettings.setJavaScriptEnabled( true );
-//ההוראה החשובה לעדכון דף באפליקציה עצמה
-        //      webSettings.setAppCacheEnabled( true );
+        webSettings=webview.getSettings();
+        webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         //לא ברור מה אלו
         webSettings.setDatabaseEnabled( true );
@@ -119,6 +121,38 @@ public class ProductCreationActivity extends BaseActivity implements View.OnClic
         webSettings.setGeolocationEnabled( true );
         webSettings.setDomStorageEnabled(  true);
 
+        if (isDarkModeEnabled()) {
+            View overlay = new View(this);
+            overlay.setBackgroundColor(Color.parseColor("#66000000")); // שכבה שחורה שקופה
+            ((ViewGroup) webview.getParent()).addView(overlay,
+                    new ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT));
+
+            overlay.bringToFront();
+        }
+
+//        boolean isDarkMode = isDarkModeEnabled(); // פונקציה שקיימת ב-BaseActivity
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            webSettings.setForceDark(isDarkMode
+//                    ? WebSettings.FORCE_DARK_ON
+//                    : WebSettings.FORCE_DARK_OFF);
+//        }
+//        webview.setWebViewClient(new WebViewClient() {
+//            @Override
+//            public void onPageFinished(WebView view, String url) {
+//                super.onPageFinished(view, url);
+//
+//                boolean isDarkMode = isDarkModeEnabled();
+//                if (isDarkMode) {
+//                    String darkCss =
+//                            "document.body.style.backgroundColor = '#121212';" +
+//                                    "document.body.style.color = 'white';";
+//                    view.evaluateJavascript(darkCss, null);
+//                }
+//            }
+//        });
     }
 
     private void searchOnWeb(String query){
