@@ -1,0 +1,14 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <size android:width="40dp" android:height="40dp"/>
+            <solid android:color="#FF9800"/>
+        </shape>
+    </item>
+
+    <item android:gravity="center"
+        android:drawable="@drawable/outline_wb_sunny"
+        android:left="8dp" android:right="8dp"
+        android:top="8dp" android:bottom="8dp"/>
+
+</layer-list>
