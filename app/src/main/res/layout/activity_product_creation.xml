@@ -94,6 +94,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="255"
-            android:progress="122" />
+            android:progress="122"
+            android:progressDrawable="@drawable/custom_seekbar"
+            android:thumb="@drawable/custom_thumb"/>
     </RelativeLayout>
 </RelativeLayout>
