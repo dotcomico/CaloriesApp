@@ -22,7 +22,7 @@
     <string name="scan_barcode">סריקת ברקוד</string>
     <string name="calories">קלוריות</string>
     <string name="save_product">שמור מוצר</string>
-    <string name="add_product">הוסף מוצר</string>
+    <string name="add_product">הוספת מוצר</string>
     <string name="add_self_calorie_value">הוסף ערך קלורי עצמי</string>
     <string name="move_to_custom_product_view">המשך להוספת מוצר</string>
     <string name="add_dotan_self_product">הוספת פריטים של דותן לסל האישי</string>
@@ -59,4 +59,5 @@
     <string name="minus_icon">אייקון מינוס</string>
     <string name="_1">1</string>
     <string name="self_search">חיפוש עצמי</string>
+    <string name="ex_calories">275</string>
 </resources>
