@@ -16,6 +16,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -41,6 +42,8 @@ public class ProductCreationActivity extends BaseActivity implements View.OnClic
     WebSettings webSettings;
     CustomProductDialog customProductDialog;
     private ProductStorageManager productStorageManager;
+    SeekBar brightnessSeekBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +108,7 @@ public class ProductCreationActivity extends BaseActivity implements View.OnClic
         }
     }
     private void initViews() {
+        brightnessSeekBar  = findViewById(R.id.brightnessSeekBar);
         topBar =findViewById(R.id.topBar);
         backBtn =findViewById(R.id.backBtn);
         backBtn.setOnClickListener( this );
@@ -123,14 +127,32 @@ public class ProductCreationActivity extends BaseActivity implements View.OnClic
 
         if (isDarkModeEnabled()) {
             View overlay = new View(this);
-            overlay.setBackgroundColor(Color.parseColor("#66000000")); // שכבה שחורה שקופה
+            overlay.setBackgroundColor(Color.argb(122, 0, 0, 0)); //
             ((ViewGroup) webview.getParent()).addView(overlay,
                     new ViewGroup.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT));
-
             overlay.bringToFront();
+
+
+            // מאזין לשינויים במד
+            brightnessSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    // עדכון השקיפות לפי הערך החדש
+                    overlay.setBackgroundColor(Color.argb(progress, 0, 0, 0));
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {}
+            });
         }
+
+
+
 
 //        boolean isDarkMode = isDarkModeEnabled(); // פונקציה שקיימת ב-BaseActivity
 //
