@@ -56,5 +56,6 @@
     <string name="plus_icon">plus icon</string>
     <string name="minus_icon">minus icon</string>
     <string name="_1">1</string>
-    <string name="self_search">self search</string>
+    <string name="self_search">Self Search</string>
+    <string name="ex_calories">275</string>
 </resources>
