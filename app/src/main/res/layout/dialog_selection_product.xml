@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:background="@android:color/transparent"
-    android:elevation="8dp"
-    android:windowSoftInputMode="adjustResize">
+    android:windowSoftInputMode="adjustResize"
+>
 
     <!-- Product Selection Bottom Sheet -->
     <LinearLayout
@@ -15,7 +15,24 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/dialog_background"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:elevation="8dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_product"
+            android:layout_gravity="center"
+            android:textColor="@color/primaryText"
+            android:textSize="20sp"
+            android:textStyle="bold"
+
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dialogBorder"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="15dp"/>/>
 
         <!-- Calories Display Header -->
         <TextView
