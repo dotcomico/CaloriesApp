@@ -1,6 +1,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
@@ -44,6 +45,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:src="@drawable/ic_scale"
+            android:contentDescription="@string/measure"
             android:scaleType="fitCenter"
             android:layout_marginEnd="4dp"
             app:tint="@color/secondaryText" />
@@ -77,7 +79,7 @@
             android:id="@+id/productCalorieValueTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="245"
+            android:text="@string/ex_calories"
             android:textSize="22sp"
             android:textColor="@color/primaryText"
             android:fontFamily="sans-serif-medium"
@@ -92,7 +94,8 @@
             android:textSize="10sp"
             android:textColor="@color/secondaryText"
             android:fontFamily="sans-serif-light"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            tools:ignore="SmallSp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
