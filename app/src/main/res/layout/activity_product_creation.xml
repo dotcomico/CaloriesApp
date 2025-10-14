@@ -46,16 +46,18 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:layout_below="@id/topBar">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-        <WebView
-        android:id="@+id/webview"
-        android:visibility="visible"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <WebView
+                android:id="@+id/webview"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -83,8 +85,15 @@
                     android:contentDescription="@string/show_add_product_dialog"
                     android:src="@drawable/baseline_arrow_drop_up_white"
                     android:visibility="visible" />
-
             </LinearLayout>
         </ScrollView>
-</RelativeLayout>
+
+        <SeekBar
+            android:id="@+id/brightnessSeekBar"
+            android:layout_marginVertical="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="255"
+            android:progress="122" />
+    </RelativeLayout>
 </RelativeLayout>
