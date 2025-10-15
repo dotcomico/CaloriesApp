@@ -5,12 +5,13 @@
     <color name="tertiaryText">#7E7E7E</color>
 
     <color name="primary">#000000</color>
-    <color name="secondary">#161616</color>
-<!--    2A2A2A   262626-->
+    <color name="secondary">#161616</color><!--    2A2A2A   262626-->
     <color name="tertiary">#015FE0</color>
 
     <color name="dialogBackground">#2C2C2C</color>
     <color name="dialogBorder">#232323</color>
+    <color name="searchBarBackground">#181818</color>
+    <color name="searchBarBorder">#262626</color>
 
     <color name="error">#FF0000</color>
     <color name="success">#00FF00</color>
