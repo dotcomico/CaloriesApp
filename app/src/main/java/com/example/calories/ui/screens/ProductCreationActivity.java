@@ -2,6 +2,7 @@ package com.example.calories.ui.screens;
 
 import static com.example.calories.utils.Utility.startNewActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,7 +37,6 @@ import static com.example.calories.utils.AppConstants.*;
 import java.util.Objects;
 
 public class ProductCreationActivity extends BaseActivity implements View.OnClickListener {
-    private RelativeLayout rl_selfSearch, topBar;
     private ImageView backBtn, showDialogSheet;
     private WebView webview;
     WebSettings webSettings;
@@ -107,9 +107,9 @@ public class ProductCreationActivity extends BaseActivity implements View.OnClic
             }
         }
     }
+    @SuppressLint("SetJavaScriptEnabled")
     private void initViews() {
         brightnessSeekBar  = findViewById(R.id.brightnessSeekBar);
-        topBar =findViewById(R.id.topBar);
         backBtn =findViewById(R.id.backBtn);
         backBtn.setOnClickListener( this );
         showDialogSheet =findViewById( R.id.showDialogSheet);
