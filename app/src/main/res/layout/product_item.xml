@@ -1,86 +1,21 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="8dp"
     android:layout_marginVertical="4dp"
     android:id="@+id/main"
     android:background="@drawable/product_item_background"
+    android:backgroundTint="@color/secondary"
     android:elevation="2dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    android:paddingEnd="6dp">
+    android:paddingStart="6dp"
+    tools:ignore="RtlSymmetry">
 
-    <!-- Calorie Circle Container -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/calorieContainer"
-        android:layout_width="68dp"
-        android:layout_height="68dp"
-        android:background="@drawable/calories_product_item_display"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <TextView
-            android:id="@+id/productCalorieValueTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="247"
-            android:textSize="25sp"
-            android:textColor="@color/primaryText"
-
-            android:letterSpacing="0.02"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Product Info Container -->
-    <LinearLayout
-        android:id="@+id/productInfoContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="12dp"
-        app:layout_constraintStart_toEndOf="@id/calorieContainer"
-        app:layout_constraintEnd_toStartOf="@id/productUnitContainer"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <TextView
-            android:id="@+id/productNameTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="שם המוצר"
-            android:textColor="@color/primaryText"
-            android:textSize="16sp"
-            android:letterSpacing="0.01"
-            android:lineSpacingMultiplier="1.2"
-            android:maxLines="2"
-            android:ellipsize="end" />
-
-        <TextView
-            android:id="@+id/productDescriptionTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="תיאור נוסף או מידע על המוצר"
-            android:textColor="@color/tertiaryText"
-            android:textSize="12sp"
-
-            android:layout_marginTop="2dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:visibility="gone" />
-
-    </LinearLayout>
-
-    <!-- Unit Info Container -->
     <LinearLayout
         android:id="@+id/productUnitContainer"
         android:layout_width="wrap_content"
@@ -88,9 +23,10 @@
         android:orientation="vertical"
         android:gravity="center"
         android:background="@drawable/unit_badge_background"
+        android:backgroundTint="@color/primary"
         android:padding="8dp"
         android:minWidth="56dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -105,13 +41,76 @@
             android:id="@+id/productUnitTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="100ג׳"
+            android:text="@string/ex_unit_amount"
             android:textColor="@color/secondaryText"
             android:textSize="11sp"
-
             android:letterSpacing="0.02"
-            android:layout_marginTop="2dp" />
-
+            android:layout_marginTop="2dp"
+            />
     </LinearLayout>
+
+    <!-- Product Info Container (center) -->
+    <LinearLayout
+        android:id="@+id/productInfoContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="0dp"
+        app:layout_constraintStart_toEndOf="@id/productUnitContainer"
+        app:layout_constraintEnd_toStartOf="@id/calorieContainer"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/productNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ex_product_name"
+            android:textColor="@color/primaryText"
+            android:textSize="16sp"
+            android:letterSpacing="0.01"
+            android:lineSpacingMultiplier="1.2"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/productDescriptionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ex_description"
+            android:textColor="@color/tertiaryText"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <!-- Calorie Circle Container (now on the right) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/calorieContainer"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:background="@drawable/calories_product_item_display"
+        android:backgroundTint="@color/tertiary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/productCalorieValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ex_calories"
+            android:textSize="25sp"
+            android:textColor="@color/primaryText"
+            android:letterSpacing="0.02"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
