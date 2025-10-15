@@ -125,7 +125,10 @@ public class ProductCreationActivity extends BaseActivity implements View.OnClic
         webSettings.setGeolocationEnabled( true );
         webSettings.setDomStorageEnabled(  true);
 
-        if (isDarkModeEnabled()) {
+        if (!isDarkModeEnabled()) {
+            brightnessSeekBar.setVisibility(View.GONE);
+        }else {
+
             View overlay = new View(this);
             overlay.setBackgroundColor(Color.argb(122, 0, 0, 0)); //
             ((ViewGroup) webview.getParent()).addView(overlay,
@@ -134,7 +137,7 @@ public class ProductCreationActivity extends BaseActivity implements View.OnClic
                             ViewGroup.LayoutParams.MATCH_PARENT));
             overlay.bringToFront();
 
-
+            brightnessSeekBar.setVisibility(View.VISIBLE);
             // מאזין לשינויים במד
             brightnessSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
