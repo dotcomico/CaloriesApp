@@ -43,7 +43,7 @@
                 android:layout_gravity="center"
                 android:contentDescription="@string/scan_barcode"
                 android:padding="9dp"
-                android:background="@drawable/circle_blue"
+                android:background="@drawable/circle_blue_background"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_baseline_qr_code_2_24_white" />
 
@@ -54,7 +54,7 @@
                 android:layout_gravity="center"
                 android:contentDescription="@string/add_self_calorie_value"
                 android:padding="9dp"
-                android:background="@drawable/circle_purple"
+                android:background="@drawable/circle_purple_background"
                 android:scaleType="fitCenter"
                 android:src="@drawable/baseline_add_white"
                 android:visibility="gone" />
@@ -66,7 +66,7 @@
                 android:layout_gravity="center"
                 android:contentDescription="@string/move_to_custom_product_view"
                 android:padding="9dp"
-                android:background="@drawable/circle_orang"
+                android:background="@drawable/circle_orang_background"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_baseline_search"
                 android:visibility="gone" />
