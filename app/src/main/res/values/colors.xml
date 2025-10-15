@@ -5,12 +5,13 @@
     <color name="tertiaryText">#999999</color>
 
     <color name="primary">#FFFFFF</color>
-
     <color name="secondary">#F1F1F1</color>
     <color name="tertiary">#036CF6</color>
 
-    <color name="dialogBackground">#E0E0E0</color>
+    <color name="dialogBackground">#E0E0E0</color> <!--F1F1F1-->
     <color name="dialogBorder">#BCBCBC</color>
+    <color name="searchBarBackground">#FBFBFB</color> <!--F1F1F1-->
+    <color name="searchBarBorder">#E0E0E0</color> <!--F1F1F1-->
 
     <color name="error">#FF0000</color>
     <color name="success">#00FF00</color>
