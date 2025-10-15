@@ -58,5 +58,7 @@
     <string name="_1">1</string>
     <string name="self_search">Self Search</string>
     <string name="ex_calories">275</string>
-    <string name="type_product">הקלד מוצר</string>
+    <string name="type_product">Type Product Name</string>
+    <string name="edit_amount">Edit Amount</string>
+    <string name="ex_description">Additional description or product info</string>
 </resources>
