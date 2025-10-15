@@ -31,7 +31,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/back"
                 android:padding="8dp"
-                android:src="@drawable/round_arrow_back_24"
+                android:src="@drawable/round_arrow_back"
                 />
 
             <TextView
