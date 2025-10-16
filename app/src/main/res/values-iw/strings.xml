@@ -62,4 +62,7 @@
     <string name="ex_description">תיאור נוסף או מידע על המוצר</string>
     <string name="not_what_you_looked_for">לא מה שחיפשת?</string>
     <string name="continue_self_search">המשך בחיפוש עצמי</string>
+    <string name="space">\" \"</string>
+    <string name="blank_">-</string>
+    <string name="remaining_calories">קלוריות נשארו</string>
 </resources>
