@@ -58,7 +58,7 @@
             android:layout_marginBottom="12dp">
 
             <ImageView
-                android:id="@+id/iv_selfAdd"
+                android:id="@+id/selfAddBtn"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_gravity="center"
@@ -71,7 +71,7 @@
                 android:visibility="gone" />
 
             <ImageView
-                android:id="@+id/iv_selfSearch"
+                android:id="@+id/selfSearchBtn"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_gravity="center"
