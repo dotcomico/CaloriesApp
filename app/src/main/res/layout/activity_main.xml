@@ -29,9 +29,4 @@
     <!-- תפריט חיפוש תחתון + סריקת ברקוד -->
     <include layout="@layout/bottom_menu" />
 
-    <!-- חלון הגדרות -->
-    <include layout="@layout/dialog_settings"
-        android:visibility="gone"
-        />
-
 </RelativeLayout>
