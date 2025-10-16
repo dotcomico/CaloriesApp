@@ -490,7 +490,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (!consumedProductManager.getConsumedProductsOfDay().isEmpty()) {
             consumedProductsRecyclerView.smoothScrollToPosition( consumedProductManager.getConsumedProductsOfDay().size() - 1 );
         }
-        mainSearchView.setBackgroundResource( R.drawable.sty_3 );
+        mainSearchView.setBackgroundResource( R.drawable.search_background );
         selfAddBtn.setVisibility(View.GONE);
         barcodeIcon.setVisibility( View.VISIBLE );
     }
@@ -620,7 +620,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         rl_selfSearch.setVisibility(View.GONE);
     }
     private void openFood(){
-        mainSearchView.setBackgroundResource( R.drawable.sty_3 );
+        mainSearchView.setBackgroundResource( R.drawable.search_background );
         selfAddBtn.setVisibility(View.GONE);
         selfSearchBtn.setVisibility( View.GONE );
         barcodeIcon.setVisibility( View.VISIBLE );
