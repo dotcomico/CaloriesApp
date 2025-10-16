@@ -61,6 +61,9 @@
     <string name="type_product">Type Product Name</string>
     <string name="edit_amount">Edit Amount</string>
     <string name="ex_description">Additional description or product info</string>
-    <string name="not_what_you_looked_for">לא מה שחיפשת?</string>
-    <string name="continue_self_search">המשך בחיפוש עצמי</string>
+    <string name="not_what_you_looked_for">Not what you were looking for?</string>
+    <string name="continue_self_search">Continue with self search</string>
+    <string name="space">\" \"</string>
+    <string name="blank_">-</string>
+    <string name="remaining_calories">Remaining</string>
 </resources>
