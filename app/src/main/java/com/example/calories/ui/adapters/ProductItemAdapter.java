@@ -72,17 +72,15 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
         holder.productCalorieValueTextView.setScaleY(1f);
         holder.productCalorieValueTextView.setTextSize(25);
         holder.productDescriptionTextView.setVisibility(View.GONE);
-        holder.productDescriptionTextView.setTextColor(Color.parseColor("#999999"));
         holder.calorieContainer.setBackgroundResource(R.drawable.calories_product_item_display);
         holder.productUnitContainer.setVisibility(View.VISIBLE);
 
         if (state == PRODUCT_STATE_SELF_SEARCH) {
-            holder.productNameTextView.setText("לא מה שחיפשת?");
-            holder.productDescriptionTextView.setText("המשך בחיפוש עצמי");
+            holder.productNameTextView.setText(R.string.not_what_you_looked_for);
+            holder.productDescriptionTextView.setText(R.string.continue_self_search);
             holder.productCalorieValueTextView.setText("\uD83D\uDD0D");
             applyHighlightStyle(holder);
             holder.productDescriptionTextView.setVisibility(View.VISIBLE);
-            holder.productDescriptionTextView.setTextColor(Color.WHITE);
             holder.calorieContainer.setBackground(null);
             holder.productUnitContainer.setVisibility(View.GONE);
         }
