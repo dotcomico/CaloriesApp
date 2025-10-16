@@ -60,4 +60,6 @@
     <string name="type_product">הקלד שם מוצר</string>
     <string name="edit_amount">עריכת כמות</string>
     <string name="ex_description">תיאור נוסף או מידע על המוצר</string>
+    <string name="not_what_you_looked_for">לא מה שחיפשת?</string>
+    <string name="continue_self_search">המשך בחיפוש עצמי</string>
 </resources>
