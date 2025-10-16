@@ -1,6 +1,5 @@
 package com.example.calories.ui.screens;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,15 +50,34 @@ public class MyProductActivity extends BaseActivity implements View.OnClickListe
     private ProductItemDeletionHelper deletionHelper;
     private UnitSelectorView unitSelectorView;
     private static ScreenCloseListener screenCloseListener;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_my_prodact );
 
+        Objects.requireNonNull(getSupportActionBar()).show();
+
         productStorageManager = new ProductStorageManager(this);
         barcodeDialogHandler = new BarcodeDialogHandler(this);
 
+        initViews();
+        setRecyclerView();
+        initListeners();
+    }
+
+    private void initListeners() {
+        fab.setOnClickListener(view -> startActivity(new Intent(MyProductActivity.this , ProductCreationActivity.class)));
+
+        ProductStorageManager.setGlobalProductCreatedListener(newProduct -> {
+            // ברגע שנוצר מוצר חדש, תרענן את הרשימה
+            refreshRecyclerView();
+        });
+    }
+
+    private void initViews() {
+        fab= findViewById(R.id.fab);
         recyclerView = findViewById( R.id.productsRecyclerView);
         editProductLayout = findViewById( R.id.layoutEditProduct);
         cancelEditImageView = findViewById( R.id.iv_delete );
@@ -72,20 +90,6 @@ public class MyProductActivity extends BaseActivity implements View.OnClickListe
         scanBarcodeImageView.setOnClickListener( this );
         cancelEditImageView.setOnClickListener( this );
         updateProductButton.setOnClickListener( this );
-
-        setRecyclerView();
-
-        Objects.requireNonNull(getSupportActionBar()).show();
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> startActivity(new Intent(MyProductActivity.this , ProductCreationActivity.class)));
-
-        ProductStorageManager.setGlobalProductCreatedListener(newProduct -> {
-            // ברגע שנוצר מוצר חדש, תרענן את הרשימה
-            refreshRecyclerView();
-//                recyclerView.setBackgroundColor(Color.RED);
-        });
-
     }
 
     public interface ScreenCloseListener {
@@ -188,9 +192,9 @@ public class MyProductActivity extends BaseActivity implements View.OnClickListe
             updatedProduct.setName( productNameEditText.getText().toString().trim() );
             updatedProduct.setBarcode( barcodeDialogHandler.getBarcodeEditText().getText().toString().trim() );
 
-           String measurement = unitSelectorView.getUnit();
-           if(!measurement.isEmpty()){
-            updatedProduct.setUnit(measurement);}
+            String measurement = unitSelectorView.getUnit();
+            if(!measurement.isEmpty()){
+                updatedProduct.setUnit(measurement);}
 
             productItemAdapter = new ProductItemAdapter(customProducts);
 
@@ -218,7 +222,6 @@ public class MyProductActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-
     private void cancelEdit() {
         editProductLayout.setVisibility( View.GONE );
     }
@@ -227,47 +230,46 @@ public class MyProductActivity extends BaseActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(currentMenuResourceId, menu );
-
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-            if (item.getItemId() == R.id.menu1_back) {
-                finish();
-                return true;
-            }
-
-            if (item.getItemId() == R.id.menu1_dotan) {
-                dotanAll();
-                recyclerView.setAdapter(productItemAdapter);
-                return true;
-            }
-
-            if (item.getItemId() == R.id.menu1_print_all) {
-                printAll();
-                return true;
-            }
-
-            if (item.getItemId() == R.id.menu_abortDelete) {
-                deletionHelper.exitDeleteMode();
-                return true;
-            }
-
-            if (item.getItemId() == R.id.menu_delete) {
-                deletionHelper.deleteSelectedItems();
-                productStorageManager.save(customProducts);
-                return true;
-            }
-
-            if (item.getItemId() == R.id.menu_select_all) {
-                deletionHelper.toggleSelectAll();
-                return true;
-            }
-
-            return super.onOptionsItemSelected(item);
-
+        if (item.getItemId() == R.id.menu1_back) {
+            finish();
+            return true;
         }
+
+        if (item.getItemId() == R.id.menu1_dotan) {
+            dotanAll();
+            recyclerView.setAdapter(productItemAdapter);
+            return true;
+        }
+
+        if (item.getItemId() == R.id.menu1_print_all) {
+            printAll();
+            return true;
+        }
+
+        if (item.getItemId() == R.id.menu_abortDelete) {
+            deletionHelper.exitDeleteMode();
+            return true;
+        }
+
+        if (item.getItemId() == R.id.menu_delete) {
+            deletionHelper.deleteSelectedItems();
+            productStorageManager.save(customProducts);
+            return true;
+        }
+
+        if (item.getItemId() == R.id.menu_select_all) {
+            deletionHelper.toggleSelectAll();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+
+    }
 
 
 
