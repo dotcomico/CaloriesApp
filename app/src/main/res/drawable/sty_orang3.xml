@@ -14,6 +14,6 @@
         android:top="3dp"
         android:bottom="3dp"/>
 
-    <solid android:color="#FFAA00"/>
+    <solid android:color="@color/selfSearch"/>
 
 </shape>
