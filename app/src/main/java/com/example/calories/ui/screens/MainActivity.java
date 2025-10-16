@@ -5,10 +5,8 @@ import static com.example.calories.utils.Utility.isNumeric;
 import static com.example.calories.utils.Utility.startNewActivity;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
+import androidx.annotation.NonNull;
 import androidx.core.graphics.Insets;
-import androidx.core.os.LocaleListCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -50,7 +48,6 @@ import com.example.calories.ui.adapters.ProductItemAdapter;
 import com.example.calories.R;
 import com.example.calories.ui.adapters.RecyclerItemClickListener;
 import com.example.calories.ui.views.CircularProgressView;
-import com.example.calories.utils.Utility;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -91,21 +88,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private final CaptureAct captureAct = new CaptureAct();
 
     private ProductStorageManager productStorageManager;
-
-    // dialog
     ConsumedProductManager consumedProductManager;
-    // top bar
     private ImageView lastDayBtn, nextDayBtn;
 
-    //  settings
-    private LinearLayout ly_settings;
-
-    private ImageView iv_selfSearch_round ,  iv_selfAdd, iv_goToSelfSearch,
+    private ImageView selfSearchBtn, selfAddBtn, iv_goToSelfSearch,
             iv_backToMain, settingsIcon, barcodeIcon;
     private RelativeLayout rl_selfSearch;
-    private TextView currentDateText, tv_returnToMainScreen;
+    private TextView currentDateText;
 
-    private TextView tv_clearMainCaloriesList, caloriesViewText;
+    private TextView caloriesViewText;
     private ImageView customListIcon;
 
     private CircularProgressView calorieProgressView;
@@ -124,6 +115,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private boolean isShowingConsumed = true; // מצב נוכחי - true = צרכנו, false = נותר
     private boolean isAnimating = false; // למנוע אנימציות מרובות במקביל
+
+    // יצירת מאזין למסך הגדרות ובסגירה המיין אקטיביטי צריך להתעדכן
+    //recreate(); מעדכן אותו
+
+    // לבדוק למה החיפוש נשאר בצבעים לא קשורים
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +146,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         consumedProductEditingDialog.setOnEditCompleteListener(new ConsumedProductEditingDialog.OnEditCompleteListener() {
             @Override
             public void onEditComplete() {
-                // רענון הרשימה
                 refreshConsumedProductsList();
                 updateTotalCalories();
                 updateProgressView();
@@ -215,8 +210,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (query.isEmpty()){ //ללא הבדיקה הזו, בכל מצב של שינוי המצב יום או לילה של האפליקציה
             productsRecyclerView.setVisibility(View.GONE);
             mainSearchView.setBackgroundResource( R.drawable.search_background );
-            iv_selfAdd.setVisibility(View.GONE);
-            iv_selfSearch_round.setVisibility( View.GONE );
+            selfAddBtn.setVisibility(View.GONE);
+            selfSearchBtn.setVisibility( View.GONE );
             barcodeIcon.setVisibility( View.VISIBLE );
             rl_selfSearch.setVisibility(View.GONE);
             iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_blue );
@@ -228,8 +223,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         if (isNumeric( query )){
             mainSearchView.setBackgroundResource( R.drawable.sty_3_purple );
-            iv_selfAdd.setVisibility(View.VISIBLE);
-            iv_selfSearch_round.setVisibility( View.GONE );
+            selfAddBtn.setVisibility(View.VISIBLE);
+            selfSearchBtn.setVisibility( View.GONE );
             barcodeIcon.setVisibility( View.GONE );
             rl_selfSearch.setVisibility(View.GONE);
             productsRecyclerView.setVisibility(View.GONE);
@@ -238,8 +233,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
         else if (filteredProducts.isEmpty()){  // אם הרשימה ריקה (אין מוצרים)- הצעה לחיפוש עצמי
             mainSearchView.setBackgroundResource( R.drawable.sty_orang3);
-            iv_selfAdd.setVisibility(View.GONE);
-            iv_selfSearch_round.setVisibility( View.VISIBLE );
+            selfAddBtn.setVisibility(View.GONE);
+            selfSearchBtn.setVisibility( View.VISIBLE );
             barcodeIcon.setVisibility( View.GONE );
             rl_selfSearch.setVisibility(View.VISIBLE);
             productsRecyclerView.setVisibility(View.GONE);
@@ -247,8 +242,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         } else {
             mainSearchView.setBackgroundResource( R.drawable.search_background );
-            iv_selfAdd.setVisibility(View.GONE);
-            iv_selfSearch_round.setVisibility( View.GONE );
+            selfAddBtn.setVisibility(View.GONE);
+            selfSearchBtn.setVisibility( View.GONE );
             barcodeIcon.setVisibility( View.VISIBLE );
             rl_selfSearch.setVisibility(View.GONE);
             productsRecyclerView.setVisibility(View.VISIBLE);
@@ -384,7 +379,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
         }
 
-        if (view==iv_selfAdd) {
+        if (view== selfAddBtn) {
             selfAddActions();
         }
 
@@ -424,7 +419,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             openCustomProductByName( mainSearchView.getQuery().toString());
         }
 
-        if (view==iv_selfSearch_round){
+        if (view== selfSearchBtn){
             openCustomProductByName( mainSearchView.getQuery().toString());
         }
 
@@ -432,16 +427,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             backToMain();
         }
 
-        if (view == tv_clearMainCaloriesList){
-            caloriesViewText.setText("0");
-            clearConsumedProductData();
-            Toast.makeText( getBaseContext(), "רשימת קלוריות שנצרכו נמחקה (מסך ראשי)",Toast.LENGTH_SHORT).show();
-            restartApp();
-        }
-
-        if (view== tv_returnToMainScreen){
-            ly_settings.setVisibility( View.GONE );
-        }
     }
     private void flipCaloriesView() {
         isAnimating = true;
@@ -463,16 +448,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 isShowingConsumed = !isShowingConsumed;
 
                 if (isShowingConsumed) {
-//                    animateCaloriesText(consumedCalories , 1000);
-                    caloriesViewText.setText(""+consumedCalories);
-
-                    caloriesDescriptionText.setText("Calories");
+                    caloriesViewText.setText(String.valueOf(consumedCalories));
+                    caloriesDescriptionText.setText(R.string.calories);
                     calorieProgressView.setProgress(consumedProgress);
                 } else {
-//                    animateCaloriesText(remainingCalories, 1000);
-                    caloriesViewText.setText(""+remainingCalories);
-
-                    caloriesDescriptionText.setText("Remaining");
+                    caloriesViewText.setText(String.valueOf(remainingCalories));
+                    caloriesDescriptionText.setText(R.string.remaining_calories);
                     calorieProgressView.setProgress(remainingProgress);
                 }
 
@@ -510,7 +491,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             consumedProductsRecyclerView.smoothScrollToPosition( consumedProductManager.getConsumedProductsOfDay().size() - 1 );
         }
         mainSearchView.setBackgroundResource( R.drawable.sty_3 );
-        iv_selfAdd.setVisibility(View.GONE);
+        selfAddBtn.setVisibility(View.GONE);
         barcodeIcon.setVisibility( View.VISIBLE );
     }
 
@@ -640,8 +621,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
     private void openFood(){
         mainSearchView.setBackgroundResource( R.drawable.sty_3 );
-        iv_selfAdd.setVisibility(View.GONE);
-        iv_selfSearch_round.setVisibility( View.GONE );
+        selfAddBtn.setVisibility(View.GONE);
+        selfSearchBtn.setVisibility( View.GONE );
         barcodeIcon.setVisibility( View.VISIBLE );
         iv_backToMain.setVisibility(View.VISIBLE);
         productsRecyclerView.setVisibility(View.VISIBLE);
@@ -653,7 +634,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         iv_backToMain.setVisibility(View.GONE);
         productsRecyclerView.setVisibility(View.GONE);
     }
-    /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private void openCustomProductByBarcode(String barcode){
         cancelEdit();
             Intent i = new Intent(MainActivity.this, ProductCreationActivity.class);
@@ -687,23 +667,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         consumedProductsRecyclerView.setLayoutManager(consumedProductsLayoutManager);
         barcodeIcon =findViewById( R.id.barcodeIcon);
         barcodeIcon.setOnClickListener( this );
-        iv_selfSearch_round =findViewById( R.id.iv_selfSearch);
-        iv_selfSearch_round.setOnClickListener( this );
-        iv_selfAdd =findViewById( R.id.iv_selfAdd);
-        iv_selfAdd.setOnClickListener( this );
-        tv_returnToMainScreen =findViewById( R.id.tv_returnToMainScreen);
-        tv_returnToMainScreen.setOnClickListener( this );
+        selfSearchBtn =findViewById( R.id.selfSearchBtn);
+        selfSearchBtn.setOnClickListener( this );
+        selfAddBtn =findViewById( R.id.selfAddBtn);
+        selfAddBtn.setOnClickListener( this );
         settingsIcon =findViewById( R.id.settingsIcon);
         settingsIcon.setOnClickListener( this );
-        ly_settings=findViewById( R.id.ly_settings);
         currentDateText =findViewById( R.id.currentDateText);
         nextDayBtn =findViewById( R.id.nextDayBtn);
         nextDayBtn.setOnClickListener( this );
         lastDayBtn =findViewById( R.id.lastDayBtn);
         lastDayBtn.setOnClickListener( this );
         productsRecyclerView = findViewById(R.id.productsRecyclerView);
-        tv_clearMainCaloriesList =findViewById( R.id.tv_clearMainCaloriesList);
-        tv_clearMainCaloriesList.setOnClickListener( this );
         iv_backToMain =findViewById( R.id.iv_backToMain );
         iv_backToMain.setOnClickListener( this );
         rl_selfSearch=findViewById(R.id.rl_selfSearch);
@@ -786,38 +761,42 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         }, 300);
     }
-
     private void updateInformation() {
         updateTotalCalories();
         animateCaloriesText(consumedCalories , 2000);
         updateProgressView();
-        caloriesDescriptionText.setText("Calories");
+        caloriesDescriptionText.setText(R.string.calories);
+
         // עדכון קלוריות הארוחות
-        breakfastCalories.setText("-");
-        lunchCalories.setText("-");
-        dinnerCalories.setText("-");
+        breakfastCalories.setText(R.string.blank_);
+        lunchCalories.setText(R.string.blank_);
+        dinnerCalories.setText(R.string.blank_);
         collapsedDateText.setText("Today");
-        collapsedCaloriesText.setText(consumedCalories + " Cal");
+        collapsedCaloriesText.setText(getDisplayCaloriesString());
+    }
+
+    private String getDisplayCaloriesString() {
+        String cal = String.valueOf(consumedCalories);
+        String caloriesWord = getString(R.string.calories);
+        return cal + " " + caloriesWord;
     }
 
     private void updateProgressView(){
         // עדכון המד המרכזי
-
         if (!isShowingConsumed){
             flipCaloriesView();
         }else {
             float progress = (float) consumedCalories / totalDailyCalories;
             calorieProgressView.setProgress(progress);
         }
-
     }
     private void animateCaloriesText(int targetCalories , long time ) {
         ValueAnimator animator = ValueAnimator.ofInt(0, targetCalories);
-        animator.setDuration(time); //משך האנימציה
+        animator.setDuration(time);
 
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
+            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
                 int animatedValue = (Integer) animation.getAnimatedValue();
                 caloriesViewText.setText(String.valueOf(animatedValue));
             }
@@ -871,7 +850,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private void updateTotalCalories(){
         consumedCalories = consumedProductManager.getConsumedCaloriesOfDay();
         caloriesViewText.setText( String.valueOf(consumedCalories));
-        collapsedCaloriesText.setText(String.valueOf(consumedCalories));
+        collapsedCaloriesText.setText(getDisplayCaloriesString());
     }
     private void backToMain() {
         mainSearchView.setVisibility( View.VISIBLE );
@@ -948,10 +927,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void onBackPressed() {
             if (!consumedProductEditingDialog.isClosed()) {
                 cancelEdit();
-                return;
-            }
-            if (ly_settings.getVisibility() == View.VISIBLE) {
-                ly_settings.setVisibility( View.GONE );
                 return;
             }
             super.onBackPressed();
