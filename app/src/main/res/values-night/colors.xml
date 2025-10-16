@@ -16,9 +16,8 @@
     <color name="error">#FF0000</color>
     <color name="success">#00FF00</color>
 
-    <color name="selfSearch">#E6FFA63A</color>
-    <color name="delete">#FF6262</color>
-    <color name="sideItem">#FF6262</color>
+    <color name="selfSearch">#E68E5C1F</color>
+    <color name="delete">#350000</color>
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
