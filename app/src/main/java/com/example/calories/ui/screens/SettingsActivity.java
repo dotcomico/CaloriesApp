@@ -41,7 +41,9 @@ public class SettingsActivity extends BaseActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_settings);
 
-        Objects.requireNonNull(getSupportActionBar()).hide();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
