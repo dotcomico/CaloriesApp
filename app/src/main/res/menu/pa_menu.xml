@@ -19,6 +19,6 @@
         android:id="@+id/menu1_back"
         android:title="יציאה ממסך"
         android:tooltipText="יציאה ממסך"
-        android:icon="@drawable/left_arrow_white"
+        android:icon="@drawable/round_arrow_back"
         app:showAsAction="always"/>
 </menu>
