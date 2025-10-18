@@ -119,7 +119,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     // יצירת מאזין למסך הגדרות ובסגירה המיין אקטיביטי צריך להתעדכן
     //recreate(); מעדכן אותו
 
-    // לבדוק למה החיפוש נשאר בצבעים לא קשורים
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -293,7 +292,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void setupSystemUI() {
-        Objects.requireNonNull(getSupportActionBar()).hide();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(0, 0, 0, systemBars.bottom);
