@@ -55,7 +55,9 @@ public class ProductCreationActivity extends BaseActivity implements View.OnClic
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Objects.requireNonNull(getSupportActionBar()).hide();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         initViews();
         productStorageManager  = new ProductStorageManager(this);
