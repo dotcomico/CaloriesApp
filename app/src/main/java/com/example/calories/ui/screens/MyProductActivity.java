@@ -57,7 +57,7 @@ public class MyProductActivity extends BaseActivity implements View.OnClickListe
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_my_prodact );
 
-        Objects.requireNonNull(getSupportActionBar()).show();
+//       Objects.requireNonNull(getSupportActionBar()).show();
 
         productStorageManager = new ProductStorageManager(this);
         barcodeDialogHandler = new BarcodeDialogHandler(this);
