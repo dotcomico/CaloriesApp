@@ -393,6 +393,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             if (rl_selfSearch.getVisibility()==View.GONE){
                 calendar.add(Calendar.DAY_OF_MONTH, 1); //Adds a day
                 currentDateText.setText( new SimpleDateFormat(DATE_PATTERN).format(calendar.getTime()));
+                collapsedDateText.setText(currentDateText.getText());
                 refreshConsumedProductsList();
                 updateTotalCalories();
                 updateProgressView();
@@ -404,6 +405,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             if (rl_selfSearch.getVisibility()==View.GONE) {
                 calendar.add( Calendar.DAY_OF_MONTH , -1 ); //Goes to previous day
                 currentDateText.setText( new SimpleDateFormat( DATE_PATTERN ).format( calendar.getTime() ) );
+                collapsedDateText.setText(currentDateText.getText());
                 refreshConsumedProductsList();
                 updateTotalCalories();
                 updateProgressView();
@@ -772,7 +774,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         breakfastCalories.setText(R.string.blank_);
         lunchCalories.setText(R.string.blank_);
         dinnerCalories.setText(R.string.blank_);
-        collapsedDateText.setText("Today");
+        collapsedDateText.setText(currentDateText.getText());
         collapsedCaloriesText.setText(getDisplayCaloriesString());
     }
 
