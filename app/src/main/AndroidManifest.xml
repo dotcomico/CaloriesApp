@@ -25,7 +25,7 @@
             android:name=".ui.screens.ProductCreationActivity"
             android:exported="false" />
         <activity android:name=".ui.screens.MyProductActivity"
-            android:theme="@style/Theme.Material3.DayNight"/>
+            android:exported="false"/>
         <activity
             android:name=".ui.screens.MainActivity"
             android:windowSoftInputMode="adjustResize"
