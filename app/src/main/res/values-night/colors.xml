@@ -13,11 +13,13 @@
     <color name="searchBarBackground">#181818</color>
     <color name="searchBarBorder">#262626</color>
 
-    <color name="error">#FF0000</color>
-    <color name="success">#00FF00</color>
-
     <color name="selfSearch">#E68E5C1F</color>
     <color name="delete">#350000</color>
+
+    <color name="favorite">#BC8D04</color>
+
+    <color name="error">#FF0000</color>
+    <color name="success">#00FF00</color>
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
