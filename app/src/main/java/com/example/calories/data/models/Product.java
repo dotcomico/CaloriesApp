@@ -1,6 +1,8 @@
 package com.example.calories.data.models;
 import static com.example.calories.utils.AppConstants.*;
 
+import androidx.annotation.NonNull;
+
 public class Product {
     /// לשנות calorieText לInt
     private int itemState; // הבחנה בין מוצר פרטי למוצר במערכת (0=מערכת, 1=פרטי)
@@ -125,17 +127,8 @@ public class Product {
         }
     }
 
-    /**
-     * איפוס כל השדות למצב ברירת מחדל
-     */
-    public void clear() {
-        itemState = PRODUCT_STATE_SYSTEM;
-        name = "";
-        unit = "";
-        calorieText = "";
-        barcode = "";
-    }
 
+    @NonNull
     @Override
     public String toString() {
         return "Product{" +
