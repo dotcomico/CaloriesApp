@@ -65,4 +65,7 @@
     <string name="space">\" \"</string>
     <string name="blank_">-</string>
     <string name="remaining_calories">קלוריות נשארו</string>
+    <string name="tue_18">שלישי 18</string>
+    <string name="thu_20">חמישי 20</string>
+    <string name="product_not_found_message">אופס! \n ~מוצר זה לא קיים במערכת~ \n ↓ המשך בחיפוש עצמי ↓</string>
 </resources>
