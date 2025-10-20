@@ -8,14 +8,23 @@ public class Product {
     private String unit; // סוג המדד כמחרוזת
     private String calorieText; /// קלוריות
     private String barcode;
+    private boolean isFavorite;
+    private boolean isMarked;
 
     public Product() {
         // קונסטרקטור ריק
     }
+    public Product(int itemState, String name, String unit,
+                   String calorieText, String barcode , boolean isFavorite, boolean isMarked) {
+        this.itemState = itemState;
+        this.name = name.trim();
+        this.unit = unit.trim();
+        this.calorieText = calorieText.trim();
+        this.barcode = barcode.trim();
+    }
 
     public Product(int itemState, String name, String unit,
                    String calorieText, String barcode) {
-
         this.itemState = itemState;
         this.name = name.trim();
         this.unit = unit.trim();
@@ -24,6 +33,22 @@ public class Product {
     }
 
     // Getters and Setters
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    public boolean isMarked() {
+        return isMarked;
+    }
+
+    public void setMarked(boolean marked) {
+        isMarked = marked;
+    }
 
     public int getItemState() {
         return itemState;
