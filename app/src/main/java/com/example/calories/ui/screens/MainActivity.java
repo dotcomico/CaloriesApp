@@ -103,7 +103,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private TextView collapsedDateText;
     private TextView collapsedCaloriesText;
     private AppBarLayout appBarLayout;
-    private RelativeLayout caloriesLayout;
+    private RelativeLayout caloriesLayout ,catalogLayout;
     LinearLayout collapsedLayout;
     LinearLayout meals;
      int totalDailyCalories = 2000; // יעד קלוריות יומי
@@ -132,8 +132,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         setupSearchView();
         setupListeners();
         iv_backToMain.setVisibility(View.GONE);
-        productsRecyclerView.setVisibility(View.GONE);
-        notFoundLayout.setVisibility(View.GONE);
+        catalogLayout.setVisibility(View.GONE);
         updateMain();
 
     }
@@ -192,13 +191,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void handleSearchTextChange(String query) {
-        if (query.isEmpty()){ //ללא הבדיקה הזו, בכל מצב של שינוי המצב יום או לילה של האפליקציה
-            productsRecyclerView.setVisibility(View.GONE);
+        /// סגירת החיפוש
+        if (query.isEmpty()){ //ללא הבדיקה הזו, בכל מצב של שינוי המצב יום או לילה של האפליקציה אז השורת "פועלת" ולכן הפעולה רצה ופותחת את רשימת המוצרים סתם
+            catalogLayout.setVisibility(View.GONE); //הצג קטלוג
+
             mainSearchView.setBackgroundResource( R.drawable.search_background );
             selfAddBtn.setVisibility(View.GONE);
             selfSearchBtn.setVisibility( View.GONE );
-            barcodeIcon.setVisibility( View.VISIBLE );
-            notFoundLayout.setVisibility(View.GONE);
             iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_blue );
             return;
         }
@@ -206,32 +205,39 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         iv_backToMain.setVisibility(View.VISIBLE);
         searchInFoodList(query);
 
+
+        /// הוספה עצמית של קלוריות - כשמוקלד מספר
         if (isNumeric( query )){
             mainSearchView.setBackgroundResource( R.drawable.sty_3_purple );
             selfAddBtn.setVisibility(View.VISIBLE);
             selfSearchBtn.setVisibility( View.GONE );
-            barcodeIcon.setVisibility( View.GONE );
-            notFoundLayout.setVisibility(View.GONE);
-            productsRecyclerView.setVisibility(View.GONE);
+            catalogLayout.setVisibility(View.GONE);
             iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_purple );
 
         }
+        ///  הצעה לחיפוש עצמי והוספת מוצר - כשרשימה ריק
         else if (filteredProducts.isEmpty()){  // אם הרשימה ריקה (אין מוצרים)- הצעה לחיפוש עצמי
             mainSearchView.setBackgroundResource( R.drawable.sty_orang3);
             selfAddBtn.setVisibility(View.GONE);
             selfSearchBtn.setVisibility( View.VISIBLE );
-            barcodeIcon.setVisibility( View.GONE );
+
+            catalogLayout.setVisibility(View.VISIBLE);
             notFoundLayout.setVisibility(View.VISIBLE);
-            productsRecyclerView.setVisibility(View.GONE);
+
+
             iv_backToMain.setImageResource( R.drawable.baseline_arrow_circle_right_oreng );
 
-        } else {
+        }
+        ///  בכל הקלדה
+        else {
             mainSearchView.setBackgroundResource( R.drawable.search_background );
             selfAddBtn.setVisibility(View.GONE);
             selfSearchBtn.setVisibility( View.GONE );
-            barcodeIcon.setVisibility( View.VISIBLE );
+
+            catalogLayout.setVisibility(View.VISIBLE);
             notFoundLayout.setVisibility(View.GONE);
-            productsRecyclerView.setVisibility(View.VISIBLE);
+
+
             iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_blue );
         }
     }
@@ -295,36 +301,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 /// כך ניתן לגרום לשורת חיפוש לרחף מעל מקלדת
 /// עובד כאשר הסטייל במניפסט הוא android:theme="@style/Base.Theme.Calories"
 /// כלומר: <style name="Base.Theme.Calories" parent="Theme.Material3.DayNight.NoActionBar"> </style>
-//    private void setupSystemUI() {
-//        View rootLayout = findViewById(R.id.main);
-//        ViewCompat.setOnApplyWindowInsetsListener(rootLayout, (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
-//            int bottomPadding = imeInsets.bottom + 0;
-//            v.setPadding(
-//                    systemBars.left,
-//                    v.getPaddingTop(), // שומרים על ה-Padding העליון
-//                    systemBars.right,
-//                    bottomPadding
-//            );
-//            return WindowInsetsCompat.CONSUMED;
-//        });
-//
-//        // שמירת הטיפול בשורת הסטטוס בנפרד (כפי שהיה לך)
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.appBarLayout), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(0, systemBars.top, 0, 0);
-//            return insets;
-//        });
-//    }
     private void initManagersAndDialogs() {
         productStorageManager = new ProductStorageManager(this);
         consumedProductManager = new ConsumedProductManager(this);
         consumedProductEditingDialog = new ConsumedProductEditingDialog(this);
         productSelectionDialog = new ProductSelectionDialog(this);
     }
-
-
     private void openProductSelectionDialog(Product product) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -469,8 +451,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mainSearchView.setIconified( true );
         hideKeyboard();
         iv_backToMain.setVisibility( View.GONE );
-        productsRecyclerView.setVisibility( View.GONE );
-        notFoundLayout.setVisibility( View.GONE );
         if (!consumedProductManager.getConsumedProductsOfDay().isEmpty()) {
             consumedProductsRecyclerView.smoothScrollToPosition( consumedProductManager.getConsumedProductsOfDay().size() - 1 );
         }
@@ -565,20 +545,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         productsRecyclerView.setAdapter(new ProductItemAdapter(filteredProducts));
     }
     private void dismissCatalog() {
-        mainSearchView.setVisibility( View.VISIBLE );
+        notFoundLayout.setVisibility( View.GONE );
+        catalogLayout.setVisibility(View.GONE);
+//        mainSearchView.setVisibility( View.VISIBLE );
         mainSearchView.setQuery( "" , true );
         mainSearchView.setIconified( true );
         hideKeyboard();
         iv_backToMain.setVisibility( View.GONE );
-        productsRecyclerView.setVisibility( View.GONE );
-        notFoundLayout.setVisibility( View.GONE );
+
     }
 
     // פתיחת וסגירת מסכים
     private void openMain(){
         iv_backToMain.setVisibility(View.GONE);
-        productsRecyclerView.setVisibility(View.GONE);
-        notFoundLayout.setVisibility(View.GONE);
+        catalogLayout.setVisibility(View.GONE);
     }
     private void openFood(){
         mainSearchView.setBackgroundResource( R.drawable.search_background );
@@ -586,10 +566,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         selfSearchBtn.setVisibility( View.GONE );
         barcodeIcon.setVisibility( View.VISIBLE );
         iv_backToMain.setVisibility(View.VISIBLE);
-        productsRecyclerView.setVisibility(View.VISIBLE);
-        notFoundLayout.setVisibility(View.GONE);
+        catalogLayout.setVisibility(View.VISIBLE);
         cancelEdit();
-        productsRecyclerView.setVisibility(View.VISIBLE);
     }
     private void openCustomProductByBarcode(String barcode){
         cancelEdit();
@@ -607,7 +585,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private void initViews() {
         customListIcon =findViewById( R.id.customListIcon);
         customListIcon.setOnClickListener( this );
-
+        catalogLayout=findViewById(R.id.catalogLayout);
         calorieProgressView = findViewById(R.id.calorieProgressView);
         caloriesDescriptionText =findViewById(R.id.caloriesDescriptionText);
         breakfastCalories = findViewById(R.id.breakfastCalories);
