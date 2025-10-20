@@ -1,6 +1,5 @@
 package com.example.calories.ui.adapters;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,13 +28,15 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
 
     public static class ProductItemViewHolder extends RecyclerView.ViewHolder {
         private final ImageView productUnitImageView;
+        private final ImageView starIcon, bookmarkIcon;
         private final ConstraintLayout mainLayout;
         private final TextView productNameTextView;
         private final TextView productUnitTextView;
         private final TextView productCalorieValueTextView;
         private final TextView productDescriptionTextView;
-        private final ConstraintLayout calorieContainer;
+        private final TextView calorieLabelTextView;
 
+        private final LinearLayout iconsContainer;
         private final LinearLayout productUnitContainer;
 
         public ProductItemViewHolder(View itemView) {
@@ -46,8 +47,11 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
             productUnitTextView = itemView.findViewById(R.id.productUnitTextView);
             productCalorieValueTextView = itemView.findViewById(R.id.productCalorieValueTextView);
             productDescriptionTextView = itemView.findViewById(R.id.productDescriptionTextView);
-            calorieContainer = itemView.findViewById(R.id.calorieContainer);
             productUnitContainer = itemView.findViewById(R.id.productUnitContainer);
+            iconsContainer = itemView.findViewById(R.id.icons_container);
+            starIcon = itemView.findViewById(R.id.starIcon);
+            bookmarkIcon = itemView.findViewById(R.id.bookmarkIcon);
+            calorieLabelTextView = itemView.findViewById(R.id.calorieLabelTextView);
         }
     }
 
@@ -69,11 +73,20 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
 
         int state = currentItem.getItemState();
         holder.mainLayout.setBackgroundResource(getCustomBackgroundForState(state));
-        holder.productCalorieValueTextView.setScaleY(1f);
         holder.productCalorieValueTextView.setTextSize(25);
         holder.productDescriptionTextView.setVisibility(View.GONE);
-        holder.calorieContainer.setBackgroundResource(R.drawable.calories_product_item_display);
         holder.productUnitContainer.setVisibility(View.VISIBLE);
+        holder.iconsContainer.setVisibility(View.VISIBLE);
+        holder.calorieLabelTextView.setVisibility(View.VISIBLE);
+
+        holder.starIcon.setVisibility(View.GONE);
+        holder.bookmarkIcon.setVisibility(View.GONE);
+        if(currentItem.isFavorite()){
+            holder.starIcon.setVisibility(View.VISIBLE);
+        }
+        if(currentItem.isPrivateItem() || currentItem.isMarked()){
+            holder.bookmarkIcon.setVisibility(View.VISIBLE);
+        }
 
         if (state == PRODUCT_STATE_SELF_SEARCH) {
             holder.productNameTextView.setText(R.string.not_what_you_looked_for);
@@ -81,8 +94,9 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
             holder.productCalorieValueTextView.setText("\uD83D\uDD0D");
             applyHighlightStyle(holder);
             holder.productDescriptionTextView.setVisibility(View.VISIBLE);
-            holder.calorieContainer.setBackground(null);
             holder.productUnitContainer.setVisibility(View.GONE);
+            holder.iconsContainer.setVisibility(View.GONE);
+            holder.calorieLabelTextView.setVisibility(View.GONE);
         }
     }
 
@@ -96,16 +110,15 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
                 return R.drawable.product_item_background_self_search;
             case PRODUCT_STATE_MARKED_FOR_DELETE:
                 return R.drawable.product_item_background_delete;
-            case PRODUCT_STATE_CUSTOM:
-                return R.drawable.product_item_background_custom;
+//            case PRODUCT_STATE_CUSTOM:
+//                return R.drawable.product_item_background_custom;
             case PRODUCT_STATE_SYSTEM:
             default:
-                return R.drawable.product_item_background;
+                return R.drawable.list_item_background;
         }
     }
     private void applyHighlightStyle(ProductItemViewHolder holder) {
-        holder.productCalorieValueTextView.setScaleY(1f);
-        holder.productCalorieValueTextView.setTextSize(35);
+        holder.productCalorieValueTextView.setTextSize(32);
     }
 
 
