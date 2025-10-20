@@ -4,35 +4,96 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginVertical="4dp"
+    android:padding="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
     android:id="@+id/main"
-    android:background="@drawable/product_item_background"
-    android:elevation="2dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    android:paddingStart="6dp"
-    tools:ignore="RtlSymmetry">
+    android:background="@drawable/list_item_background">
+<LinearLayout
+    android:id="@+id/icons_container"
+    android:layout_width="wrap_content"
+    android:layout_height="0dp"
+    android:orientation="vertical"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:layout_marginEnd="0dp">
+
+    <ImageView
+        android:id="@+id/starIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/round_star"
+        android:contentDescription="@string/measure"
+        android:scaleType="fitCenter"
+        android:layout_marginEnd="4dp"
+        app:tint="@color/favorite" />
+
+    <ImageView
+        android:id="@+id/bookmarkIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/round_bookmark"
+        android:contentDescription="@string/measure"
+        android:scaleType="fitCenter"
+        android:layout_marginEnd="4dp"
+        app:tint="@color/tertiary" />
+</LinearLayout>
+
+    <TextView
+        android:id="@+id/productNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:gravity="start"
+        android:text="@string/ex_product_name"
+        android:textColor="@color/primaryText"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/caloriesContainer"
+        app:layout_constraintStart_toEndOf="@+id/icons_container"
+        app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/productDescriptionTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/ex_description"
+            android:textColor="@color/secondaryText"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintTop_toBottomOf="@id/productNameTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/caloriesContainer"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/productUnitContainer"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:background="@drawable/unit_badge_background"
-        android:padding="8dp"
-        android:minWidth="56dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:layout_marginTop="4dp"
+        android:gravity="start|center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/caloriesContainer"
+        app:layout_constraintStart_toEndOf="@+id/icons_container"
+        app:layout_constraintTop_toBottomOf="@id/productDescriptionTextView">
 
         <ImageView
             android:id="@+id/productUnitImageView"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:scaleType="centerInside"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="@string/measure"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_scale"
             app:tint="@color/secondaryText" />
 
         <TextView
@@ -41,73 +102,57 @@
             android:layout_height="wrap_content"
             android:text="@string/ex_unit_amount"
             android:textColor="@color/secondaryText"
-            android:textSize="11sp"
-            android:letterSpacing="0.02"
-            android:layout_marginTop="2dp"
-            />
+            android:textSize="14sp" />
     </LinearLayout>
 
-    <!-- Product Info Container (center) -->
-    <LinearLayout
-        android:id="@+id/productInfoContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="0dp"
-        app:layout_constraintStart_toEndOf="@id/productUnitContainer"
-        app:layout_constraintEnd_toStartOf="@id/calorieContainer"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <TextView
-            android:id="@+id/productNameTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/ex_product_name"
-            android:textColor="@color/primaryText"
-            android:textSize="16sp"
-            android:letterSpacing="0.01"
-            android:lineSpacingMultiplier="1.2"
-            android:maxLines="2"
-            android:ellipsize="end" />
-
-        <TextView
-            android:id="@+id/productDescriptionTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/ex_description"
-            android:textColor="@color/secondaryText"
-            android:textSize="12sp"
-            android:layout_marginTop="2dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:visibility="gone" />
-    </LinearLayout>
-
-    <!-- Calorie Circle Container (now on the right) -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/calorieContainer"
-        android:layout_width="68dp"
-        android:layout_height="68dp"
-        android:background="@drawable/calories_product_item_display"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <TextView
-            android:id="@+id/productCalorieValueTextView"
+        <LinearLayout
+            android:id="@+id/caloriesContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ex_calories"
-            android:textSize="25sp"
-            android:textColor="@color/primaryText"
-            android:letterSpacing="0.02"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:minWidth="70dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:id="@+id/productCalorieValueTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ex_calories"
+                android:textSize="22sp"
+                android:textColor="@color/primaryText"
+                android:fontFamily="sans-serif-medium"
+                android:includeFontPadding="false"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:id="@+id/calorieLabelTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/calories"
+                android:textSize="10sp"
+                android:textColor="@color/secondaryText"
+                android:fontFamily="sans-serif-light"
+                android:layout_gravity="center"
+                tools:ignore="SmallSp" />
+        </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
