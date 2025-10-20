@@ -146,6 +146,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/arrow"
                             android:src="@drawable/round_chevron_left_date_bar"
                             android:padding="8dp" />
 
@@ -153,7 +154,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Tue 18"
+                            android:text="@string/tue_18"
                             android:textSize="16sp"
                             android:foreground="?attr/selectableItemBackground"
                             android:textColor="@color/secondaryText"
@@ -176,7 +177,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Thu 20"
+                            android:text="@string/thu_20"
                             android:textSize="16sp"
                             android:foreground="?attr/selectableItemBackground"
                             android:textColor="@color/secondaryText"
@@ -188,6 +189,7 @@
                             android:layout_height="wrap_content"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:src="@drawable/round_chevron_right_date_bar"
+                            android:contentDescription="@string/arrow"
                             android:padding="8dp" />
 
                     </LinearLayout>
@@ -216,7 +218,7 @@
                                 android:id="@+id/caloriesViewText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0"
+                                android:text="@string/ex_calories"
                                 android:textSize="54sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/primaryText" />
@@ -238,6 +240,7 @@
                         android:id="@+id/meals"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:baselineAligned="false"
                         android:orientation="horizontal"
                         android:layout_marginBottom="16dp">
 
@@ -260,7 +263,7 @@
                                 android:id="@+id/breakfastCalories"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="-"
+                                android:text="@string/blank_"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/secondaryText" />
@@ -286,7 +289,7 @@
                                 android:id="@+id/lunchCalories"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="-"
+                                android:text="@string/blank_"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/secondaryText" />
@@ -312,7 +315,7 @@
                                 android:id="@+id/dinnerCalories"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="-"
+                                android:text="@string/blank_"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/secondaryText" />
@@ -356,11 +359,11 @@
         android:transcriptMode="alwaysScroll" />
 
     <!-- הודעה: מוצר לא קיים במערכת -->
-    <RelativeLayout
-        android:id="@+id/rl_selfSearch"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <RelativeLayout
+            android:id="@+id/notFoundLayout"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
         <TextView
             android:layout_centerInParent="true"
@@ -368,8 +371,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="25sp"
-            android:textColor="#8E8D8D"
-            android:text="אופס! \n ~מוצר זה לא קיים במערכת~   \n ↓ המשך בחיפוש עצמי ↓ " />
+            android:textColor="@color/primaryText"
+            android:text="@string/product_not_found_message" />
 
         <ImageView
             android:id="@+id/iv_goToSelfSearch"
