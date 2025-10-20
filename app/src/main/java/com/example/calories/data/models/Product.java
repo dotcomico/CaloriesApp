@@ -21,6 +21,8 @@ public class Product {
         this.unit = unit.trim();
         this.calorieText = calorieText.trim();
         this.barcode = barcode.trim();
+        this.isFavorite = isFavorite;
+        this.isMarked = isMarked;
     }
 
     public Product(int itemState, String name, String unit,
