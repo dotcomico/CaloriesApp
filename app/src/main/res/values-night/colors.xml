@@ -5,12 +5,12 @@
     <color name="tertiaryText">#7E7E7E</color>
 
     <color name="primary">#000000</color>
-    <color name="secondary">#161616</color><!--    2A2A2A   262626-->
+    <color name="secondary">#1D1D1D</color><!-- 1A1A1A 161616   2A2A2A   262626-->
     <color name="tertiary">#015FE0</color>
 
     <color name="dialogBackground">#2C2C2C</color>
     <color name="dialogBorder">#232323</color>
-    <color name="searchBarBackground">#181818</color>
+    <color name="searchBarBackground">#2C2C2C</color> <!-- 181818 -->
     <color name="searchBarBorder">#262626</color>
 
     <color name="selfSearch">#E68E5C1F</color>
