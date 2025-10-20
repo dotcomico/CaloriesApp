@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/primary">
 
     <!-- מידע יומי ורשימת מוצרים שנצרכו -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/primary">
+        >
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
@@ -346,13 +347,21 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <!-- רשימת מוצרים כללית (חיפוש) -->
+<RelativeLayout
+    android:id="@+id/catalogLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary"
+    android:visibility="gone"
+    >
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productsRecyclerView"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/primary"
+        android:background="@android:color/transparent"
         android:scrollbars="vertical"
         android:scrollbarSize="5dp"
         app:stackFromEnd="false"
@@ -381,6 +390,8 @@
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="10dp"
+            android:contentDescription=""
             android:src="@drawable/search_oreng_icon" />
     </RelativeLayout>
+</RelativeLayout>
 </RelativeLayout>
