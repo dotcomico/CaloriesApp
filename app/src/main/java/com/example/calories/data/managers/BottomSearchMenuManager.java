@@ -1,4 +1,4 @@
-package com.example.calories;
+package com.example.calories.data.managers;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+
+import com.example.calories.R;
 
 public class BottomSearchMenuManager {
 
