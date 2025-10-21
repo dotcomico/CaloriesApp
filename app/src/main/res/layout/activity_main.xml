@@ -27,6 +27,6 @@
         android:src="@drawable/ic_baseline_arrow_circle_right_blue" />
 
     <!-- תפריט חיפוש תחתון + סריקת ברקוד -->
-    <include layout="@layout/bottom_menu" />
+    <include layout="@layout/bottom_search_menu" />
 
 </RelativeLayout>
