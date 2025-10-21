@@ -27,18 +27,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/searchIcon"
+        <LinearLayout
+            android:id="@+id/mainIcons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:elevation="5dp"
-            android:src="@drawable/ic_baseline_search"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@id/mainSearchView"
             app:layout_constraintStart_toStartOf="@id/mainSearchView"
             app:layout_constraintTop_toTopOf="@id/mainSearchView"
-            app:tint="@color/secondaryText"
-            tools:ignore="ContentDescription" />
+            android:layout_marginStart="12dp"
+            android:elevation="5dp">
+            <ImageView
+                android:id="@+id/backIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/self_search"
+                android:src="@drawable/round_arrow_back"
+                app:tint="@color/secondaryText"
+                android:visibility="gone"
+                />
+            <ImageView
+                android:id="@+id/searchIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/self_search"
+                android:src="@drawable/ic_baseline_search"
+                app:tint="@color/secondaryText"
+                />
+        </LinearLayout>
+
 
         <EditText
             android:id="@+id/searchTextView"
@@ -54,7 +71,7 @@
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/mainSearchView"
             app:layout_constraintEnd_toStartOf="@id/barcodeIcon"
-            app:layout_constraintStart_toEndOf="@id/searchIcon"
+            app:layout_constraintStart_toEndOf="@id/mainIcons"
             app:layout_constraintTop_toTopOf="@id/mainSearchView" />
 
         <LinearLayout
