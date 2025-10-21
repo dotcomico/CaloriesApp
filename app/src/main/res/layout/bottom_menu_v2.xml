@@ -1,4 +1,3 @@
-<!-- bottom_menu.xml -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -29,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/search_icon_image"
+            android:id="@+id/searchIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -53,11 +52,11 @@
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/mainSearchView"
             app:layout_constraintEnd_toStartOf="@id/barcodeIcon"
-            app:layout_constraintStart_toEndOf="@id/search_icon_image"
+            app:layout_constraintStart_toEndOf="@id/searchIcon"
             app:layout_constraintTop_toTopOf="@id/mainSearchView" />
 
-           <LinearLayout
-            android:id="@+id/btnContainer"
+        <LinearLayout
+            android:id="@+id/buttonsContainer"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:orientation="horizontal"
@@ -71,7 +70,7 @@
             tools:ignore="RtlSymmetry">
 
             <ImageView
-                android:id="@+id/catalogBtn"
+                android:id="@+id/catalogIcon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -83,7 +82,7 @@
                 app:tint="@color/tertiary" />
 
             <ImageView
-                android:id="@+id/selfAddBtn"
+                android:id="@+id/selfAddIcon"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_gravity="center"
@@ -95,7 +94,7 @@
                 app:tint="@color/purple"/>
 
             <ImageView
-                android:id="@+id/selfSearchBtn"
+                android:id="@+id/selfSearchIcon"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_gravity="center"
@@ -108,7 +107,7 @@
 
         </LinearLayout>
 
-           <View
+        <View
             android:id="@+id/separator"
             android:layout_width="1dp"
             android:layout_height="0dp"
@@ -116,10 +115,10 @@
             android:background="@color/tertiaryText"
             android:elevation="4dp"
             app:layout_constraintBottom_toBottomOf="@id/mainSearchView"
-            app:layout_constraintEnd_toStartOf="@id/btnContainer"
+            app:layout_constraintEnd_toStartOf="@id/buttonsContainer"
             app:layout_constraintTop_toTopOf="@id/mainSearchView" />
 
-    <ImageButton
+        <ImageButton
             android:id="@+id/barcodeIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
