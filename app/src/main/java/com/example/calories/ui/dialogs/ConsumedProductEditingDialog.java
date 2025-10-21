@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.calories.AmountAdjuster;
-import com.example.calories.ConsumedProductManager;
+import com.example.calories.data.managers.ConsumedProductManager;
 import com.example.calories.NumberFormatter;
 import com.example.calories.R;
 import com.example.calories.data.models.ConsumedProduct;
