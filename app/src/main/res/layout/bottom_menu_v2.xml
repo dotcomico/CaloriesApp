@@ -1,0 +1,120 @@
+<!-- bottom_menu.xml -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomActionMenu"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:background="@android:color/transparent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/searchRl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp">
+
+        <!-- The SearchView acts as a background for the buttons -->
+        <android.widget.SearchView
+            android:id="@+id/mainSearchView"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/search_background"
+            android:contextClickable="true"
+            android:elevation="4dp"
+            android:padding="12dp"
+            android:queryHint="@string/type_product"
+            android:textColor="@color/primaryText"
+            android:textColorHint="@color/secondaryText"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Container for catalog/add/search buttons, aligned to the far right -->
+        <LinearLayout
+            android:id="@+id/btnContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:elevation="12dp"
+            android:gravity="center"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/mainSearchView"
+            app:layout_constraintEnd_toEndOf="@id/mainSearchView"
+            app:layout_constraintTop_toTopOf="@id/mainSearchView">
+
+            <ImageView
+                android:id="@+id/catalogBtn"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_background_button"
+                android:backgroundTint="@color/tertiary"
+                android:contentDescription="@string/catalog_icon"
+                android:padding="9dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/outline_menu_book"
+                android:visibility="visible"
+                app:tint="@color/white" />
+
+            <ImageView
+                android:id="@+id/selfAddBtn"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_background_button"
+                android:backgroundTint="@color/purple"
+                android:contentDescription="@string/add_self_calorie_value"
+                android:padding="9dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/baseline_add_white"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/selfSearchBtn"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_background_button"
+                android:backgroundTint="@color/selfSearch"
+                android:contentDescription="@string/move_to_custom_product_view"
+                android:padding="9dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_baseline_search"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <!-- Separator line, to the left of the button container -->
+        <View
+            android:id="@+id/separator"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_marginVertical="8dp"
+            android:background="@color/tertiaryText"
+            android:elevation="5dp"
+            app:layout_constraintBottom_toBottomOf="@id/mainSearchView"
+            app:layout_constraintEnd_toStartOf="@id/btnContainer"
+            app:layout_constraintTop_toTopOf="@id/mainSearchView" />
+
+        <!-- Barcode button, to the left of the separator -->
+        <ImageButton
+            android:id="@+id/barcodeIcon"
+            android:layout_width="50dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/scan_barcode"
+            android:elevation="8dp"
+            android:src="@drawable/outline_barcode_scanner"
+            app:tint="@color/primaryText"
+            app:layout_constraintBottom_toBottomOf="@id/mainSearchView"
+            app:layout_constraintEnd_toStartOf="@id/separator"
+            app:layout_constraintTop_toTopOf="@id/mainSearchView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
