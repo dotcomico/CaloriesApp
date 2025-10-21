@@ -87,7 +87,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     ConsumedProductManager consumedProductManager;
     private ImageView lastDayBtn, nextDayBtn;
 
-    private ImageView selfSearchBtn, selfAddBtn, iv_goToSelfSearch,
+    private ImageView selfSearchIcon, selfAddIcon, iv_goToSelfSearch,
             iv_backToMain, settingsIcon, barcodeIcon;
     private RelativeLayout notFoundLayout;
     private TextView currentDateText;
@@ -196,8 +196,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             catalogLayout.setVisibility(View.GONE); //הצג קטלוג
 
             mainSearchView.setBackgroundResource( R.drawable.search_background );
-            selfAddBtn.setVisibility(View.GONE);
-            selfSearchBtn.setVisibility( View.GONE );
+            selfAddIcon.setVisibility(View.GONE);
+            selfSearchIcon.setVisibility( View.GONE );
             iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_blue );
             return;
         }
@@ -209,8 +209,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         /// הוספה עצמית של קלוריות - כשמוקלד מספר
         if (isNumeric( query )){
             mainSearchView.setBackgroundResource( R.drawable.sty_3_purple );
-            selfAddBtn.setVisibility(View.VISIBLE);
-            selfSearchBtn.setVisibility( View.GONE );
+            selfAddIcon.setVisibility(View.VISIBLE);
+            selfSearchIcon.setVisibility( View.GONE );
             catalogLayout.setVisibility(View.GONE);
             iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_purple );
 
@@ -218,8 +218,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         ///  הצעה לחיפוש עצמי והוספת מוצר - כשרשימה ריק
         else if (filteredProducts.isEmpty()){  // אם הרשימה ריקה (אין מוצרים)- הצעה לחיפוש עצמי
             mainSearchView.setBackgroundResource( R.drawable.sty_orang3);
-            selfAddBtn.setVisibility(View.GONE);
-            selfSearchBtn.setVisibility( View.VISIBLE );
+            selfAddIcon.setVisibility(View.GONE);
+            selfSearchIcon.setVisibility( View.VISIBLE );
 
             catalogLayout.setVisibility(View.VISIBLE);
             notFoundLayout.setVisibility(View.VISIBLE);
@@ -231,8 +231,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         ///  בכל הקלדה
         else {
             mainSearchView.setBackgroundResource( R.drawable.search_background );
-            selfAddBtn.setVisibility(View.GONE);
-            selfSearchBtn.setVisibility( View.GONE );
+            selfAddIcon.setVisibility(View.GONE);
+            selfSearchIcon.setVisibility( View.GONE );
 
             catalogLayout.setVisibility(View.VISIBLE);
             notFoundLayout.setVisibility(View.GONE);
@@ -343,7 +343,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
         }
 
-        if (view== selfAddBtn) {
+        if (view== selfAddIcon) {
             selfAddActions();
         }
 
@@ -385,7 +385,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             openCustomProductByName( mainSearchView.getQuery().toString());
         }
 
-        if (view== selfSearchBtn){
+        if (view== selfSearchIcon){
             openCustomProductByName( mainSearchView.getQuery().toString());
         }
 
@@ -455,7 +455,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             consumedProductsRecyclerView.smoothScrollToPosition( consumedProductManager.getConsumedProductsOfDay().size() - 1 );
         }
         mainSearchView.setBackgroundResource( R.drawable.search_background );
-        selfAddBtn.setVisibility(View.GONE);
+        selfAddIcon.setVisibility(View.GONE);
         barcodeIcon.setVisibility( View.VISIBLE );
     }
 
@@ -562,8 +562,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
     private void openFood(){
         mainSearchView.setBackgroundResource( R.drawable.search_background );
-        selfAddBtn.setVisibility(View.GONE);
-        selfSearchBtn.setVisibility( View.GONE );
+        selfAddIcon.setVisibility(View.GONE);
+        selfSearchIcon.setVisibility( View.GONE );
         barcodeIcon.setVisibility( View.VISIBLE );
         iv_backToMain.setVisibility(View.VISIBLE);
         catalogLayout.setVisibility(View.VISIBLE);
@@ -601,10 +601,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         consumedProductsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         barcodeIcon =findViewById( R.id.barcodeIcon);
         barcodeIcon.setOnClickListener( this );
-        selfSearchBtn =findViewById( R.id.selfSearchBtn);
-        selfSearchBtn.setOnClickListener( this );
-        selfAddBtn =findViewById( R.id.selfAddBtn);
-        selfAddBtn.setOnClickListener( this );
+        selfSearchIcon =findViewById( R.id.selfSearchIcon);
+        selfSearchIcon.setOnClickListener( this );
+        selfAddIcon =findViewById( R.id.selfAddIcon);
+        selfAddIcon.setOnClickListener( this );
         settingsIcon =findViewById( R.id.settingsIcon);
         settingsIcon.setOnClickListener( this );
         currentDateText =findViewById( R.id.currentDateText);
