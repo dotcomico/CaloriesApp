@@ -422,8 +422,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         updateProgressView();
 
         searchMenuManager.resetToInitialState();
-//        searchTextView.setIconified( true );
-        hideKeyboard();
 
         if (!consumedProductManager.getConsumedProductsOfDay().isEmpty()) {
             consumedProductsRecyclerView.smoothScrollToPosition( consumedProductManager.getConsumedProductsOfDay().size() - 1 );
