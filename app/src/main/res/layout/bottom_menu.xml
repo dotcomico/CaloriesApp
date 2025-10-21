@@ -17,7 +17,7 @@
             android:id="@+id/searchRl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/btnContainer">
+            android:layout_toStartOf="@+id/buttonsContainer">
 
 
         <android.widget.SearchView
@@ -49,7 +49,7 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/btnContainer"
+            android:id="@+id/buttonsContainer"
             android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -58,7 +58,7 @@
             android:layout_marginBottom="12dp">
 
             <ImageView
-                android:id="@+id/selfAddBtn"
+                android:id="@+id/selfAddIcon"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_gravity="center"
@@ -71,7 +71,7 @@
                 android:visibility="gone" />
 
             <ImageView
-                android:id="@+id/selfSearchBtn"
+                android:id="@+id/selfSearchIcon"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_gravity="center"
