@@ -90,7 +90,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private ImageView lastDayBtn, nextDayBtn;
 
     private ImageView selfSearchIcon, selfAddIcon, iv_goToSelfSearch,
-            iv_backToMain, settingsIcon, barcodeIcon , catalogIcon;
+            settingsIcon, barcodeIcon , catalogIcon , backIcon , searchIcon;
     private RelativeLayout notFoundLayout;
     private TextView currentDateText;
 
@@ -134,7 +134,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         setupRecyclerListeners();
         setupSearchView();
         setupListeners();
-        iv_backToMain.setVisibility(View.GONE);
+
+        searchIcon.setVisibility(View.VISIBLE);
         catalogLayout.setVisibility(View.GONE);
         updateMain();
 
@@ -223,11 +224,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             catalogIcon.setVisibility(View.VISIBLE);
             selfAddIcon.setVisibility(View.GONE);
             selfSearchIcon.setVisibility( View.GONE );
-            iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_blue );
+            searchIcon.setVisibility(View.VISIBLE);
+            backIcon.setVisibility(View.GONE);
             return;
         }
         // עדכון רשימת מזון לפי חיפוש בזמן הקלדה
-        iv_backToMain.setVisibility(View.VISIBLE);
+        backIcon.setVisibility(View.VISIBLE);
+        searchIcon.setVisibility(View.GONE);
         searchInFoodList(query);
 
 
@@ -238,8 +241,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
             selfSearchIcon.setVisibility( View.GONE );
             catalogLayout.setVisibility(View.GONE);
-            iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_purple );
-
         }
         ///  הצעה לחיפוש עצמי והוספת מוצר - כשרשימה ריק
         else if (filteredProducts.isEmpty()){  // אם הרשימה ריקה (אין מוצרים)- הצעה לחיפוש עצמי
@@ -249,10 +250,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
             catalogLayout.setVisibility(View.VISIBLE);
             notFoundLayout.setVisibility(View.VISIBLE);
-
-
-            iv_backToMain.setImageResource( R.drawable.baseline_arrow_circle_right_oreng );
-
         }
         ///  בכל הקלדה
         else {
@@ -262,9 +259,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
             catalogLayout.setVisibility(View.VISIBLE);
             notFoundLayout.setVisibility(View.GONE);
-
-
-            iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_blue );
         }
     }
 
@@ -413,7 +407,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             openCustomProductByName( searchTextView.getText().toString());
         }
 
-        if (view == iv_backToMain){
+        if (view == backIcon){
             backToMain();
         }
 
@@ -474,7 +468,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         searchTextView.setText( "" );
 //        searchTextView.setIconified( true );
         hideKeyboard();
-        iv_backToMain.setVisibility( View.GONE );
+        backIcon.setVisibility( View.GONE );
+        searchIcon.setVisibility(View.VISIBLE);
         if (!consumedProductManager.getConsumedProductsOfDay().isEmpty()) {
             consumedProductsRecyclerView.smoothScrollToPosition( consumedProductManager.getConsumedProductsOfDay().size() - 1 );
         }
@@ -573,20 +568,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         searchTextView.setText( "" );
 //        searchTextView.setIconified( true );
         hideKeyboard();
-        iv_backToMain.setVisibility( View.GONE );
+        backIcon.setVisibility( View.GONE );
+        searchIcon.setVisibility(View.VISIBLE);
 
     }
 
     // פתיחת וסגירת מסכים
     private void closeCatalog(){
-        iv_backToMain.setVisibility(View.GONE);
+        backIcon.setVisibility(View.GONE);
         catalogLayout.setVisibility(View.GONE);
     }
     private void openCatalog(){
         catalogIcon.setVisibility(View.VISIBLE);
         selfAddIcon.setVisibility(View.GONE);
         selfSearchIcon.setVisibility( View.GONE );
-        iv_backToMain.setVisibility(View.VISIBLE);
+        backIcon.setVisibility(View.VISIBLE);
+        searchIcon.setVisibility(View.GONE);
         catalogLayout.setVisibility(View.VISIBLE);
         cancelEdit();
     }
@@ -620,6 +617,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         caloriesLayout.setOnClickListener(this);
         consumedProductsRecyclerView =findViewById( R.id.consumedProductsRecyclerView);
         consumedProductsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        searchIcon =findViewById(R.id.searchIcon);
+        searchIcon.setOnClickListener( this );
+        backIcon =findViewById( R.id.backIcon);
+        backIcon.setOnClickListener( this );
         barcodeIcon =findViewById( R.id.barcodeIcon);
         barcodeIcon.setOnClickListener( this );
         catalogIcon=findViewById(R.id.catalogIcon);
@@ -636,8 +637,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         lastDayBtn =findViewById( R.id.lastDayBtn);
         lastDayBtn.setOnClickListener( this );
         productsRecyclerView = findViewById(R.id.productsRecyclerView);
-        iv_backToMain =findViewById( R.id.iv_backToMain );
-        iv_backToMain.setOnClickListener( this );
         notFoundLayout =findViewById(R.id.notFoundLayout);
         iv_goToSelfSearch =findViewById( R.id.iv_goToSelfSearch);
         iv_goToSelfSearch.setOnClickListener( this );
@@ -809,6 +808,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private void backToMain() {
         searchTextView.setVisibility( View.VISIBLE );
         searchTextView.setText( "" );
+        searchIcon.setVisibility(View.VISIBLE);
+        backIcon.setVisibility(View.GONE);
 //        searchTextView.setIconified(true);
         hideKeyboard();
         closeCatalog();
