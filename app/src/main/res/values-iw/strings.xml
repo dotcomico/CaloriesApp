@@ -68,4 +68,5 @@
     <string name="tue_18">שלישי 18</string>
     <string name="thu_20">חמישי 20</string>
     <string name="product_not_found_message">אופס! \n ~מוצר זה לא קיים במערכת~ \n ↓ המשך בחיפוש עצמי ↓</string>
+    <string name="catalog_icon">catalog icon</string>
 </resources>
