@@ -1,7 +1,5 @@
 package com.example.calories.ui.dialogs;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,7 +20,7 @@ import android.widget.Toast;
 
 import com.example.calories.AmountAdjuster;
 import com.example.calories.CalorieCalculator;
-import com.example.calories.ConsumedProductManager;
+import com.example.calories.data.managers.ConsumedProductManager;
 import com.example.calories.R;
 import com.example.calories.data.models.Product;
 import com.example.calories.utils.Utility;
