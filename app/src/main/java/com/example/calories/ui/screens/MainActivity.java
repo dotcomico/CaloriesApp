@@ -25,13 +25,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,7 +75,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private ArrayList<Product> customProducts = new ArrayList<>();//רשימת מוצרים שיצר המשתמש
     private ArrayList<Product> filteredProducts = new ArrayList<>();//רשימת מוצרים מסוננת (לפי חיפוש)
     private RecyclerView productsRecyclerView;
-    private SearchView mainSearchView;
+    private EditText searchTextView;
     private Product aProductItem =null;
 
     //--------------- CustomProductView  ---------------
@@ -88,7 +90,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private ImageView lastDayBtn, nextDayBtn;
 
     private ImageView selfSearchIcon, selfAddIcon, iv_goToSelfSearch,
-            iv_backToMain, settingsIcon, barcodeIcon;
+            iv_backToMain, settingsIcon, barcodeIcon , catalogIcon;
     private RelativeLayout notFoundLayout;
     private TextView currentDateText;
 
@@ -111,6 +113,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private boolean isShowingConsumed = true; // מצב נוכחי - true = צרכנו, false = נותר
     private boolean isAnimating = false; // למנוע אנימציות מרובות במקביל
+
 
     // יצירת מאזין למסך הגדרות ובסגירה המיין אקטיביטי צריך להתעדכן
     //recreate(); מעדכן אותו
@@ -168,34 +171,56 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void setupSearchView() {
-        mainSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override//כאשר לוחצים חפש
-            public boolean onQueryTextSubmit(String s) {
+        searchTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
 
-                if (isNumeric( s )){
-                    selfAddActions();
-                }else if (filteredProducts.isEmpty()){
-                    //אם הרשימה ריקה(מוצר לא נמצא) תפתח חיפוש עצמי
-                    openCustomProductByName(s);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                handleSearchTextChange(s.toString());
+            }
+        });
+        // הוספת מאזין לכפתור ה"חיפוש" במקלדת (אופציונלי)
+        searchTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                // בודק אם המשתמש לחץ על "חפש", "הבא" וכו' מהמקלדת
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String query = searchTextView.getText().toString();
+
+                    if (isNumeric(query)) {
+                        selfAddActions();
+                    } else if (filteredProducts.isEmpty()) {
+                        // אם הרשימה ריקה (מוצר לא נמצא) תפתח חיפוש עצמי
+                        openCustomProductByName(query);
+                    }
+
+                    // הסתרת המקלדת לאחר החיפוש
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(searchTextView.getWindowToken(), 0);
+
+                    return true; // ציין שהאירוע טופל
                 }
+                return false;
+            }
+        });
 
-                return false;
-            }
+
             ///  פעולה זו מתקיימת בכל עדכון של מצב יום או לילה מסיבה מסויימת.
-            @Override//כאשר החיפוש מתבצע
-            public boolean onQueryTextChange(String s) {
-                handleSearchTextChange(s);
-                return false;
-            }
-        } );
     }
 
     private void handleSearchTextChange(String query) {
         /// סגירת החיפוש
         if (query.isEmpty()){ //ללא הבדיקה הזו, בכל מצב של שינוי המצב יום או לילה של האפליקציה אז השורת "פועלת" ולכן הפעולה רצה ופותחת את רשימת המוצרים סתם
             catalogLayout.setVisibility(View.GONE); //הצג קטלוג
-
-            mainSearchView.setBackgroundResource( R.drawable.search_background );
+            catalogIcon.setVisibility(View.VISIBLE);
             selfAddIcon.setVisibility(View.GONE);
             selfSearchIcon.setVisibility( View.GONE );
             iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_blue );
@@ -208,8 +233,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         /// הוספה עצמית של קלוריות - כשמוקלד מספר
         if (isNumeric( query )){
-            mainSearchView.setBackgroundResource( R.drawable.sty_3_purple );
+            catalogIcon.setVisibility(View.GONE);
             selfAddIcon.setVisibility(View.VISIBLE);
+
             selfSearchIcon.setVisibility( View.GONE );
             catalogLayout.setVisibility(View.GONE);
             iv_backToMain.setImageResource( R.drawable.ic_baseline_arrow_circle_right_purple );
@@ -217,7 +243,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
         ///  הצעה לחיפוש עצמי והוספת מוצר - כשרשימה ריק
         else if (filteredProducts.isEmpty()){  // אם הרשימה ריקה (אין מוצרים)- הצעה לחיפוש עצמי
-            mainSearchView.setBackgroundResource( R.drawable.sty_orang3);
+            catalogIcon.setVisibility(View.GONE);
             selfAddIcon.setVisibility(View.GONE);
             selfSearchIcon.setVisibility( View.VISIBLE );
 
@@ -230,7 +256,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
         ///  בכל הקלדה
         else {
-            mainSearchView.setBackgroundResource( R.drawable.search_background );
+            catalogIcon.setVisibility(View.VISIBLE);
             selfAddIcon.setVisibility(View.GONE);
             selfSearchIcon.setVisibility( View.GONE );
 
@@ -252,7 +278,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 else{
                     //פתח מסך הוספת מוצר
-                    openCustomProductByName( mainSearchView.getQuery().toString());
+                    openCustomProductByName( searchTextView.getText().toString());
                 }
             }
 
@@ -298,9 +324,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             return insets;
         });
     }
-/// כך ניתן לגרום לשורת חיפוש לרחף מעל מקלדת
-/// עובד כאשר הסטייל במניפסט הוא android:theme="@style/Base.Theme.Calories"
-/// כלומר: <style name="Base.Theme.Calories" parent="Theme.Material3.DayNight.NoActionBar"> </style>
+    /// כך ניתן לגרום לשורת חיפוש לרחף מעל מקלדת
+    /// עובד כאשר הסטייל במניפסט הוא android:theme="@style/Base.Theme.Calories"
+    /// כלומר: <style name="Base.Theme.Calories" parent="Theme.Material3.DayNight.NoActionBar"> </style>
     private void initManagersAndDialogs() {
         productStorageManager = new ProductStorageManager(this);
         consumedProductManager = new ConsumedProductManager(this);
@@ -312,7 +338,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         if (imm.isActive()) {
             // המקלדת פעילה - סוגרים ומחכים
-            mainSearchView.clearFocus();
+            searchTextView.clearFocus();
             hideKeyboardAndShowDialog(product);
         } else {
             productSelectionDialog.show(product,calendar , consumedProductManager);
@@ -343,12 +369,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
         }
 
+        if (view == catalogIcon){
+            openCatalog();
+        }
+
         if (view== selfAddIcon) {
             selfAddActions();
         }
 
         if(view== barcodeIcon){
-            openMain();
+            closeCatalog();
             scanCode();}
 
         if(view== nextDayBtn){
@@ -375,18 +405,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
 
-        if (view == mainSearchView){
-            if (mainSearchView != null) {
-                mainSearchView.setIconified(false);
-            }
-        }
-
         if (view== iv_goToSelfSearch){
-            openCustomProductByName( mainSearchView.getQuery().toString());
+            openCustomProductByName( searchTextView.getText().toString());
         }
 
         if (view== selfSearchIcon){
-            openCustomProductByName( mainSearchView.getQuery().toString());
+            openCustomProductByName( searchTextView.getText().toString());
         }
 
         if (view == iv_backToMain){
@@ -438,25 +462,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         growAndHalfFlip.start();
     }
     private void selfAddActions() {
-        String str_caloria= mainSearchView.getQuery().toString().trim();
+        String calorieText= searchTextView.getText().toString().trim();
         aProductItem = new Product(PRODUCT_STATE_SYSTEM,"הוספת עצמית",UNIT_CALORIES ,"0","");
         aProductItem.setCalorieText("100");
-        addConsumedProductToList( Integer.parseInt( str_caloria ) , Integer.parseInt( str_caloria ) );
+        addConsumedProductToList( Integer.parseInt( calorieText ) , Integer.parseInt( calorieText ) );
 
         updateTotalCalories();
         updateProgressView();
 
-        mainSearchView.setVisibility( View.VISIBLE );
-        mainSearchView.setQuery( "" , true );
-        mainSearchView.setIconified( true );
+        searchTextView.setVisibility( View.VISIBLE );
+        searchTextView.setText( "" );
+//        searchTextView.setIconified( true );
         hideKeyboard();
         iv_backToMain.setVisibility( View.GONE );
         if (!consumedProductManager.getConsumedProductsOfDay().isEmpty()) {
             consumedProductsRecyclerView.smoothScrollToPosition( consumedProductManager.getConsumedProductsOfDay().size() - 1 );
         }
-        mainSearchView.setBackgroundResource( R.drawable.search_background );
         selfAddIcon.setVisibility(View.GONE);
-        barcodeIcon.setVisibility( View.VISIBLE );
     }
 
     @Override
@@ -487,7 +509,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     if(!examplel.getBarcode().contains( "," )) {//אם יש ברקוד אחד
                         if (barcode.trim().matches( examplel.getBarcode().trim() )) {//אם תואם לחיפוש
                             temp = true;
-                            openFood();
+                            openCatalog();
                             searchInFoodList( examplel.getName() );
 
                         }
@@ -497,7 +519,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         for (String s : separated) {
                             if (barcode.trim().matches(s.trim())) {//אם תואם לחיפוש
                                 temp = true;
-                                openFood();
+                                openCatalog();
                                 searchInFoodList(examplel.getName());
 
                             }
@@ -510,7 +532,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             if (temp) { //נמצאה התאמה
                 openProductSelectionDialog(examplel);
                 if (filteredProducts.size() == 2) {
-                    openMain();
+                    closeCatalog();
                 }
             } else {//לא נמצא
                 //חפש באינטרנט
@@ -548,23 +570,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         notFoundLayout.setVisibility( View.GONE );
         catalogLayout.setVisibility(View.GONE);
 //        mainSearchView.setVisibility( View.VISIBLE );
-        mainSearchView.setQuery( "" , true );
-        mainSearchView.setIconified( true );
+        searchTextView.setText( "" );
+//        searchTextView.setIconified( true );
         hideKeyboard();
         iv_backToMain.setVisibility( View.GONE );
 
     }
 
     // פתיחת וסגירת מסכים
-    private void openMain(){
+    private void closeCatalog(){
         iv_backToMain.setVisibility(View.GONE);
         catalogLayout.setVisibility(View.GONE);
     }
-    private void openFood(){
-        mainSearchView.setBackgroundResource( R.drawable.search_background );
+    private void openCatalog(){
+        catalogIcon.setVisibility(View.VISIBLE);
         selfAddIcon.setVisibility(View.GONE);
         selfSearchIcon.setVisibility( View.GONE );
-        barcodeIcon.setVisibility( View.VISIBLE );
         iv_backToMain.setVisibility(View.VISIBLE);
         catalogLayout.setVisibility(View.VISIBLE);
         cancelEdit();
@@ -601,6 +622,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         consumedProductsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         barcodeIcon =findViewById( R.id.barcodeIcon);
         barcodeIcon.setOnClickListener( this );
+        catalogIcon=findViewById(R.id.catalogIcon);
+        catalogIcon.setOnClickListener(this);
         selfSearchIcon =findViewById( R.id.selfSearchIcon);
         selfSearchIcon.setOnClickListener( this );
         selfAddIcon =findViewById( R.id.selfAddIcon);
@@ -620,8 +643,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         iv_goToSelfSearch.setOnClickListener( this );
         caloriesViewText =findViewById( R.id.caloriesViewText);
         caloriesViewText.setOnClickListener( this );
-        mainSearchView = findViewById( R.id.mainSearchView);
-        mainSearchView.setOnClickListener( this );
+        searchTextView = findViewById( R.id.searchTextView);
 
         // נותן תחושת עומק לסיבוב
         caloriesLayout.setCameraDistance(8000 * getResources().getDisplayMetrics().density);
@@ -785,11 +807,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         collapsedCaloriesText.setText(getDisplayCaloriesString());
     }
     private void backToMain() {
-        mainSearchView.setVisibility( View.VISIBLE );
-        mainSearchView.setQuery( "",true );
-        mainSearchView.setIconified(true);
+        searchTextView.setVisibility( View.VISIBLE );
+        searchTextView.setText( "" );
+//        searchTextView.setIconified(true);
         hideKeyboard();
-        openMain();
+        closeCatalog();
     }
     //פעולות כלליות
     public void hideKeyboard(){
