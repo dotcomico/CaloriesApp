@@ -1,4 +1,4 @@
-package com.example.calories;
+package com.example.calories.data.managers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
