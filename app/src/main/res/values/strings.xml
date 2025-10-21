@@ -69,4 +69,5 @@
     <string name="tue_18">Tue 18</string>
     <string name="thu_20">Thu 20</string>
     <string name="product_not_found_message">Oops! \n ~This product does not exist in the system~ \n ↓ Continue with self search ↓</string>
+    <string name="catalog_icon">catalog icon</string>
 </resources>
