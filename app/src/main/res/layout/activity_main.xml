@@ -14,18 +14,6 @@
         <include layout="@layout/main_screen" />
     </RelativeLayout>
 
-    <!-- כפתור חזרה מתפריט חיפוש -->
-    <ImageView
-        android:id="@+id/iv_backToMain"
-        android:visibility="gone"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_above="@+id/bottomActionMenu"
-        android:layout_marginHorizontal="10dp"
-        android:contentDescription="@string/back_to_main_activity"
-        android:src="@drawable/ic_baseline_arrow_circle_right_blue" />
-
     <!-- תפריט חיפוש תחתון + סריקת ברקוד -->
     <include layout="@layout/bottom_search_menu" />
 
