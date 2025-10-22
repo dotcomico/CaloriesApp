@@ -365,38 +365,60 @@
             app:stackFromEnd="false"
             android:transcriptMode="alwaysScroll" />
 
-        <!-- הודעה: מוצר לא קיים במערכת -->
-        <RelativeLayout
+        <!-- Modern Empty State Screen -->
+        <LinearLayout
             android:id="@+id/notFoundLayout"
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/primary"
+            android:padding="32dp"
+            android:visibility="gone">
 
+            <!-- Main title -->
             <TextView
                 android:id="@+id/emptyListError"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:text="@string/product_not_found_message"
-                android:textColor="@color/primaryText"
-                android:textSize="25sp"
-                android:layout_marginBottom="16dp"/>
+                android:text="@string/product_not_found_title"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/secondaryText"
+                android:layout_marginBottom="8dp"
+                android:gravity="center" />
 
-            <ImageView
+            <!-- Subtitle -->
+            <TextView
+                android:id="@+id/emptyListSubText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/product_not_found_subtext"
+                android:textSize="15sp"
+                android:textColor="@color/tertiaryText"
+                android:gravity="center"
+                android:layout_marginBottom="28dp" />
+
+            <!-- Action button -->
+            <Button
                 android:id="@+id/selfSearchErrorBtn"
-                android:layout_width="85dp"
-                android:layout_height="85dp"
-                android:layout_below="@+id/emptyListError"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/circle_background_button"
-                android:backgroundTint="@color/selfSearch"
-                android:contentDescription="@string/self_search"
-                android:padding="8dp"
-                android:src="@drawable/ic_baseline_search"
-                app:tint="@color/white" />
-        </RelativeLayout>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/self_search"
+                android:textSize="16sp"
+                android:textAllCaps="false"
+                android:textColor="@color/primaryText"
+                android:paddingHorizontal="36dp"
+                android:paddingVertical="12dp"
+                android:backgroundTint="@color/button_tint"
+                android:drawableStart="@drawable/ic_baseline_search"
+                android:drawablePadding="8dp"
+                android:drawableTint="@color/selfSearch"
+                android:elevation="4dp" />
+
+        </LinearLayout>
+
+
     </RelativeLayout>
 
 </RelativeLayout>
