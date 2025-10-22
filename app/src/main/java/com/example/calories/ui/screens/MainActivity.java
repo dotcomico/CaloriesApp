@@ -163,12 +163,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
 
             @Override
-            public void onSelfAddClick(String calorieValue) {
-                selfAddActions();
+            public void onFastAddClick(String calorieValue) {
+                fastAddActions();
             }
 
             @Override
             public void onSelfSearchClick(String productName) {
+                closeCatalog();
                 openCustomProductByName(productName);
             }
 
@@ -181,7 +182,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onSearchSubmit(String query) {
                 if (isNumeric(query)) {
-                    selfAddActions();
+                    fastAddActions();
                 } else if (filteredProducts.isEmpty()) {
                     openCustomProductByName(query);
                 }
@@ -248,6 +249,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 else{
                     //פתח מסך הוספת מוצר
+                    closeCatalog();
                     openCustomProductByName( searchMenuManager.getSearchQuery());
                 }
             }
@@ -417,9 +419,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         growAndHalfFlip.start();
     }
-    private void selfAddActions() {
+    private void fastAddActions() {
         String calorieText= searchMenuManager.getSearchQuery();
-        aProductItem = new Product(PRODUCT_STATE_SYSTEM,"הוספת עצמית",UNIT_CALORIES ,"0","");
+        aProductItem = new Product(PRODUCT_STATE_SYSTEM,getString(R.string.fast_add),UNIT_CALORIES ,"0","");
         aProductItem.setCalorieText("100");
         addConsumedProductToList( Integer.parseInt( calorieText ) , Integer.parseInt( calorieText ) );
 
