@@ -86,7 +86,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     ConsumedProductManager consumedProductManager;
     private ImageView lastDayBtn, nextDayBtn;
 
-    private ImageView  iv_goToSelfSearch,
+    private ImageView selfSearchErrorBtn,
             settingsIcon;
     private RelativeLayout notFoundLayout;
     private TextView currentDateText;
@@ -293,6 +293,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             v.setPadding(0, systemBars.top, 0, 0);
             return insets;
         });
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.catalogLayout), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(0, systemBars.top, 0, 0);
+            return insets;
+        });
     }
     /// כך ניתן לגרום לשורת חיפוש לרחף מעל מקלדת
     /// עובד כאשר הסטייל במניפסט הוא android:theme="@style/Base.Theme.Calories"
@@ -365,7 +370,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
 
-        if (view== iv_goToSelfSearch){
+        if (view== selfSearchErrorBtn){
             openCustomProductByName( searchMenuManager.getSearchQuery());
         }
     }
@@ -569,8 +574,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         lastDayBtn.setOnClickListener( this );
         productsRecyclerView = findViewById(R.id.productsRecyclerView);
         notFoundLayout =findViewById(R.id.notFoundLayout);
-        iv_goToSelfSearch =findViewById( R.id.iv_goToSelfSearch);
-        iv_goToSelfSearch.setOnClickListener( this );
+        selfSearchErrorBtn =findViewById( R.id.selfSearchErrorBtn);
+        selfSearchErrorBtn.setOnClickListener( this );
         caloriesViewText =findViewById( R.id.caloriesViewText);
         caloriesViewText.setOnClickListener( this );
 
