@@ -352,7 +352,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/primary"
-        android:visibility="gone"
+        android:visibility="visible"
         >
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/productsRecyclerView"
@@ -365,7 +365,7 @@
             app:stackFromEnd="false"
             android:transcriptMode="alwaysScroll" />
 
-        <!-- Modern Empty State Screen -->
+        <!-- Modern Empty State Screen - Enhanced -->
         <LinearLayout
             android:id="@+id/notFoundLayout"
             android:layout_width="match_parent"
@@ -374,18 +374,35 @@
             android:gravity="center"
             android:background="@color/primary"
             android:padding="32dp"
-            android:visibility="gone">
+            android:visibility="visible">
+
+            <!-- Illustration/Icon -->
+            <ImageView
+                android:id="@+id/emptyStateIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="90dp"
+                android:minHeight="90dp"
+                android:maxWidth="140dp"
+                android:maxHeight="140dp"
+                android:src="@drawable/round_no_food"
+                android:alpha="0.6"
+                android:layout_marginBottom="32dp"
+                android:contentDescription="@string/empty_state_icon_desc"
+                app:tint="@color/tertiaryText" />
 
             <!-- Main title -->
             <TextView
                 android:id="@+id/emptyListError"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxWidth="340dp"
                 android:text="@string/product_not_found_title"
-                android:textSize="22sp"
+                android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/secondaryText"
-                android:layout_marginBottom="8dp"
+                android:letterSpacing="0.01"
+                android:layout_marginBottom="12dp"
                 android:gravity="center" />
 
             <!-- Subtitle -->
@@ -393,28 +410,35 @@
                 android:id="@+id/emptyListSubText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxWidth="320dp"
                 android:text="@string/product_not_found_subtext"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textColor="@color/tertiaryText"
+                android:alpha="0.85"
+                android:lineSpacingMultiplier="1.3"
                 android:gravity="center"
-                android:layout_marginBottom="28dp" />
+                android:layout_marginBottom="36dp" />
 
-            <!-- Action button -->
-            <Button
+            <!-- Action button with Material Design -->
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/selfSearchErrorBtn"
+                style="@style/Widget.Material3.Button.ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/self_search"
                 android:textSize="16sp"
                 android:textAllCaps="false"
                 android:textColor="@color/primaryText"
-                android:paddingHorizontal="36dp"
-                android:paddingVertical="12dp"
-                android:backgroundTint="@color/button_tint"
-                android:drawableStart="@drawable/ic_baseline_search"
-                android:drawablePadding="8dp"
-                android:drawableTint="@color/selfSearch"
-                android:elevation="4dp" />
+                android:backgroundTint="@color/secondary"
+                android:paddingHorizontal="40dp"
+                android:paddingVertical="14dp"
+                app:icon="@drawable/ic_baseline_search"
+                app:iconTint="@color/selfSearch"
+                app:iconPadding="10dp"
+                app:iconGravity="start"
+                app:cornerRadius="12dp"
+                app:elevation="6dp"
+                app:rippleColor="@color/selfSearch" />
 
         </LinearLayout>
 
