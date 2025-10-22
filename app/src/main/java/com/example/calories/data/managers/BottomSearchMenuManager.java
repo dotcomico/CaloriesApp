@@ -85,6 +85,10 @@ public class BottomSearchMenuManager {
         });
 
         // Icon clicks
+        searchIcon.setOnClickListener(v -> {
+            requestSearchFocus();
+        });
+
         backIcon.setOnClickListener(v -> {
             if (onActionClickListener != null) {
                 onActionClickListener.onBackClick();
@@ -96,6 +100,7 @@ public class BottomSearchMenuManager {
             if (onActionClickListener != null) {
                 onActionClickListener.onCatalogClick();
             }
+            showCatalogMode();
         });
 
         selfAddIcon.setOnClickListener(v -> {
