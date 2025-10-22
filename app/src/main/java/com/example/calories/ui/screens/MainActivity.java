@@ -28,6 +28,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -85,10 +86,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private ProductStorageManager productStorageManager;
     ConsumedProductManager consumedProductManager;
     private ImageView lastDayBtn, nextDayBtn;
-
-    private ImageView selfSearchErrorBtn,
-            settingsIcon;
-    private RelativeLayout notFoundLayout;
+    private Button selfSearchErrorBtn;
+    private ImageView settingsIcon;
+    private LinearLayout notFoundLayout;
     private TextView currentDateText;
 
     private TextView caloriesViewText;
