@@ -101,11 +101,11 @@
                 app:tint="@color/tertiary" />
 
             <ImageView
-                android:id="@+id/selfAddIcon"
+                android:id="@+id/fastAddIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:contentDescription="@string/add_self_calorie_value"
+                android:contentDescription="@string/add_fast_calorie_value"
                 android:padding="9dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/baseline_add_white"
