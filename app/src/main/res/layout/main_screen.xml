@@ -347,51 +347,56 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <!-- רשימת מוצרים כללית (חיפוש) -->
-<RelativeLayout
-    android:id="@+id/catalogLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/primary"
-    android:visibility="gone"
-    >
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/productsRecyclerView"
-        android:visibility="visible"
+    <RelativeLayout
+        android:id="@+id/catalogLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:scrollbars="vertical"
-        android:scrollbarSize="5dp"
-        app:stackFromEnd="false"
-        android:transcriptMode="alwaysScroll" />
+        android:background="@color/primary"
+        android:visibility="gone"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/productsRecyclerView"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:scrollbars="vertical"
+            android:scrollbarSize="5dp"
+            app:stackFromEnd="false"
+            android:transcriptMode="alwaysScroll" />
 
-    <!-- הודעה: מוצר לא קיים במערכת -->
+        <!-- הודעה: מוצר לא קיים במערכת -->
         <RelativeLayout
             android:id="@+id/notFoundLayout"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <TextView
-            android:layout_centerInParent="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="25sp"
-            android:textColor="@color/primaryText"
-            android:text="@string/product_not_found_message" />
+            <TextView
+                android:id="@+id/emptyListError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/product_not_found_message"
+                android:textColor="@color/primaryText"
+                android:textSize="25sp"
+                android:layout_marginBottom="16dp"/>
 
-        <ImageView
-            android:id="@+id/iv_goToSelfSearch"
-            android:layout_width="85dp"
-            android:layout_height="85dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="10dp"
-            android:contentDescription=""
-            android:src="@drawable/search_oreng_icon" />
+            <ImageView
+                android:id="@+id/selfSearchErrorBtn"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:layout_below="@+id/emptyListError"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/circle_background_button"
+                android:backgroundTint="@color/selfSearch"
+                android:contentDescription="@string/self_search"
+                android:padding="8dp"
+                android:src="@drawable/ic_baseline_search"
+                app:tint="@color/white" />
+        </RelativeLayout>
     </RelativeLayout>
-</RelativeLayout>
+
 </RelativeLayout>
