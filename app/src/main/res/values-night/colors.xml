@@ -14,9 +14,10 @@
     <color name="searchBarBorder">#262626</color>
 
     <color name="selfSearch">#E68E5C1F</color>
+    <color name="subSelfSearch">#E6593A14</color>
     <color name="delete">#350000</color>
 
-    <color name="favorite">#BC8D04</color>
+    <color name="star">#BC8D04</color>
 
     <color name="error">#FF0000</color>
     <color name="success">#00FF00</color>
