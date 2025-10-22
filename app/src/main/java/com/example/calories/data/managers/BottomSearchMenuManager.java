@@ -20,7 +20,7 @@ public class BottomSearchMenuManager {
     private ScrollView bottomActionMenu;
     private EditText searchTextView;
     private ImageView searchIcon, backIcon, catalogIcon;
-    private ImageView selfAddIcon, selfSearchIcon, barcodeIcon;
+    private ImageView fastAddIcon, selfSearchIcon, barcodeIcon;
     private LinearLayout buttonsContainer;
     private View separator;
 
@@ -47,7 +47,7 @@ public class BottomSearchMenuManager {
         searchIcon = activity.findViewById(R.id.searchIcon);
         backIcon = activity.findViewById(R.id.backIcon);
         catalogIcon = activity.findViewById(R.id.catalogIcon);
-        selfAddIcon = activity.findViewById(R.id.selfAddIcon);
+        fastAddIcon = activity.findViewById(R.id.fastAddIcon);
         selfSearchIcon = activity.findViewById(R.id.selfSearchIcon);
         barcodeIcon = activity.findViewById(R.id.barcodeIcon);
         buttonsContainer = activity.findViewById(R.id.buttonsContainer);
@@ -103,9 +103,9 @@ public class BottomSearchMenuManager {
             showCatalogMode();
         });
 
-        selfAddIcon.setOnClickListener(v -> {
+        fastAddIcon.setOnClickListener(v -> {
             if (onActionClickListener != null) {
-                onActionClickListener.onSelfAddClick(searchTextView.getText().toString());
+                onActionClickListener.onFastAddClick(searchTextView.getText().toString());
             }
         });
 
@@ -128,7 +128,7 @@ public class BottomSearchMenuManager {
         searchIcon.setVisibility(View.VISIBLE);
         backIcon.setVisibility(View.GONE);
         catalogIcon.setVisibility(View.VISIBLE);
-        selfAddIcon.setVisibility(View.GONE);
+        fastAddIcon.setVisibility(View.GONE);
         selfSearchIcon.setVisibility(View.GONE);
     }
 
@@ -162,19 +162,19 @@ public class BottomSearchMenuManager {
 
     public void showNumericMode() {
         catalogIcon.setVisibility(View.GONE);
-        selfAddIcon.setVisibility(View.VISIBLE);
+        fastAddIcon.setVisibility(View.VISIBLE);
         selfSearchIcon.setVisibility(View.GONE);
     }
 
     public void showSelfSearchMode() {
         catalogIcon.setVisibility(View.GONE);
-        selfAddIcon.setVisibility(View.GONE);
+        fastAddIcon.setVisibility(View.GONE);
         selfSearchIcon.setVisibility(View.VISIBLE);
     }
 
     public void showNormalMode() {
         catalogIcon.setVisibility(View.VISIBLE);
-        selfAddIcon.setVisibility(View.GONE);
+        fastAddIcon.setVisibility(View.GONE);
         selfSearchIcon.setVisibility(View.GONE);
     }
 
@@ -221,7 +221,7 @@ public class BottomSearchMenuManager {
     public interface OnActionClickListener {
         void onBackClick();
         void onCatalogClick();
-        void onSelfAddClick(String calorieValue);
+        void onFastAddClick(String calorieValue);
         void onSelfSearchClick(String productName);
         void onBarcodeClick();
         void onSearchSubmit(String query);
