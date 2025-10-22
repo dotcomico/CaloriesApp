@@ -71,4 +71,5 @@
     <string name="catalog_icon">catalog icon</string>
     <string name="product_not_found_title">This product does not exist in the system yet</string>
     <string name="product_not_found_subtext">Continue with self search</string>
+    <string name="empty_state_icon_desc" />
 </resources>
