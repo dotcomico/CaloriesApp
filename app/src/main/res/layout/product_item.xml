@@ -32,7 +32,7 @@
         android:contentDescription="@string/measure"
         android:scaleType="fitCenter"
         android:layout_marginEnd="4dp"
-        app:tint="@color/favorite" />
+        app:tint="@color/star" />
 
     <ImageView
         android:id="@+id/bookmarkIcon"
