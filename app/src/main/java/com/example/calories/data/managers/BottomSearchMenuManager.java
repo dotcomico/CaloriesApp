@@ -100,6 +100,7 @@ public class BottomSearchMenuManager {
             if (onActionClickListener != null) {
                 onActionClickListener.onCatalogClick();
             }
+            resetToInitialState();
             showCatalogMode();
         });
 
