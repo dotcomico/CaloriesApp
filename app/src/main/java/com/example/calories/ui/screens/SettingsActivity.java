@@ -57,11 +57,7 @@ public class SettingsActivity extends BaseActivity {
         });
 
 
-        // טעינת הגדרות לפני setContentView
         prefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-
-
-        setContentView(R.layout.activity_settings);
 
         initializeViews();
         setupListeners();
@@ -127,11 +123,9 @@ public class SettingsActivity extends BaseActivity {
         builder.setSingleChoiceItems(languages, selectedIndex, (dialog, which) -> {
             String selectedLanguage = languageCodes[which];
             saveLanguage(selectedLanguage);
-            setLocale(selectedLanguage, true);
-            updateLanguageText(selectedLanguage);
             dialog.dismiss();
 
-            // איפוס האקטיביטי כדי להחיל את השפה
+            // Recreate the activity to apply the new language
             recreate();
         });
 
@@ -139,20 +133,6 @@ public class SettingsActivity extends BaseActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-
-    private void setLocale(String languageCode, boolean restart) {
-        Locale locale = new Locale(languageCode);
-        Locale.setDefault(locale);
-
-        Configuration config = new Configuration();
-        config.setLocale(locale);
-
-        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-
-        if (restart) {
-            recreate();
-        }
     }
 
     private void updateLanguageText(String languageCode) {
