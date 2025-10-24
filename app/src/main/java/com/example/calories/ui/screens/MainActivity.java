@@ -209,7 +209,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
     }
-
     private void setupListeners() {
         consumedProductEditingDialog.setOnEditCompleteListener(() -> {
             refreshConsumedProductsList();
@@ -240,7 +239,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         });
 
     }
-
     private void setupRecyclerListeners() {
         productsRecyclerView.addOnItemTouchListener( new RecyclerItemClickListener(MainActivity.this, productsRecyclerView
                 ,new RecyclerItemClickListener.OnItemClickListener() {
@@ -281,7 +279,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         } ) );
 
     }
-
     private void setupSystemUI() {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
