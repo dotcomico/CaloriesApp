@@ -70,7 +70,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     //--------------- ProductCatalogView ---------------
     ProductSelectionDialog productSelectionDialog;
-    private ArrayList<Product> systemProductList = new ArrayList<>();//רשימת מוצרים (מערכת)
+    private ArrayList<Product> catalogProductsList = new ArrayList<>();//רשימת מוצרים (מערכת)
     private ArrayList<Product> customProducts = new ArrayList<>();//רשימת מוצרים שיצר המשתמש
     private ArrayList<Product> filteredProducts = new ArrayList<>();//רשימת מוצרים מסוננת (לפי חיפוש)
     private RecyclerView productsRecyclerView;
@@ -160,6 +160,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onCatalogClick() {
                 openCatalog();
+                resetCatalogView();
+                resetCatalogInfo();
             }
 
             @Override
@@ -170,7 +172,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onSelfSearchClick(String productName) {
                 closeCatalog();
-                openCustomProductByName(productName);
+                openProductCreation(EXTRA_NAME,productName);
             }
 
             @Override
@@ -184,7 +186,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 if (isNumeric(query)) {
                     fastAddActions();
                 } else if (filteredProducts.isEmpty()) {
-                    openCustomProductByName(query);
+                    openProductCreation(EXTRA_NAME,query);
                 }
             }
         });
@@ -248,9 +250,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     openProductSelectionDialog(aProductItem);
                 }
                 else{
-                    //פתח מסך הוספת מוצר
                     closeCatalog();
-                    openCustomProductByName( searchMenuManager.getSearchQuery());
+                    openProductCreation(EXTRA_NAME, searchMenuManager.getSearchQuery());
                 }
             }
 
@@ -349,33 +350,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
 
         if(view== nextDayBtn){
-            //יקרה רק אם כל שאר המסכים סגורים
-            if (notFoundLayout.getVisibility()==View.GONE){
-                calendar.add(Calendar.DAY_OF_MONTH, 1); //Adds a day
-                currentDateText.setText( new SimpleDateFormat(DATE_PATTERN).format(calendar.getTime()));
-                collapsedDateText.setText(currentDateText.getText());
-                refreshConsumedProductsList();
-                updateTotalCalories();
-                updateProgressView();
-            }
+            moveDay(false);
         }
 
         if(view== lastDayBtn){
-            //יקרה רק אם כל שאר המסכים סגורים
-            if (notFoundLayout.getVisibility()==View.GONE) {
-                calendar.add( Calendar.DAY_OF_MONTH , -1 ); //Goes to previous day
-                currentDateText.setText( new SimpleDateFormat( DATE_PATTERN ).format( calendar.getTime() ) );
-                collapsedDateText.setText(currentDateText.getText());
-                refreshConsumedProductsList();
-                updateTotalCalories();
-                updateProgressView();
-            }
+                moveDay(true);
         }
 
         if (view== selfSearchErrorBtn){
-            openCustomProductByName( searchMenuManager.getSearchQuery());
+            openProductCreation(EXTRA_NAME,( searchMenuManager.getSearchQuery()));
         }
     }
+
+    @SuppressLint("SimpleDateFormat")
+    private void moveDay(boolean isBefore) {
+        int progress;
+        if (isBefore){progress = -1;}else {progress= 1;}
+        calendar.add(Calendar.DAY_OF_MONTH, progress); //Adds a day
+        currentDateText.setText( new SimpleDateFormat( DATE_PATTERN ).format( calendar.getTime() ) );
+        collapsedDateText.setText(currentDateText.getText());
+        refreshConsumedProductsList();
+        updateTotalCalories();
+        updateProgressView();
+    }
+
     private void flipCaloriesView() {
         isAnimating = true;
 
@@ -456,13 +454,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             Product examplel = new Product();
             boolean temp = false;
             int j = 0;
-            while (!temp && j < systemProductList.size()) {
-                examplel = systemProductList.get( j );
+            while (!temp && j < catalogProductsList.size()) {
+                examplel = catalogProductsList.get( j );
                 //אם מוצא התאמה ברקוד
                 if (examplel.getBarcode() != null && !examplel.getBarcode().isEmpty() && !examplel.getBarcode().equals( "null" )) {//אם לא ריק
                     if(!examplel.getBarcode().contains( "," )) {//אם יש ברקוד אחד
                         if (barcode.trim().matches( examplel.getBarcode().trim() )) {//אם תואם לחיפוש
                             temp = true;
+                            resetCatalogView();
                             openCatalog();
                             searchInFoodList( examplel.getName() );
 
@@ -473,6 +472,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         for (String s : separated) {
                             if (barcode.trim().matches(s.trim())) {//אם תואם לחיפוש
                                 temp = true;
+                                resetCatalogView();
                                 openCatalog();
                                 searchInFoodList(examplel.getName());
 
@@ -490,7 +490,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 }
             } else {//לא נמצא
                 //חפש באינטרנט
-                openCustomProductByBarcode(barcode.trim());
+                openProductCreation(EXTRA_BARCODE, barcode.trim());
             }
     }
 
@@ -498,19 +498,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         //פעולת חיפוש ועדכון רשימת מזון
         filteredProducts = new ArrayList<>();
         //חפש לפי שייכים לי
-        for (int j = 0; j < systemProductList.size(); j++){
-            Product example2 = systemProductList.get(j);
+        for (int j = 0; j < catalogProductsList.size(); j++){
+            Product example2 = catalogProductsList.get(j);
             if (example2.getName().toLowerCase().trim().contains( s.toLowerCase().trim() )&&example2.getItemState()==PRODUCT_STATE_CUSTOM ){
                 filteredProducts.add(example2);}
         }
         //חפש ברשימה כללית
-        for (int i = 0; i < systemProductList.size(); i++){    //הכנס את מי שמתחילים בטקסט שהוקלד
-            Product example = systemProductList.get(i);
+        for (int i = 0; i < catalogProductsList.size(); i++){    //הכנס את מי שמתחילים בטקסט שהוקלד
+            Product example = catalogProductsList.get(i);
             if(example.getName().toLowerCase().trim().startsWith( s.toLowerCase().trim() )&&example.getItemState()==PRODUCT_STATE_SYSTEM){
                 filteredProducts.add(example);}
         }
-        for (int i = 0; i < systemProductList.size(); i++){  //ורק אז הכנס את מי שנשאר ומכיל את הטקסט שהוקלד
-            Product example = systemProductList.get(i);
+        for (int i = 0; i < catalogProductsList.size(); i++){  //ורק אז הכנס את מי שנשאר ומכיל את הטקסט שהוקלד
+            Product example = catalogProductsList.get(i);
             if (example.getName().toLowerCase().trim().contains( s.toLowerCase().trim() )&&!example.getName().toLowerCase().trim().startsWith( s.toLowerCase().trim() ) && example.getItemState()==PRODUCT_STATE_SYSTEM){
                 filteredProducts.add(example);}
             //    sortByAB(  filteredExampleList );
@@ -534,22 +534,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         searchMenuManager.resetToInitialState();
     }
     private void openCatalog(){
-        catalogLayout.setVisibility(View.VISIBLE);
-        cancelEdit();
+        if (catalogLayout.getVisibility()!= View.VISIBLE) {
+            catalogLayout.setVisibility(View.VISIBLE);
+            cancelEdit();
+        }
     }
-    private void openCustomProductByBarcode(String barcode){
-        cancelEdit();
-            Intent i = new Intent(MainActivity.this, ProductCreationActivity.class);
-        i.putExtra(EXTRA_BARCODE, barcode );
-        startActivity( i );
+    public void resetCatalogView(){
+        notFoundLayout.setVisibility(View.GONE);
+        productsRecyclerView.setVisibility(View.VISIBLE);
     }
-    private void openCustomProductByName( String name){
-        cancelEdit();
-        Intent i = new Intent(MainActivity.this, ProductCreationActivity.class);
-        i.putExtra(EXTRA_NAME, name );
-        startActivity( i );
+    public void  resetCatalogInfo(){
+        filteredProducts = catalogProductsList;
+        productsRecyclerView.setAdapter(new ProductItemAdapter(filteredProducts));
     }
 
+    private void openProductCreation(String key, String value) {
+        /// EXTRA_NAME / EXTRA_BARCODE
+        cancelEdit();
+        Intent i = new Intent(MainActivity.this, ProductCreationActivity.class);
+        i.putExtra(key, value);
+        startActivity(i);
+    }
     private void initViews() {
         customListIcon =findViewById( R.id.customListIcon);
         customListIcon.setOnClickListener( this );
@@ -703,15 +708,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         addCustomProductListToProductCatalog();
     }
     private void updateSystemProductList()   {
-        systemProductList = new ArrayList<>();
-        systemProductList =getSystemProductsArr();
+        catalogProductsList = new ArrayList<>();
+        catalogProductsList =getSystemProductsArr();
         // המצב הראשוני של רשימת החיפוש כרשימת המוצרים (ברירת מחדל)
-        filteredProducts = systemProductList;
+        filteredProducts = catalogProductsList;
     }
     private void refreshProductCatalog(){
         //עדכון הרשימה הפיזית במסך כרשימת המוצרים
         productsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        productsRecyclerView.setAdapter( new ProductItemAdapter(systemProductList));
+        productsRecyclerView.setAdapter( new ProductItemAdapter(catalogProductsList));
     }
     private void loadCustomProductListData() {
         customProducts = productStorageManager.load();
@@ -721,10 +726,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             customProducts = new ArrayList<>();
         }else {
             //הוספת איבי רשימה שלי לרשימה ראשית
-            systemProductList.addAll(customProducts);
-            productsRecyclerView.setAdapter(new ProductItemAdapter(systemProductList));
+            catalogProductsList.addAll(customProducts);
+            productsRecyclerView.setAdapter(new ProductItemAdapter(catalogProductsList));
             // המצב הראשוני של רשימת החיפוש כרשימת המוצרים (ברירת מחדל)
-            filteredProducts = systemProductList;
+            filteredProducts = catalogProductsList;
         }
     }
     private void cancelEdit() {
