@@ -2,15 +2,12 @@ package com.example.calories.ui.screens;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
@@ -19,9 +16,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.calories.BaseActivity;
 import com.example.calories.R;
-
-import java.util.Locale;
-import java.util.Objects;
 
 import static com.example.calories.utils.AppConstants.*;
 
