@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
@@ -12,7 +13,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/card_orang_background">
+        android:background="@drawable/dialog_background">
 
         <LinearLayout
             android:id="@+id/ly_productCreationForm"
@@ -24,16 +25,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="מוצר חדש"
-                android:textColor="#FFFFFF"
+                android:text="@string/new_product"
+                android:textColor="@color/primaryText"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                android:layout_gravity="center"
-                />
+                android:layout_gravity="center" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <EditText
                     android:id="@+id/newProductNameEditText"
                     android:layout_weight="1"
@@ -41,36 +43,38 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginHorizontal="3dp"
+                    android:autofillHints=""
                     android:ems="10"
-                    android:gravity="right"
-                    android:textColorHint="#CCCCCC"
-                    android:textColor="#000"
+                    android:textColorHint="@color/tertiaryText"
+                    android:textColor="@color/primaryText"
                     android:maxLines="1"
-                    android:hint="מוצר"
+                    android:hint="@string/product"
                     android:imeOptions="actionNext"
                     android:inputType="textShortMessage"
-                    android:background="@drawable/edit_text_background"
-                    />
+                    android:background="@drawable/edit_text_background" />
+
                 <ImageView
                     android:id="@+id/iv_barcodeScan"
                     android:layout_weight="5"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:contentDescription="@string/scan_barcode"
                     android:src="@drawable/ic_baseline_qr_code"
-                    />
+                    app:tint="@color/primaryText" />
             </LinearLayout>
+
             <EditText
                 android:id="@+id/newProductCaloriesEditText"
-                android:hint="קלוריות"  android:drawableRight="@drawable/ic_baseline_local_fire_department"
+                android:autofillHints=""
+                android:hint="@string/calories"
                 android:drawableEnd="@drawable/ic_baseline_local_fire_department"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:gravity="right"
-                android:textColorHint="#CCCCCC"
+                android:textColorHint="@color/tertiaryText"
                 android:layout_marginHorizontal="3dp"
-                android:textColor="#000"
+                android:textColor="@color/primaryText"
                 android:ems="10"
                 android:maxLines="1"
                 android:inputType="numberDecimal"
@@ -98,9 +102,9 @@
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#FFFFFF"
-                    android:text="הוסף מוצר"
-                    android:textColor="@color/black"
+                    android:background="@color/selfSearch"
+                    android:text="@string/add_product"
+                    android:textColor="@color/primaryText"
                     />
                 <ImageView
                     android:id="@+id/saveAndStay"
@@ -108,9 +112,11 @@
                     android:layout_marginHorizontal="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:contentDescription="@string/add_product"
                     android:src="@drawable/ic_baseline_add"
                     android:background="@drawable/sty_w_b"
-                    />
+                    android:backgroundTint="@color/primaryText"
+                    app:tint="@color/primaryText" />
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
@@ -120,21 +126,21 @@
             <Button
                 android:visibility="gone"
                 android:id="@+id/webSearchSuggestion"
-                android:text="הצעה לחיפוש"
-                android:textColor="#FFFFFF"
+                android:text="@string/search_suggestion"
+                android:textColor="@color/primaryText"
                 android:textSize="16sp"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_gravity="center"
-                android:background="@drawable/sty_blue_serch"
-                android:drawableRight="@drawable/ic_baseline_search"
+                android:background="@drawable/sty_blue_search"
+                android:drawableEnd="@drawable/ic_baseline_search"
                 />
             <android.widget.SearchView
                 android:id="@+id/selfSearchSearchView"
                 android:focusable="false"
                 android:layout_height="50dp"
-                android:queryHint="חיפוש נוסף"
-                android:background="#E6A21C"
+                android:queryHint="@string/search_in_web"
+                android:background="@color/dialogBackground"
                 android:layout_width="match_parent"
                 android:contextClickable="true"
                 />
