@@ -72,4 +72,7 @@
     <string name="product_not_found_subtext" >המשך בחיפוש עצמי</string>
     <string name="empty_state_icon_desc" />
     <string name="fast_add">הוספה מהירה</string>
+    <string name="new_product">מוצר חדש</string>
+    <string name="search_suggestion">הצעה לחיפוש</string>
+    <string name="search_in_web">חיפוש באתר</string>
 </resources>
