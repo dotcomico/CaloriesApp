@@ -73,4 +73,7 @@
     <string name="product_not_found_subtext">Continue with self search</string>
     <string name="empty_state_icon_desc" />
     <string name="fast_add">Fast add</string>
+    <string name="new_product">New Product</string>
+    <string name="search_suggestion">Search Suggestion</string>
+    <string name="search_in_web">Search in Web..</string>
 </resources>
