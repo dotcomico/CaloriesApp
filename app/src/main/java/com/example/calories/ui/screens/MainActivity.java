@@ -238,6 +238,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             openProductSelectionDialog(newProduct);
         });
 
+        SettingsActivity.setSettingsChangeListener(new SettingsActivity.SettingsChangeListener() {
+            @Override
+            public void onThemeChange() {
+                recreate();
+            }
+
+            @Override
+            public void onLanguageChange() {
+                recreate();
+            }
+        });
+
     }
     private void setupRecyclerListeners() {
         productsRecyclerView.addOnItemTouchListener( new RecyclerItemClickListener(MainActivity.this, productsRecyclerView
