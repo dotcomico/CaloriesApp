@@ -29,6 +29,8 @@ public class SettingsActivity extends BaseActivity {
 
     private SharedPreferences prefs;
 
+    private static SettingsChangeListener settingsChangeListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +59,14 @@ public class SettingsActivity extends BaseActivity {
         setupListeners();
         updateUI();
     }
+
+    public interface SettingsChangeListener {
+        void onThemeChange();
+        void onLanguageChange();
+    }
+    public static void setSettingsChangeListener(SettingsChangeListener listener) {
+        settingsChangeListener = listener;
+    }
     private void initializeViews() {
         darkModeSwitch = findViewById(R.id.darkModeSwitch);
         languageCard = findViewById(R.id.languageCard);
@@ -73,6 +83,9 @@ public class SettingsActivity extends BaseActivity {
         darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             saveDarkMode(isChecked);
             applyDarkMode(isChecked);
+            if (settingsChangeListener != null) {
+                settingsChangeListener.onThemeChange();
+            }
         });
 
         // בחירת שפה
@@ -121,6 +134,9 @@ public class SettingsActivity extends BaseActivity {
 
             // Recreate the activity to apply the new language
             recreate();
+            if (settingsChangeListener != null) {
+                settingsChangeListener.onLanguageChange();
+            }
         });
 
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
