@@ -15,7 +15,6 @@ public class BarcodeDialogHandler {
     private final Context context;
     private final Dialog dialog;
     private final EditText etBarcode;
-    private final ImageView ivScan;
 
     private final CaptureAct captureAct = new CaptureAct();
 
@@ -26,7 +25,7 @@ public class BarcodeDialogHandler {
         dialog.setCancelable(true);
 
         etBarcode = dialog.findViewById(R.id.et_d_enter_code);
-        ivScan = dialog.findViewById(R.id.iv_d_code_scan);
+        ImageView ivScan = dialog.findViewById(R.id.iv_d_code_scan);
 
 
         ivScan.setOnClickListener(v -> scanCode());
