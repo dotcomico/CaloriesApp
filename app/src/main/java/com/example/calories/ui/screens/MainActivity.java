@@ -655,7 +655,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
     private void updateInformation() {
         updateTotalCalories();
-        animateCaloriesText(consumedCalories , 2000);
+        animateCaloriesText(consumedCalories);
         updateProgressView();
         caloriesDescriptionText.setText(R.string.calories);
 
@@ -682,9 +682,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             calorieProgressView.setProgress(progress);
         }
     }
-    private void animateCaloriesText(int targetCalories , long time ) {
+    private void animateCaloriesText(int targetCalories ) {
         ValueAnimator animator = ValueAnimator.ofInt(0, targetCalories);
-        animator.setDuration(time);
+        animator.setDuration(2000);
 
         animator.addUpdateListener(animation -> {
             int animatedValue = (Integer) animation.getAnimatedValue();
