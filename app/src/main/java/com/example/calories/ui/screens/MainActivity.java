@@ -5,7 +5,6 @@ import static com.example.calories.utils.Utility.isNumeric;
 import static com.example.calories.utils.Utility.startNewActivity;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -74,7 +73,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private ArrayList<Product> customProducts = new ArrayList<>();//רשימת מוצרים שיצר המשתמש
     private ArrayList<Product> filteredProducts = new ArrayList<>();//רשימת מוצרים מסוננת (לפי חיפוש)
     private RecyclerView productsRecyclerView;
-    private Product aProductItem =null;
+    private Product aProductItem =null;    /// להפטר מהאיבר הזה הוא סתם מבלבל
 
     //--------------- CustomProductView  ---------------
 
@@ -223,12 +222,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             updateProgressView();
         });
 
-        customProductActivity.setScreenCloseListener(new customProductActivity.ScreenCloseListener() {
-            @Override
-            public void onScreenClosed() {
-                updateMain();
-            }
-        });
+        customProductActivity.setScreenCloseListener(this::updateMain);
 
 
         ProductStorageManager.setGlobalProductCreatedListener(newProduct -> {
@@ -430,7 +424,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         String calorieText= searchMenuManager.getSearchQuery();
         aProductItem = new Product(PRODUCT_STATE_SYSTEM,getString(R.string.fast_add),UNIT_CALORIES ,"0","");
         aProductItem.setCalorieText("100");
-        addConsumedProductToList( Integer.parseInt( calorieText ) , Integer.parseInt( calorieText ) );
+        addConsumedProductToList( Integer.parseInt( calorieText ));
 
         updateTotalCalories();
         updateProgressView();
@@ -605,25 +599,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         });
     }
     private void setupAppBarListener() {
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                int totalScrollRange = appBarLayout.getTotalScrollRange();
-                float collapseRatio = Math.abs((float) verticalOffset / totalScrollRange);
+        appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            int totalScrollRange = appBarLayout.getTotalScrollRange();
+            float collapseRatio = Math.abs((float) verticalOffset / totalScrollRange);
 
-                // התכווצות המד המרכזי
-                float scale = 1f - (collapseRatio * 0.7f); // יתכווץ ל-30% מהגודל
-                calorieProgressView.setScaleX(scale);
-                calorieProgressView.setScaleY(scale);
-                calorieProgressView.setAlpha(1f - collapseRatio);
+            // התכווצות המד המרכזי
+            float scale = 1f - (collapseRatio * 0.7f); // יתכווץ ל-30% מהגודל
+            calorieProgressView.setScaleX(scale);
+            calorieProgressView.setScaleY(scale);
+            calorieProgressView.setAlpha(1f - collapseRatio);
 
-                caloriesViewText.setScaleX(scale);
-                caloriesViewText.setScaleY(scale);
-                caloriesViewText.setAlpha(1f - collapseRatio);
+            caloriesViewText.setScaleX(scale);
+            caloriesViewText.setScaleY(scale);
+            caloriesViewText.setAlpha(1f - collapseRatio);
 
-                caloriesDescriptionText.setScaleX(scale);
-                caloriesDescriptionText.setScaleY(scale);
-                caloriesDescriptionText.setAlpha(1f - collapseRatio);
+            caloriesDescriptionText.setScaleX(scale);
+            caloriesDescriptionText.setScaleY(scale);
+            caloriesDescriptionText.setAlpha(1f - collapseRatio);
 
 //                // הזזת מספר הקלוריות והתאריך לצד
 //                float translationX = collapseRatio * -150; // הזזה שמאלה
@@ -633,24 +625,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 //
 //                currentDateText.setTranslationX(translationX);
 
-                // העלמת הכותרת והארוחות
-                TextView title = findViewById(R.id.titleText); // תוסיף id לכותרת
-                title.setAlpha(1f - collapseRatio);
-                meals = findViewById(R.id.meals);
-                // העלמת סיכום הארוחות
-                meals.setAlpha(1f - collapseRatio);
+            // העלמת הכותרת והארוחות
+            TextView title = findViewById(R.id.titleText); // תוסיף id לכותרת
+            title.setAlpha(1f - collapseRatio);
+            meals = findViewById(R.id.meals);
+            // העלמת סיכום הארוחות
+            meals.setAlpha(1f - collapseRatio);
 
 //                int remainingCalories = totalDailyCalories - consumedCalories;
 
-                // הצג את collapsedLayout רק כשכמעט לגמרי מכווץ
-                if (collapseRatio > 0.9f) {
-                    collapsedLayout.setVisibility(View.VISIBLE); // הוסף שורה זו!
-                    collapsedLayout.setAlpha((collapseRatio - 0.9f) / 0.1f);
-                } else {
-                    collapsedLayout.setAlpha(0f);
-                    if (collapseRatio < 0.85f) {
-                        collapsedLayout.setVisibility(View.INVISIBLE); // הסתר רק כשממש רחוק
-                    }
+            // הצג את collapsedLayout רק כשכמעט לגמרי מכווץ
+            if (collapseRatio > 0.9f) {
+                collapsedLayout.setVisibility(View.VISIBLE); // הוסף שורה זו!
+                collapsedLayout.setAlpha((collapseRatio - 0.9f) / 0.1f);
+            } else {
+                collapsedLayout.setAlpha(0f);
+                if (collapseRatio < 0.85f) {
+                    collapsedLayout.setVisibility(View.INVISIBLE); // הסתר רק כשממש רחוק
                 }
             }
         });
@@ -660,12 +651,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         updateCatalogListsAndView();
         refreshConsumedProductsList();
         // עיכוב קטן לפני הצגת האנימציות
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateInformation();
-            }
-        }, 300);
+        new Handler().postDelayed(this::updateInformation, 300);
     }
     private void updateInformation() {
         updateTotalCalories();
@@ -700,12 +686,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         ValueAnimator animator = ValueAnimator.ofInt(0, targetCalories);
         animator.setDuration(time);
 
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
-                int animatedValue = (Integer) animation.getAnimatedValue();
-                caloriesViewText.setText(String.valueOf(animatedValue));
-            }
+        animator.addUpdateListener(animation -> {
+            int animatedValue = (Integer) animation.getAnimatedValue();
+            caloriesViewText.setText(String.valueOf(animatedValue));
         });
 
         animator.start();
@@ -770,8 +753,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
         finish();
     }
-    private void addConsumedProductToList(double amount, int calories){
-        consumedProductManager.addItem( amount, aProductItem,calendar);
+    private void addConsumedProductToList(double amount){
+        consumedProductManager.addItem(amount, aProductItem,calendar);
         consumedProductsRecyclerView.setAdapter(new ConsumedItemAdapter(consumedProductManager.getConsumedProductsOfDay()));
     }
     private void loadConsumedProductData(Calendar calendarDayParameter) {
