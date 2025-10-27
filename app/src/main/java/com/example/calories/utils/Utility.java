@@ -48,7 +48,7 @@ public class Utility {
     }
     
     public static void startNewActivity(Context context, Class<?> activityClass) {
-        //            startNewActivity(MainActivity.this, MyProductActivity.class);
+        //            startNewActivity(MainActivity.this, customProductActivity.class);
         context.startActivity(new Intent(context, activityClass));
     }
 
