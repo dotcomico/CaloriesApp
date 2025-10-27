@@ -1,6 +1,5 @@
 package com.example.calories.ui.dialogs;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.widget.EditText;
@@ -9,8 +8,6 @@ import android.widget.Toast;
 
 import com.example.calories.ui.utils.CaptureAct;
 import com.example.calories.R;
-import com.example.calories.ui.screens.MyProductActivity;
-import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import static com.example.calories.utils.AppConstants.*;
 public class BarcodeDialogHandler {
