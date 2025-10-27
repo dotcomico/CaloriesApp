@@ -12,9 +12,8 @@
     android:id="@+id/main"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?attr/selectableItemBackground"
     android:descendantFocusability="blocksDescendants"
-    android:background="@drawable/list_item_background">
+    android:background="@drawable/list_item_background_with_ripple">
 
     <TextView
     android:id="@+id/productNameTextView"
