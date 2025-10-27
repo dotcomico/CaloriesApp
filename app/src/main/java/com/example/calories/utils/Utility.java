@@ -1,5 +1,6 @@
 package com.example.calories.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -14,6 +15,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import static com.example.calories.utils.AppConstants.*;
+
+import com.example.calories.R;
+
 public class Utility {
 
     public  static void makeToast(String string ,Context context){
@@ -26,21 +30,22 @@ public class Utility {
 
         //העתק טקסט
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService( Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("label",""+textString+"");
+        ClipData clip = ClipData.newPlainText("label", textString);
         clipboard.setPrimaryClip(clip);
     }
 
+    @SuppressLint("IntentReset")
     public static void emailSend(String detailsString , Context context) {
         //       emailSend( detailsString , this );
 
         SimpleDateFormat sdf = new SimpleDateFormat( DATE_PATTERN_FOR_SHOW , Locale.getDefault() );
-        String currentDateandTime = sdf.format( new Date() );
+        String currentDateAndTime = sdf.format( new Date() );
 
         Intent i = new Intent( Intent.ACTION_SEND );
         i.setData( Uri.parse( "email" ) );
         String[] s = {"dotanst100@gmail.com" ,};
         i.putExtra( Intent.EXTRA_EMAIL , s );
-        i.putExtra( Intent.EXTRA_SUBJECT , "-מוצרים שמורים-" + currentDateandTime.toString() );
+        i.putExtra( Intent.EXTRA_SUBJECT , R.string.custom_products + currentDateAndTime);
         i.putExtra( Intent.EXTRA_TEXT , detailsString );
         i.setType( "message/rfc822" );
         Intent chooser = Intent.createChooser( i , "Launch Email" );
