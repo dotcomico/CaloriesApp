@@ -31,10 +31,10 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
-import java.util.Objects;
+
 import static com.example.calories.utils.AppConstants.*;
 
-public class MyProductActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class customProductActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     private ArrayList<Product> customProducts = new ArrayList<>();
     private Product product;
     private ProductItemAdapter productItemAdapter;
@@ -55,7 +55,7 @@ public class MyProductActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
-        setContentView( R.layout.activity_my_prodact );
+        setContentView( R.layout.activity_custom_product);
 
 //       Objects.requireNonNull(getSupportActionBar()).show();
 
@@ -68,7 +68,7 @@ public class MyProductActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initListeners() {
-        fab.setOnClickListener(view -> startActivity(new Intent(MyProductActivity.this , ProductCreationActivity.class)));
+        fab.setOnClickListener(view -> startActivity(new Intent(customProductActivity.this , ProductCreationActivity.class)));
 
         ProductStorageManager.setGlobalProductCreatedListener(newProduct -> {
             // ברגע שנוצר מוצר חדש, תרענן את הרשימה
@@ -113,7 +113,7 @@ public class MyProductActivity extends BaseActivity implements View.OnClickListe
 
 
         recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(MyProductActivity.this, recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+                new RecyclerItemClickListener(customProductActivity.this, recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
                         if (deletionHelper.isInDeleteMode()) {
