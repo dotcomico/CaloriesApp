@@ -223,7 +223,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             updateProgressView();
         });
 
-        MyProductActivity.setScreenCloseListener(new MyProductActivity.ScreenCloseListener() {
+        customProductActivity.setScreenCloseListener(new customProductActivity.ScreenCloseListener() {
             @Override
             public void onScreenClosed() {
                 updateMain();
@@ -350,7 +350,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
 
         if(view== customListIcon){
-            startNewActivity(MainActivity.this, MyProductActivity.class);
+            startNewActivity(MainActivity.this, customProductActivity.class);
         }
 
         if (view == settingsIcon){
