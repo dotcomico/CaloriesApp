@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:ellipsize="marquee"
     android:textColor="@color/primaryText"
-    android:textSize="18dp"
+    android:textSize="18sp"
     android:background="@color/secondary"
     android:textAlignment="inherit"/>
 
