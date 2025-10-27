@@ -76,4 +76,5 @@
     <string name="new_product">New Product</string>
     <string name="search_suggestion">Search Suggestion</string>
     <string name="search_in_web">Search in Web..</string>
+    <string name="custom_products">Custom Products</string>
 </resources>
