@@ -21,155 +21,151 @@ import static com.example.calories.utils.AppConstants.*;
 
 public class SettingsActivity extends BaseActivity {
 
-    private SwitchCompat darkModeSwitch;
-    private CardView languageCard;
-    private CardView aboutCard;
-    private TextView selectedLanguageText;
-    private ImageButton backButton;
+	private SwitchCompat darkModeSwitch;
+	private CardView languageCard;
+	private CardView aboutCard;
+	private TextView selectedLanguageText;
+	private ImageButton backButton;
 
-    private SharedPreferences prefs;
+	private SharedPreferences prefs;
 
-    private static SettingsChangeListener settingsChangeListener;
+	private static SettingsChangeListener settingsChangeListener;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_settings);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		EdgeToEdge.enable(this);
+		setContentView(R.layout.activity_settings);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
+		if (getSupportActionBar() != null) {
+			getSupportActionBar().hide();
+		}
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(0, systemBars.top, 0, systemBars.bottom);
-            return insets;
-        });
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.layout), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(0, systemBars.top, 0, 0);
-            return insets;
-        });
+		ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+			Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+			v.setPadding(0, systemBars.top, 0, systemBars.bottom);
+			return insets;
+		});
+		ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.layout), (v, insets) -> {
+			Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+			v.setPadding(0, systemBars.top, 0, 0);
+			return insets;
+		});
 
+		prefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
-        prefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+		initializeViews();
+		setupListeners();
+		updateUI();
+	}
 
-        initializeViews();
-        setupListeners();
-        updateUI();
-    }
+	public interface SettingsChangeListener {
+		void onThemeChange();
 
-    public interface SettingsChangeListener {
-        void onThemeChange();
-        void onLanguageChange();
-    }
-    public static void setSettingsChangeListener(SettingsChangeListener listener) {
-        settingsChangeListener = listener;
-    }
-    private void initializeViews() {
-        darkModeSwitch = findViewById(R.id.darkModeSwitch);
-        languageCard = findViewById(R.id.languageCard);
-        aboutCard = findViewById(R.id.aboutCard);
-        selectedLanguageText = findViewById(R.id.selectedLanguage);
-        backButton = findViewById(R.id.backButton);
-    }
+		void onLanguageChange();
+	}
 
-    private void setupListeners() {
-        // כפתור חזור
-        backButton.setOnClickListener(v -> finish());
+	public static void setSettingsChangeListener(SettingsChangeListener listener) {
+		settingsChangeListener = listener;
+	}
 
-        // מתג מצב לילה
-        darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            saveDarkMode(isChecked);
-            applyDarkMode(isChecked);
-            if (settingsChangeListener != null) {
-                settingsChangeListener.onThemeChange();
-            }
-        });
+	private void initializeViews() {
+		darkModeSwitch = findViewById(R.id.darkModeSwitch);
+		languageCard = findViewById(R.id.languageCard);
+		aboutCard = findViewById(R.id.aboutCard);
+		selectedLanguageText = findViewById(R.id.selectedLanguage);
+		backButton = findViewById(R.id.backButton);
+	}
 
-        // בחירת שפה
-        languageCard.setOnClickListener(v -> showLanguageDialog());
+	private void setupListeners() {
+		// כפתור חזור
+		backButton.setOnClickListener(v -> finish());
 
-        // אודות האפליקציה
-        aboutCard.setOnClickListener(v -> showAboutDialog());
-    }
+		// מתג מצב לילה
+		darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+			saveDarkMode(isChecked);
+			applyDarkMode(isChecked);
+			if (settingsChangeListener != null) {
+				settingsChangeListener.onThemeChange();
+			}
+		});
 
-    private void updateUI() {
-        // עדכון מצב המתג
-        boolean isDarkMode = prefs.getBoolean(KEY_DARK_MODE, false);
-        darkModeSwitch.setChecked(isDarkMode);
+		// בחירת שפה
+		languageCard.setOnClickListener(v -> showLanguageDialog());
 
-        // עדכון שפה מוצגת
-        String language = prefs.getString(KEY_LANGUAGE, "he");
-        updateLanguageText(language);
-    }
+		// אודות האפליקציה
+		aboutCard.setOnClickListener(v -> showAboutDialog());
+	}
 
+	private void updateUI() {
+		// עדכון מצב המתג
+		boolean isDarkMode = prefs.getBoolean(KEY_DARK_MODE, false);
+		darkModeSwitch.setChecked(isDarkMode);
 
+		// עדכון שפה מוצגת
+		String language = prefs.getString(KEY_LANGUAGE, "he");
+		updateLanguageText(language);
+	}
 
-    private void showLanguageDialog() {
-        String[] languages = {
-                getString(R.string.hebrew),
-                getString(R.string.english),
-                getString(R.string.arabic)
-        };
+	private void showLanguageDialog() {
+		String[] languages = { getString(R.string.hebrew), getString(R.string.english), getString(R.string.arabic) };
 
-        String[] languageCodes = {"he", "en", "ar"};
+		String[] languageCodes = { "he", "en", "ar" };
 
-        String currentLanguage = prefs.getString(KEY_LANGUAGE, "he");
-        int selectedIndex = 0;
-        for (int i = 0; i < languageCodes.length; i++) {
-            if (languageCodes[i].equals(currentLanguage)) {
-                selectedIndex = i;
-                break;
-            }
-        }
+		String currentLanguage = prefs.getString(KEY_LANGUAGE, "he");
+		int selectedIndex = 0;
+		for (int i = 0; i < languageCodes.length; i++) {
+			if (languageCodes[i].equals(currentLanguage)) {
+				selectedIndex = i;
+				break;
+			}
+		}
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.choose_a_language);
-        builder.setSingleChoiceItems(languages, selectedIndex, (dialog, which) -> {
-            String selectedLanguage = languageCodes[which];
-            saveLanguage(selectedLanguage);
-            dialog.dismiss();
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.choose_a_language);
+		builder.setSingleChoiceItems(languages, selectedIndex, (dialog, which) -> {
+			String selectedLanguage = languageCodes[which];
+			saveLanguage(selectedLanguage);
+			dialog.dismiss();
 
-            // Recreate the activity to apply the new language
-            recreate();
-            if (settingsChangeListener != null) {
-                settingsChangeListener.onLanguageChange();
-            }
-        });
+			// Recreate the activity to apply the new language
+			recreate();
+			if (settingsChangeListener != null) {
+				settingsChangeListener.onLanguageChange();
+			}
+		});
 
-        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
+		builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
 
-    private void updateLanguageText(String languageCode) {
-        String languageName;
-        switch (languageCode) {
-            case "he":
-                languageName = getString(R.string.hebrew);
-                break;
-            case "en":
-                languageName = getString(R.string.english);
-                break;
-            case "ar":
-                languageName = getString(R.string.arabic);
-                break;
-            default:
-                languageName = getString(R.string.hebrew);
-        }
-        selectedLanguageText.setText(languageName);
-    }
+	private void updateLanguageText(String languageCode) {
+		String languageName;
+		switch (languageCode) {
+		case "he":
+			languageName = getString(R.string.hebrew);
+			break;
+		case "en":
+			languageName = getString(R.string.english);
+			break;
+		case "ar":
+			languageName = getString(R.string.arabic);
+			break;
+		default:
+			languageName = getString(R.string.hebrew);
+		}
+		selectedLanguageText.setText(languageName);
+	}
 
-    private void showAboutDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.about_the_app);
-        builder.setMessage(R.string.about_message);
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss());
+	private void showAboutDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.about_the_app);
+		builder.setMessage(R.string.about_message);
+		builder.setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss());
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
 }

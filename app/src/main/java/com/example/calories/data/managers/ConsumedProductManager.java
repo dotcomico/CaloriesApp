@@ -12,96 +12,99 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import static com.example.calories.utils.AppConstants.*;
+
 public class ConsumedProductManager {
 
-    private ArrayList<ConsumedProduct> consumedProductsOfDay;
-    private ArrayList<ConsumedProduct> consumedProductsAll;
+	private ArrayList<ConsumedProduct> consumedProductsOfDay;
+	private ArrayList<ConsumedProduct> consumedProductsAll;
 
-    private final ConsumedProductsStorageManager consumedProductsStorageManager;
+	private final ConsumedProductsStorageManager consumedProductsStorageManager;
 
-    public ConsumedProductManager( Context context) {
-        this.consumedProductsStorageManager = new ConsumedProductsStorageManager(context);
-        this.consumedProductsAll = consumedProductsStorageManager.load();
-        this.consumedProductsOfDay = consumedProductsStorageManager.loadToday();
-    }
+	public ConsumedProductManager(Context context) {
+		this.consumedProductsStorageManager = new ConsumedProductsStorageManager(context);
+		this.consumedProductsAll = consumedProductsStorageManager.load();
+		this.consumedProductsOfDay = consumedProductsStorageManager.loadToday();
+	}
 
-    public void loadItemsData(Calendar calendarDayParameter) {
-        consumedProductsAll = consumedProductsStorageManager.load();
-        consumedProductsOfDay = consumedProductsStorageManager.loadByDay(calendarDayParameter);
-    }
+	public void loadItemsData(Calendar calendarDayParameter) {
+		consumedProductsAll = consumedProductsStorageManager.load();
+		consumedProductsOfDay = consumedProductsStorageManager.loadByDay(calendarDayParameter);
+	}
 
-    public void saveItemsData(){
-        consumedProductsStorageManager.save(consumedProductsAll);
-    }
+	public void saveItemsData() {
+		consumedProductsStorageManager.save(consumedProductsAll);
+	}
 
-    public void clearItemsData(){
-        consumedProductsStorageManager.clear();
-        consumedProductsAll.clear();
-    }
+	public void clearItemsData() {
+		consumedProductsStorageManager.clear();
+		consumedProductsAll.clear();
+	}
 
-    public void addItem(double amount, Product product , Calendar calendarDayParameter){
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat date = new SimpleDateFormat(DATE_PATTERN);
+	public void addItem(double amount, Product product, Calendar calendarDayParameter) {
+		@SuppressLint("SimpleDateFormat")
+		SimpleDateFormat date = new SimpleDateFormat(DATE_PATTERN);
 
-        ConsumedProduct listItem=new ConsumedProduct(amount,product, date.format(calendarDayParameter.getTime()));
-        consumedProductsAll.add(listItem );
+		ConsumedProduct listItem = new ConsumedProduct(amount, product, date.format(calendarDayParameter.getTime()));
+		consumedProductsAll.add(listItem);
 
-        saveItemsData();
-        loadItemsData(calendarDayParameter);
-    }
+		saveItemsData();
+		loadItemsData(calendarDayParameter);
+	}
 
-    public void deleteItemById(String targetId){
-        // הסרה מהרשימה היומית
-        Iterator<ConsumedProduct> iterator = consumedProductsOfDay.iterator();
-        while (iterator.hasNext()) {
-            if (iterator.next().getId().equals(targetId)) {
-                iterator.remove();
-                break;
-            }
-        }
+	public void deleteItemById(String targetId) {
+		// הסרה מהרשימה היומית
+		Iterator<ConsumedProduct> iterator = consumedProductsOfDay.iterator();
+		while (iterator.hasNext()) {
+			if (iterator.next().getId().equals(targetId)) {
+				iterator.remove();
+				break;
+			}
+		}
 // הסרה מהרשימה הראשית
-        Iterator<ConsumedProduct> bufferIterator = consumedProductsAll.iterator();
-        while (bufferIterator.hasNext()) {
-            if (bufferIterator.next().getId().equals(targetId)) {
-                bufferIterator.remove();
-                break;
-            }
-        }
-        saveItemsData();
-    }
+		Iterator<ConsumedProduct> bufferIterator = consumedProductsAll.iterator();
+		while (bufferIterator.hasNext()) {
+			if (bufferIterator.next().getId().equals(targetId)) {
+				bufferIterator.remove();
+				break;
+			}
+		}
+		saveItemsData();
+	}
 
-    public void editItemAmountById( double newAmount ,String targetId , Calendar calendarDayParameter ){
+	public void editItemAmountById(double newAmount, String targetId, Calendar calendarDayParameter) {
 
-        for (ConsumedProduct consumedProduct : consumedProductsOfDay) {
-            if (consumedProduct.getId().equals(targetId)) {
-                consumedProduct.setAmount(newAmount);
-                break;
-            }
-        }
+		for (ConsumedProduct consumedProduct : consumedProductsOfDay) {
+			if (consumedProduct.getId().equals(targetId)) {
+				consumedProduct.setAmount(newAmount);
+				break;
+			}
+		}
 
-        for (ConsumedProduct consumedProduct : consumedProductsAll) {
-            if (consumedProduct.getId().equals(targetId)) {
-                consumedProduct.setAmount(newAmount);
-                break;
-            }
-        }
-        saveItemsData();
-        loadItemsData(calendarDayParameter);
-    }
+		for (ConsumedProduct consumedProduct : consumedProductsAll) {
+			if (consumedProduct.getId().equals(targetId)) {
+				consumedProduct.setAmount(newAmount);
+				break;
+			}
+		}
+		saveItemsData();
+		loadItemsData(calendarDayParameter);
+	}
 
+	public ArrayList<ConsumedProduct> getConsumedProductsOfDay() {
+		// לשקול ממש כאן את הפעולה loadItemsData(calendarDayParameter); ולהפוך אותה
+		// לפרטית
+		return consumedProductsOfDay;
+	}
 
-    public ArrayList<ConsumedProduct> getConsumedProductsOfDay() {
-        //לשקול ממש כאן את הפעולה loadItemsData(calendarDayParameter); ולהפוך אותה לפרטית
-        return consumedProductsOfDay;
-    }
-    public int getConsumedCaloriesOfDay(){
-        int calories=0;
-        for(int i = 0; i <  consumedProductsOfDay.size(); i++){
-            calories += consumedProductsOfDay.get( i ).getTotalCalories();
-        }
-        return  calories;
-    }
+	public int getConsumedCaloriesOfDay() {
+		int calories = 0;
+		for (int i = 0; i < consumedProductsOfDay.size(); i++) {
+			calories += consumedProductsOfDay.get(i).getTotalCalories();
+		}
+		return calories;
+	}
 
-    public ArrayList<ConsumedProduct> getConsumedProductsAll() {
-        return consumedProductsAll;
-    }
+	public ArrayList<ConsumedProduct> getConsumedProductsAll() {
+		return consumedProductsAll;
+	}
 }

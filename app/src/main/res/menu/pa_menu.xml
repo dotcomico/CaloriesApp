@@ -4,21 +4,21 @@
 
     <item
         android:id="@+id/menu1_dotan"
+        android:icon="@drawable/ic_baseline_download_24"
         android:title="@string/add_dotan_self_product"
         android:tooltipText="@string/add_dotan_self_product"
-        android:icon="@drawable/ic_baseline_download_24"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/menu1_print_all"
+        android:icon="@drawable/ic_baseline_copy_all_24_white"
         android:title="העתקת פריטי רשימה (אפשרות מפתח"
         android:tooltipText="העתקת פריטי רשימה (אפשרות מפתח)"
-        android:icon="@drawable/ic_baseline_copy_all_24_white"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
     <item
         android:id="@+id/menu1_back"
+        android:icon="@drawable/round_arrow_back"
         android:title="יציאה ממסך"
         android:tooltipText="יציאה ממסך"
-        android:icon="@drawable/round_arrow_back"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 </menu>

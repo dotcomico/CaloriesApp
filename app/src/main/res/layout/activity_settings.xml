@@ -31,8 +31,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/back"
                 android:padding="8dp"
-                android:src="@drawable/round_arrow_back"
-                />
+                android:src="@drawable/round_arrow_back" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -56,8 +55,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="20dp"
-                android:paddingEnd="20dp"
                 android:paddingTop="16dp"
+                android:paddingEnd="20dp"
                 android:paddingBottom="8dp"
                 android:text="@string/display"
                 android:textColor="@color/tertiary"
@@ -69,8 +68,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
                 app:cardBackgroundColor="@color/secondary"
                 app:cardCornerRadius="16dp"
@@ -128,8 +127,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         app:thumbTint="@color/primary"
-                        app:trackTint="@color/tertiary"
-                        />
+                        app:trackTint="@color/tertiary" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
@@ -138,8 +136,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="20dp"
-                android:paddingEnd="20dp"
                 android:paddingTop="24dp"
+                android:paddingEnd="20dp"
                 android:paddingBottom="8dp"
                 android:text="@string/language"
                 android:textColor="@color/tertiary"
@@ -152,8 +150,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
                 android:clickable="true"
                 android:focusable="true"
@@ -215,8 +213,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:contentDescription="@string/arrow"
-                        android:src="@drawable/round_chevron_left"
-                       />
+                        android:src="@drawable/round_chevron_left" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
@@ -225,8 +222,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="20dp"
-                android:paddingEnd="20dp"
                 android:paddingTop="24dp"
+                android:paddingEnd="20dp"
                 android:paddingBottom="8dp"
                 android:text="@string/information"
                 android:textColor="@color/tertiary"
@@ -239,8 +236,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
                 android:clickable="true"
                 android:focusable="true"
@@ -268,8 +265,7 @@
                             android:layout_height="24dp"
                             android:layout_marginEnd="12dp"
                             android:contentDescription="@string/about"
-                            android:src="@drawable/round_info_outline"
-                            />
+                            android:src="@drawable/round_info_outline" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -287,8 +283,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:contentDescription="@string/arrow"
-                        android:src="@drawable/round_chevron_left"
-                        />
+                        android:src="@drawable/round_chevron_left" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 

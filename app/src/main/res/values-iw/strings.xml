@@ -67,9 +67,9 @@
     <string name="remaining_calories">קלוריות נשארו</string>
     <string name="tue_18">שלישי 18</string>
     <string name="thu_20">חמישי 20</string>
-     <string name="catalog_icon">אייקון קטלוג</string>
-    <string name="product_not_found_title" >מוצר זה עוד לא קיים במערכת</string>
-    <string name="product_not_found_subtext" >המשך בחיפוש עצמי</string>
+    <string name="catalog_icon">אייקון קטלוג</string>
+    <string name="product_not_found_title">מוצר זה עוד לא קיים במערכת</string>
+    <string name="product_not_found_subtext">המשך בחיפוש עצמי</string>
     <string name="empty_state_icon_desc" />
     <string name="fast_add">הוספה מהירה</string>
     <string name="new_product">מוצר חדש</string>

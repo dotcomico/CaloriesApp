@@ -37,127 +37,125 @@ import static com.example.calories.utils.AppConstants.*;
 import java.util.Objects;
 
 public class ProductCreationActivity extends BaseActivity implements View.OnClickListener {
-    private ImageView backBtn, showDialogSheet;
-    private WebView webview;
-    WebSettings webSettings;
-    CustomProductDialog customProductDialog;
-    private ProductStorageManager productStorageManager;
-    SeekBar brightnessSeekBar;
+	private ImageView backBtn, showDialogSheet;
+	private WebView webview;
+	WebSettings webSettings;
+	CustomProductDialog customProductDialog;
+	private ProductStorageManager productStorageManager;
+	SeekBar brightnessSeekBar;
 
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		EdgeToEdge.enable(this);
+		setContentView(R.layout.activity_product_creation);
+		ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+			Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+			v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+			return insets;
+		});
+		if (getSupportActionBar() != null) {
+			getSupportActionBar().hide();
+		}
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_product_creation);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
+		initViews();
+		productStorageManager = new ProductStorageManager(this);
+		customProductDialog = new CustomProductDialog(this);
+		customProductDialog.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialogInterface) {
+				if (webview.getVisibility() == View.VISIBLE) {
+					showDialogSheet.setVisibility(View.VISIBLE);
+				}
+			}
+		});
+		customProductDialog.setOnCustomProductItemListener(new CustomProductDialog.OnCustomProductItemListener() {
+			@Override
+			public void onItemCreated(Product customProduct) {
+				hideKeyboard();
+				cancelFoodAdd();
+				finish();
+			}
 
-        initViews();
-        productStorageManager  = new ProductStorageManager(this);
-        customProductDialog = new CustomProductDialog(this);
-        customProductDialog.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                if (webview.getVisibility()== View.VISIBLE){
-                    showDialogSheet.setVisibility(View.VISIBLE);}
-            }
-        });
-        customProductDialog.setOnCustomProductItemListener(new CustomProductDialog.OnCustomProductItemListener() {
-            @Override
-            public void onItemCreated(Product customProduct) {
-                hideKeyboard();
-                cancelFoodAdd();
-               finish();
-            }
+			@Override
+			public void onSearch(String suggestion) {
+				searchForCalories(suggestion);
+			}
 
-            @Override
-            public void onSearch(String suggestion) {
-                searchForCalories(suggestion);
-            }
+			@Override
+			public void onSearchSuggestionClicked(String suggestion) {
+				searchForSuggestion(suggestion);
+				hideKeyboard();
+				customProductDialog.close();
+				showDialogSheet.setVisibility(View.VISIBLE);
+			}
 
-            @Override
-            public void onSearchSuggestionClicked(String suggestion) {
-                searchForSuggestion(suggestion);
-                hideKeyboard();
-                customProductDialog.close();
-                showDialogSheet.setVisibility( View.VISIBLE );
-            }
+			@Override
+			public void onDialogClose() {
+			}
+		});
 
-            @Override
-            public void onDialogClose() {
-            }
-        });
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			String barcode = extras.getString(EXTRA_BARCODE);
+			if (barcode != null) {
+				customProductDialog.show(productStorageManager, "", barcode);
+				searchOnWeb(barcode);
+			}
+			String name = extras.getString(EXTRA_NAME);
+			if (name != null) {
+				customProductDialog.show(productStorageManager, name, "");
+				searchForCalories(name);
+			}
+		}
+	}
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String barcode = extras.getString( EXTRA_BARCODE);
-            if (barcode != null) {
-                customProductDialog.show(productStorageManager , "" , barcode);
-                searchOnWeb(barcode);
-            }
-            String name = extras.getString( EXTRA_NAME );
-            if (name != null) {
-                customProductDialog.show(productStorageManager , name , "");
-                searchForCalories(name);
-            }
-        }
-    }
-    @SuppressLint("SetJavaScriptEnabled")
-    private void initViews() {
-        brightnessSeekBar  = findViewById(R.id.brightnessSeekBar);
-        backBtn =findViewById(R.id.backBtn);
-        backBtn.setOnClickListener( this );
-        showDialogSheet =findViewById( R.id.showDialogSheet);
-        showDialogSheet.setOnClickListener( this );
-        webview = findViewById( R.id.webview);
-        webview.setWebViewClient( new WebViewClient() );
-        webSettings=webview.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        //לא ברור מה אלו
-        webSettings.setDatabaseEnabled( true );
-        webSettings.setEnableSmoothTransition( true );
-        webSettings.setGeolocationEnabled( true );
-        webSettings.setDomStorageEnabled(  true);
+	@SuppressLint("SetJavaScriptEnabled")
+	private void initViews() {
+		brightnessSeekBar = findViewById(R.id.brightnessSeekBar);
+		backBtn = findViewById(R.id.backBtn);
+		backBtn.setOnClickListener(this);
+		showDialogSheet = findViewById(R.id.showDialogSheet);
+		showDialogSheet.setOnClickListener(this);
+		webview = findViewById(R.id.webview);
+		webview.setWebViewClient(new WebViewClient());
+		webSettings = webview.getSettings();
+		webSettings.setJavaScriptEnabled(true);
+		webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+		// לא ברור מה אלו
+		webSettings.setDatabaseEnabled(true);
+		webSettings.setEnableSmoothTransition(true);
+		webSettings.setGeolocationEnabled(true);
+		webSettings.setDomStorageEnabled(true);
 
-        if (!isDarkModeEnabled()) {
-            brightnessSeekBar.setVisibility(View.GONE);
-        }else {
+		if (!isDarkModeEnabled()) {
+			brightnessSeekBar.setVisibility(View.GONE);
+		} else {
 
-            View overlay = new View(this);
-            overlay.setBackgroundColor(Color.argb(122, 0, 0, 0)); //
-            ((ViewGroup) webview.getParent()).addView(overlay,
-                    new ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT));
-            overlay.bringToFront();
+			View overlay = new View(this);
+			overlay.setBackgroundColor(Color.argb(122, 0, 0, 0)); //
+			((ViewGroup) webview.getParent()).addView(overlay, new ViewGroup.LayoutParams(
+					ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+			overlay.bringToFront();
 
-            brightnessSeekBar.setVisibility(View.VISIBLE);
-            // מאזין לשינויים במד
-            brightnessSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    // עדכון השקיפות לפי הערך החדש
-                    overlay.setBackgroundColor(Color.argb(progress, 0, 0, 0));
-                }
+			brightnessSeekBar.setVisibility(View.VISIBLE);
+			// מאזין לשינויים במד
+			brightnessSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				@Override
+				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+					// עדכון השקיפות לפי הערך החדש
+					overlay.setBackgroundColor(Color.argb(progress, 0, 0, 0));
+				}
 
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {}
+				@Override
+				public void onStartTrackingTouch(SeekBar seekBar) {
+				}
 
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {}
-            });
-        }
-
-
-
+				@Override
+				public void onStopTrackingTouch(SeekBar seekBar) {
+				}
+			});
+		}
 
 //        boolean isDarkMode = isDarkModeEnabled(); // פונקציה שקיימת ב-BaseActivity
 //
@@ -180,64 +178,71 @@ public class ProductCreationActivity extends BaseActivity implements View.OnClic
 //                }
 //            }
 //        });
-    }
+	}
 
-    private void searchOnWeb(String query){
-        webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        webview.loadUrl(GOOGLE_SEARCH_URL + query);
-    }
-    private void searchForCalories(String caloriesQuery) {
-        searchOnWeb(caloriesQuery + " "+ UNIT_CALORIES );
-    }
-    private void searchForSuggestion(String SuggestionQuery) {
-      searchOnWeb(SuggestionQuery);
-    }
-    public void hideKeyboard(){
-        // Check if no view has focus:
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-    private void cancelFoodAdd() {
-        customProductDialog.close();
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        IntentResult result = IntentIntegrator.parseActivityResult( requestCode,resultCode,data );
-        if(result != null){
-            if (result.getContents() != null){
+	private void searchOnWeb(String query) {
+		webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+		webview.loadUrl(GOOGLE_SEARCH_URL + query);
+	}
 
-                customProductDialog.handleBarcodeResult(result);
+	private void searchForCalories(String caloriesQuery) {
+		searchOnWeb(caloriesQuery + " " + UNIT_CALORIES);
+	}
 
-            }else{
-                Toast.makeText( this, TEXT_NO_RESULT,Toast.LENGTH_SHORT ).show();
-            }
+	private void searchForSuggestion(String SuggestionQuery) {
+		searchOnWeb(SuggestionQuery);
+	}
 
-        }else{
-            super.onActivityResult( requestCode, resultCode, data );}
-    }
+	public void hideKeyboard() {
+		// Check if no view has focus:
+		View view = this.getCurrentFocus();
+		if (view != null) {
+			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+		}
+	}
 
-    @Override
-    public void onClick(View view) {
-        if( view == backBtn){
-            finish();
-        }
+	private void cancelFoodAdd() {
+		customProductDialog.close();
+	}
 
-        if (view == showDialogSheet){
-            showDialogSheet.setVisibility( View.GONE );
-            customProductDialog.show(productStorageManager , "" , "");
-        }
-    }
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+		if (result != null) {
+			if (result.getContents() != null) {
 
-    @Override
-    public void onBackPressed() {
-        if (webview.canGoBack() && webview.getVisibility() == View.VISIBLE) {
-            webview.goBack();
-        } else if (customProductDialog.isClosed()){
-            customProductDialog.show(productStorageManager , "" , "");
-        }else {
-        super.onBackPressed();}
-    }
+				customProductDialog.handleBarcodeResult(result);
+
+			} else {
+				Toast.makeText(this, TEXT_NO_RESULT, Toast.LENGTH_SHORT).show();
+			}
+
+		} else {
+			super.onActivityResult(requestCode, resultCode, data);
+		}
+	}
+
+	@Override
+	public void onClick(View view) {
+		if (view == backBtn) {
+			finish();
+		}
+
+		if (view == showDialogSheet) {
+			showDialogSheet.setVisibility(View.GONE);
+			customProductDialog.show(productStorageManager, "", "");
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (webview.canGoBack() && webview.getVisibility() == View.VISIBLE) {
+			webview.goBack();
+		} else if (customProductDialog.isClosed()) {
+			customProductDialog.show(productStorageManager, "", "");
+		} else {
+			super.onBackPressed();
+		}
+	}
 }

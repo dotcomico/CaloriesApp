@@ -4,22 +4,22 @@
 
     <item
         android:id="@+id/menu_delete"
+        android:icon="@drawable/ic_baseline_delete_white"
         android:title="מחק"
         android:tooltipText="מחק פריטים מסומנים"
-        android:icon="@drawable/ic_baseline_delete_white"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_select_all"
+        android:icon="@drawable/ic_baseline_select_all_white"
         android:title="בחר הכל"
         android:tooltipText="בחר הכל"
-        android:icon="@drawable/ic_baseline_select_all_white"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
     <item
         android:id="@+id/menu_abortDelete"
+        android:icon="@drawable/ic_baseline_clear_24_white"
         android:title="בטל מחיקה"
         android:tooltipText="בטל מחיקה"
-        android:icon="@drawable/ic_baseline_clear_24_white"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
 </menu>

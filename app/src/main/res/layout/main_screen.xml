@@ -9,8 +9,7 @@
     <!-- מידע יומי ורשימת מוצרים שנצרכו -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
@@ -32,36 +31,37 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin">
+
                     <LinearLayout
                         android:id="@+id/collapsedLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"
+                        android:alpha="1"
                         android:gravity="center_vertical"
+                        android:orientation="horizontal"
                         android:paddingHorizontal="12dp"
-                        android:visibility="gone"
-                        android:alpha="1">
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/collapsedDateText"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:gravity="start"
                             android:text="@string/today"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
                             android:textColor="@color/primaryText"
-                            android:gravity="start" />
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/collapsedCaloriesText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:gravity="end"
                             android:text="@string/calories"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
                             android:textColor="@color/tertiary"
-                            android:gravity="end" />
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
 
                     </LinearLayout>
                 </androidx.appcompat.widget.Toolbar>
@@ -86,12 +86,12 @@
                             android:id="@+id/titleText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
                             android:text="@string/calorie_tracker"
+                            android:textColor="@color/primaryText"
                             android:textSize="20sp"
                             android:textStyle="bold"
-                            android:textColor="@color/primaryText"
-                            android:layout_centerVertical="true"
-                            android:layout_alignParentStart="true"
                             tools:ignore="RelativeOverlap" />
 
                         <!-- אייקון הגדרות -->
@@ -99,37 +99,37 @@
                             android:id="@+id/settingsIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/round_settings"
-                            android:layout_centerVertical="true"
                             android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
                             android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/settings"
                             android:padding="0dp"
-                            android:contentDescription="@string/settings" />
+                            android:src="@drawable/round_settings" />
 
                         <ImageView
                             android:id="@+id/shopIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/round_shopping_bag"
                             android:layout_centerVertical="true"
-                            android:layout_toStartOf="@id/settingsIcon"
                             android:layout_marginEnd="16dp"
+                            android:layout_toStartOf="@id/settingsIcon"
                             android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/shopping_bag_icon"
                             android:padding="0dp"
-                            android:contentDescription="@string/shopping_bag_icon" />
+                            android:src="@drawable/round_shopping_bag" />
 
                         <!-- אייקון רשימת מוצרים אישית -->
                         <ImageView
                             android:id="@+id/customListIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/outline_bookmarks"
                             android:layout_centerVertical="true"
-                            android:layout_toStartOf="@id/shopIcon"
                             android:layout_marginEnd="16dp"
+                            android:layout_toStartOf="@id/shopIcon"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:padding="0dp"
                             android:contentDescription="@string/custom_list_icon"
+                            android:padding="0dp"
+                            android:src="@drawable/outline_bookmarks"
                             app:tint="@color/primaryText" />
 
                     </RelativeLayout>
@@ -138,9 +138,9 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginBottom="32dp"
                         android:gravity="center"
-                        android:layout_marginBottom="32dp">
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:id="@+id/lastDayBtn"
@@ -148,50 +148,50 @@
                             android:layout_height="wrap_content"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:contentDescription="@string/arrow"
-                            android:src="@drawable/round_chevron_left_date_bar"
-                            android:padding="8dp" />
+                            android:padding="8dp"
+                            android:src="@drawable/round_chevron_left_date_bar" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/tue_18"
-                            android:textSize="16sp"
                             android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:text="@string/tue_18"
                             android:textColor="@color/secondaryText"
-                            android:gravity="center" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/currentDateText"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/today"
-                            android:textSize="16sp"
-                            android:textColor="#FFFFFF"
-                            android:foreground="?attr/selectableItemBackground"
                             android:background="@drawable/selected_date_bg"
+                            android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
-                            android:padding="4dp" />
+                            android:padding="4dp"
+                            android:text="@string/today"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/thu_20"
-                            android:textSize="16sp"
                             android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:text="@string/thu_20"
                             android:textColor="@color/secondaryText"
-                            android:gravity="center" />
+                            android:textSize="16sp" />
 
                         <ImageView
                             android:id="@+id/nextDayBtn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/round_chevron_right_date_bar"
                             android:contentDescription="@string/arrow"
-                            android:padding="8dp" />
+                            android:padding="8dp"
+                            android:src="@drawable/round_chevron_right_date_bar" />
 
                     </LinearLayout>
 
@@ -212,25 +212,25 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-                            android:orientation="vertical"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/caloriesViewText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/ex_calories"
+                                android:textColor="@color/primaryText"
                                 android:textSize="54sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/primaryText" />
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/caloriesDescriptionText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/calories"
-                                android:textSize="20sp"
-                                android:textColor="@color/secondaryText" />
+                                android:textColor="@color/secondaryText"
+                                android:textSize="20sp" />
 
                         </LinearLayout>
 
@@ -241,33 +241,33 @@
                         android:id="@+id/meals"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
                         android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="16dp">
+                        android:orientation="horizontal">
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
                                 android:text="@string/breakfast"
-                                android:textSize="14sp"
                                 android:textColor="@color/tertiaryText"
-                                android:layout_marginBottom="4dp" />
+                                android:textSize="14sp" />
 
                             <TextView
                                 android:id="@+id/breakfastCalories"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/blank_"
+                                android:textColor="@color/secondaryText"
                                 android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/secondaryText" />
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -275,25 +275,25 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
                                 android:text="@string/lunch"
-                                android:textSize="14sp"
                                 android:textColor="@color/tertiaryText"
-                                android:layout_marginBottom="4dp" />
+                                android:textSize="14sp" />
 
                             <TextView
                                 android:id="@+id/lunchCalories"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/blank_"
+                                android:textColor="@color/secondaryText"
                                 android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/secondaryText" />
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -301,25 +301,25 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
                                 android:text="@string/dinner"
-                                android:textSize="14sp"
                                 android:textColor="@color/tertiaryText"
-                                android:layout_marginBottom="4dp" />
+                                android:textSize="14sp" />
 
                             <TextView
                                 android:id="@+id/dinnerCalories"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/blank_"
+                                android:textColor="@color/secondaryText"
                                 android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/secondaryText" />
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -336,12 +336,12 @@
             android:id="@+id/consumedProductsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="80dp"
-            android:clipToPadding="false"
             android:background="@color/primary"
+            android:clipToPadding="false"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="80dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
@@ -352,27 +352,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/primary"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/productsRecyclerView"
-            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
-            android:scrollbars="vertical"
             android:scrollbarSize="5dp"
-            app:stackFromEnd="false"
-            android:transcriptMode="alwaysScroll" />
+            android:scrollbars="vertical"
+            android:transcriptMode="alwaysScroll"
+            android:visibility="visible"
+            app:stackFromEnd="false" />
 
         <!-- Modern Empty State Screen - Enhanced -->
         <LinearLayout
             android:id="@+id/notFoundLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
             android:background="@color/primary"
+            android:gravity="center"
+            android:orientation="vertical"
             android:padding="24dp"
             android:visibility="gone">
 
@@ -381,10 +381,10 @@
                 android:id="@+id/emptyStateIcon"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:src="@drawable/round_no_food"
-                android:alpha="0.6"
                 android:layout_marginBottom="24dp"
+                android:alpha="0.6"
                 android:contentDescription="@string/empty_state_icon_desc"
+                android:src="@drawable/round_no_food"
                 app:tint="@color/tertiaryText" />
 
             <!-- Main title -->
@@ -392,28 +392,28 @@
                 android:id="@+id/emptyListError"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center"
+                android:letterSpacing="0.01"
                 android:maxWidth="340dp"
                 android:text="@string/product_not_found_title"
-                android:textSize="20sp"
-                android:textStyle="bold"
                 android:textColor="@color/secondaryText"
-                android:letterSpacing="0.01"
-                android:layout_marginBottom="12dp"
-                android:gravity="center" />
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <!-- Subtitle -->
             <TextView
                 android:id="@+id/emptyListSubText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:alpha="0.85"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.3"
                 android:maxWidth="320dp"
                 android:text="@string/product_not_found_subtext"
-                android:textSize="16sp"
                 android:textColor="@color/tertiaryText"
-                android:alpha="0.85"
-                android:lineSpacingMultiplier="1.3"
-                android:gravity="center"
-                android:layout_marginBottom="20dp" />
+                android:textSize="16sp" />
 
             <!-- Action button with Material Design -->
             <com.google.android.material.button.MaterialButton
@@ -421,19 +421,19 @@
                 style="@style/Widget.Material3.Button.ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/self_search"
-                android:textSize="16sp"
-                android:textAllCaps="false"
-                android:textColor="@color/primaryText"
                 android:backgroundTint="@color/secondary"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="8dp"
-                app:icon="@drawable/ic_baseline_search"
-                app:iconTint="@color/selfSearch"
-                app:iconPadding="8dp"
-                app:iconGravity="end"
+                android:text="@string/self_search"
+                android:textAllCaps="false"
+                android:textColor="@color/primaryText"
+                android:textSize="16sp"
                 app:cornerRadius="25dp"
                 app:elevation="6dp"
+                app:icon="@drawable/ic_baseline_search"
+                app:iconGravity="end"
+                app:iconPadding="8dp"
+                app:iconTint="@color/selfSearch"
                 app:rippleColor="@color/selfSearch" />
 
         </LinearLayout>

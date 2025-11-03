@@ -8,28 +8,28 @@
     android:windowSoftInputMode="adjustResize">
     <!-- כתום - כרטיסיית יצירת מוצר חדש   -->
     <LinearLayout
-        android:visibility="visible"
         android:id="@+id/ly_customProductBottomSheet"
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/dialog_background">
+        android:background="@drawable/dialog_background"
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <LinearLayout
             android:id="@+id/ly_productCreationForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="@string/new_product"
                 android:textColor="@color/primaryText"
                 android:textSize="25sp"
-                android:textStyle="bold"
-                android:layout_gravity="center" />
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,27 +38,27 @@
 
                 <EditText
                     android:id="@+id/newProductNameEditText"
-                    android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:layout_marginHorizontal="3dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
                     android:autofillHints=""
+                    android:background="@drawable/edit_text_background"
                     android:ems="10"
-                    android:textColorHint="@color/tertiaryText"
-                    android:textColor="@color/primaryText"
-                    android:maxLines="1"
                     android:hint="@string/product"
                     android:imeOptions="actionNext"
                     android:inputType="textShortMessage"
-                    android:background="@drawable/edit_text_background" />
+                    android:maxLines="1"
+                    android:textColor="@color/primaryText"
+                    android:textColorHint="@color/tertiaryText" />
 
                 <ImageView
                     android:id="@+id/iv_barcodeScan"
-                    android:layout_weight="5"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:layout_weight="5"
                     android:contentDescription="@string/scan_barcode"
                     android:src="@drawable/ic_baseline_qr_code"
                     app:tint="@color/primaryText" />
@@ -66,20 +66,19 @@
 
             <EditText
                 android:id="@+id/newProductCaloriesEditText"
-                android:autofillHints=""
-                android:hint="@string/calories"
-                android:drawableEnd="@drawable/ic_baseline_local_fire_department"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textColorHint="@color/tertiaryText"
                 android:layout_marginHorizontal="3dp"
-                android:textColor="@color/primaryText"
-                android:ems="10"
-                android:maxLines="1"
-                android:inputType="numberDecimal"
+                android:layout_marginTop="10dp"
+                android:autofillHints=""
                 android:background="@drawable/edit_text_background"
-                />
+                android:drawableEnd="@drawable/ic_baseline_local_fire_department"
+                android:ems="10"
+                android:hint="@string/calories"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:textColor="@color/primaryText"
+                android:textColorHint="@color/tertiaryText" />
 
 
             <com.example.calories.ui.views.UnitSelectorView
@@ -93,58 +92,59 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
                 android:layout_marginHorizontal="15dp"
-                android:layout_marginVertical="13dp">
+                android:layout_marginVertical="13dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/saveNewProductItemButton"
-                    android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:backgroundTint="@color/primary"
                     android:text="@string/add_product"
-                    android:textColor="@color/primaryText"
-                    />
+                    android:textColor="@color/primaryText" />
+
                 <ImageView
                     android:id="@+id/saveAndStay"
-                    android:layout_weight="8"
-                    android:layout_marginHorizontal="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:contentDescription="@string/add_product"
-                    android:src="@drawable/ic_baseline_add"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_weight="8"
                     android:background="@drawable/sty_w_b"
                     android:backgroundTint="@color/primaryText"
+                    android:contentDescription="@string/add_product"
+                    android:src="@drawable/ic_baseline_add"
                     app:tint="@color/primaryText" />
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal">
+
             <Button
-                android:visibility="gone"
                 android:id="@+id/webSearchSuggestion"
-                android:text="@string/search_suggestion"
-                android:textColor="@color/primaryText"
-                android:textSize="16sp"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_gravity="center"
                 android:background="@drawable/sty_blue_search"
                 android:drawableEnd="@drawable/ic_baseline_search"
-                />
+                android:text="@string/search_suggestion"
+                android:textColor="@color/primaryText"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
             <android.widget.SearchView
                 android:id="@+id/selfSearchSearchView"
-                android:focusable="false"
-                android:layout_height="50dp"
-                android:queryHint="@string/search_in_web"
-                android:background="@color/dialogBackground"
                 android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/dialogBackground"
                 android:contextClickable="true"
-                />
+                android:focusable="false"
+                android:queryHint="@string/search_in_web" />
         </LinearLayout>
 
     </LinearLayout>

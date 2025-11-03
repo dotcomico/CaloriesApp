@@ -24,132 +24,138 @@ import java.util.Objects;
 
 public class ConsumedProductEditingDialog {
 
-    private Dialog dialog;
-    private final Context context;
-    private ConsumedProduct consumedProduct;
-    private ConsumedProductManager consumedProductManager;
-    private Calendar calendar;
+	private Dialog dialog;
+	private final Context context;
+	private ConsumedProduct consumedProduct;
+	private ConsumedProductManager consumedProductManager;
+	private Calendar calendar;
 
-    // UI Components
-    private TextView consumedProductNameTv;
-    private EditText consumedProductNewAmountTv;
-    private ImageView increaseEditImg, decreaseEditImg;
-    private Button saveEdit;
-    private OnEditCompleteListener listener;
-    private boolean listenersSetup = false;
+	// UI Components
+	private TextView consumedProductNameTv;
+	private EditText consumedProductNewAmountTv;
+	private ImageView increaseEditImg, decreaseEditImg;
+	private Button saveEdit;
+	private OnEditCompleteListener listener;
+	private boolean listenersSetup = false;
 
+	public interface OnEditCompleteListener {
+		void onEditComplete(); // כשמשתמש שומר
+	}
 
-    public interface OnEditCompleteListener {
-        void onEditComplete();  // כשמשתמש שומר
-    }
+	public void setOnEditCompleteListener(OnEditCompleteListener listener) {
+		this.listener = listener;
+	}
 
-    public void setOnEditCompleteListener(OnEditCompleteListener listener) {
-        this.listener = listener;
-    }
-    public ConsumedProductEditingDialog(Context context ) {
-        this.context = context;
-        createDialog();
-    }
+	public ConsumedProductEditingDialog(Context context) {
+		this.context = context;
+		createDialog();
+	}
 
-    private void createDialog() {
-        dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_editing_product_consumed);
+	private void createDialog() {
+		dialog = new Dialog(context);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.dialog_editing_product_consumed);
 
-        Objects.requireNonNull(dialog.getWindow()).setLayout(  ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable( Color.TRANSPARENT));
-        dialog.getWindow().setGravity( Gravity.BOTTOM);
-        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+		Objects.requireNonNull(dialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT);
+		dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		dialog.getWindow().setGravity(Gravity.BOTTOM);
+		dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        initViews();
+		dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+		initViews();
 
-    }
-    private void initViews() {
-        consumedProductNameTv = dialog.findViewById(R.id.consumedProductNameTv);
-        consumedProductNewAmountTv = dialog.findViewById(R.id.consumedProductNewAmountTv);
-        increaseEditImg = dialog.findViewById(R.id.increaseEditImg);
-        decreaseEditImg = dialog.findViewById(R.id.decreaseEditImg);
-        saveEdit = dialog.findViewById(R.id.saveEdit);
-    }
+	}
 
-    public void show(ConsumedProduct consumedProduct, Calendar cld ,  ConsumedProductManager manager) {
-        if (consumedProduct == null || manager == null || cld == null) {
-            return;
-        }
-        this.calendar = cld;
-        this.consumedProduct = consumedProduct;
-        this.consumedProductManager=manager;
+	private void initViews() {
+		consumedProductNameTv = dialog.findViewById(R.id.consumedProductNameTv);
+		consumedProductNewAmountTv = dialog.findViewById(R.id.consumedProductNewAmountTv);
+		increaseEditImg = dialog.findViewById(R.id.increaseEditImg);
+		decreaseEditImg = dialog.findViewById(R.id.decreaseEditImg);
+		saveEdit = dialog.findViewById(R.id.saveEdit);
+	}
 
-        dialog.show();
-        setupData();
-        setupListeners();
-    }
-    private void setupData() {
-        if (consumedProduct != null && consumedProduct.getProductItem() != null) {
-            consumedProductNameTv.setText(consumedProduct.getProductItem().getName());
-            consumedProductNewAmountTv.setText(NumberFormatter.formatAmount(consumedProduct.getAmount()));
-        }
-    }
-    private void setupListeners() {
-        if (listenersSetup) return;
+	public void show(ConsumedProduct consumedProduct, Calendar cld, ConsumedProductManager manager) {
+		if (consumedProduct == null || manager == null || cld == null) {
+			return;
+		}
+		this.calendar = cld;
+		this.consumedProduct = consumedProduct;
+		this.consumedProductManager = manager;
 
-        saveEdit.setOnClickListener(v -> {
-            String amountText = consumedProductNewAmountTv.getText().toString().trim();
-            if (!isValidAmount(amountText)) {
-                return;
-            }
+		dialog.show();
+		setupData();
+		setupListeners();
+	}
 
-            try {
-                double newAmount = Double.parseDouble(amountText);
-                consumedProductManager.editItemAmountById(newAmount, consumedProduct.getId(), calendar);
-                if (listener != null) {
-                    listener.onEditComplete();
-                }
-                dialog.dismiss();
-            } catch (NumberFormatException e) {
-                // הודעת שגיאה
-            }
-        });
+	private void setupData() {
+		if (consumedProduct != null && consumedProduct.getProductItem() != null) {
+			consumedProductNameTv.setText(consumedProduct.getProductItem().getName());
+			consumedProductNewAmountTv.setText(NumberFormatter.formatAmount(consumedProduct.getAmount()));
+		}
+	}
 
-        increaseEditImg.setOnClickListener(v -> adjustAmount(true));
-        decreaseEditImg.setOnClickListener(v -> adjustAmount(false));
+	private void setupListeners() {
+		if (listenersSetup)
+			return;
 
-        // ניקוי טקסט בלחיצה על EditText
-        consumedProductNewAmountTv.setOnClickListener(v ->
-                consumedProductNewAmountTv.setText(""));
+		saveEdit.setOnClickListener(v -> {
+			String amountText = consumedProductNewAmountTv.getText().toString().trim();
+			if (!isValidAmount(amountText)) {
+				return;
+			}
 
-        listenersSetup = true; }
+			try {
+				double newAmount = Double.parseDouble(amountText);
+				consumedProductManager.editItemAmountById(newAmount, consumedProduct.getId(), calendar);
+				if (listener != null) {
+					listener.onEditComplete();
+				}
+				dialog.dismiss();
+			} catch (NumberFormatException e) {
+				// הודעת שגיאה
+			}
+		});
 
-    private void adjustAmount(boolean increase) {
-        if (consumedProduct == null || consumedProduct.getProductItem() == null) {
-            return;
-        }
+		increaseEditImg.setOnClickListener(v -> adjustAmount(true));
+		decreaseEditImg.setOnClickListener(v -> adjustAmount(false));
 
-        String currentText = consumedProductNewAmountTv.getText().toString().trim();
-        double currentAmount = 0;
+		// ניקוי טקסט בלחיצה על EditText
+		consumedProductNewAmountTv.setOnClickListener(v -> consumedProductNewAmountTv.setText(""));
 
-        if (!currentText.isEmpty()) {
-            try {
-                currentAmount = Double.parseDouble(currentText);
-            } catch (NumberFormatException e) {
-                currentAmount = 0; // ערך ברירת מחדל
-            }
-        }
-        String unit = consumedProduct.getProductItem().getUnit();
-        String newAmount = AmountAdjuster.getNewAmountFormatedText(currentAmount, increase, unit);
-        consumedProductNewAmountTv.setText(newAmount);
-    }
+		listenersSetup = true;
+	}
 
-    //אולי להעבירה פעולה למחלקה חיצונית?
-    private boolean isValidAmount(String amountText) {
-        return !amountText.isEmpty() && amountText.matches("\\d+(\\.\\d+)?");
-    }
+	private void adjustAmount(boolean increase) {
+		if (consumedProduct == null || consumedProduct.getProductItem() == null) {
+			return;
+		}
 
-    public void close(){
-        dialog.dismiss();
-    }
-    public boolean isClosed(){
-        return !dialog.isShowing();
-    }
+		String currentText = consumedProductNewAmountTv.getText().toString().trim();
+		double currentAmount = 0;
+
+		if (!currentText.isEmpty()) {
+			try {
+				currentAmount = Double.parseDouble(currentText);
+			} catch (NumberFormatException e) {
+				currentAmount = 0; // ערך ברירת מחדל
+			}
+		}
+		String unit = consumedProduct.getProductItem().getUnit();
+		String newAmount = AmountAdjuster.getNewAmountFormatedText(currentAmount, increase, unit);
+		consumedProductNewAmountTv.setText(newAmount);
+	}
+
+	// אולי להעבירה פעולה למחלקה חיצונית?
+	private boolean isValidAmount(String amountText) {
+		return !amountText.isEmpty() && amountText.matches("\\d+(\\.\\d+)?");
+	}
+
+	public void close() {
+		dialog.dismiss();
+	}
+
+	public boolean isClosed() {
+		return !dialog.isShowing();
+	}
 }

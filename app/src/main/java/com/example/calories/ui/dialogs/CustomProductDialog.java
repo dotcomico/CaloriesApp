@@ -29,232 +29,254 @@ import java.util.Objects;
 
 public class CustomProductDialog {
 
-    private Dialog dialog;
-    private final Context context;
-    ProductStorageManager productStorageManager;
-    private OnCustomProductItemListener listener;
-    private boolean listenersSetup = false;
+	private Dialog dialog;
+	private final Context context;
+	ProductStorageManager productStorageManager;
+	private OnCustomProductItemListener listener;
+	private boolean listenersSetup = false;
 
-    // בראש המחלקה CustomProductDialog, לפני הבנאי (constructor)
+	// בראש המחלקה CustomProductDialog, לפני הבנאי (constructor)
 
-    private LinearLayout ly_productCreationForm;
-    private LinearLayout ly_customProductBottomSheet;
-    private ImageView iv_collapseBottomSheet;
-    private EditText newProductNameEditText;
-    private EditText newProductCaloriesEditText;
-    private SearchView selfSearchSearchView;
-    private Button saveNewProductItemButton, webSearchSuggestion;
-    private ImageView saveAndStay;
-    private UnitSelectorView unitSelectorView;
-    private BarcodeDialogHandler barcodeDialogHandler;
-    private ImageView iv_barcodeScan;
+	private LinearLayout ly_productCreationForm;
+	private LinearLayout ly_customProductBottomSheet;
+	private ImageView iv_collapseBottomSheet;
+	private EditText newProductNameEditText;
+	private EditText newProductCaloriesEditText;
+	private SearchView selfSearchSearchView;
+	private Button saveNewProductItemButton, webSearchSuggestion;
+	private ImageView saveAndStay;
+	private UnitSelectorView unitSelectorView;
+	private BarcodeDialogHandler barcodeDialogHandler;
+	private ImageView iv_barcodeScan;
 
+	public interface OnCustomProductItemListener {
+		void onItemCreated(Product customProduct); // כשמשתמש שומר
 
-    public interface OnCustomProductItemListener {
-        void onItemCreated(Product customProduct);  // כשמשתמש שומר
-        void onSearch(String suggestion);
-        void onSearchSuggestionClicked(String suggestion);
-        void onDialogClose();
-    }
-    public void setOnCustomProductItemListener(OnCustomProductItemListener listener) {
-        this.listener = listener;
-    }
-    public CustomProductDialog(Context context ) {
-        this.context = context;
-        createDialog();
-    }
+		void onSearch(String suggestion);
 
-    private void createDialog() {
-            dialog = new Dialog(context);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.dialog_product_custom);
+		void onSearchSuggestionClicked(String suggestion);
 
-            Objects.requireNonNull(dialog.getWindow()).setLayout(  ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable( Color.TRANSPARENT));
-            dialog.getWindow().setGravity( Gravity.BOTTOM);
-            dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+		void onDialogClose();
+	}
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-            initViews();
-}
+	public void setOnCustomProductItemListener(OnCustomProductItemListener listener) {
+		this.listener = listener;
+	}
 
-    private void initViews() {
-        ly_productCreationForm =dialog.findViewById( R.id.ly_productCreationForm);
-        ly_customProductBottomSheet = dialog.findViewById( R.id.ly_customProductBottomSheet);
-        newProductNameEditText = dialog.findViewById( R.id.newProductNameEditText );
-        newProductCaloriesEditText = dialog.findViewById( R.id.newProductCaloriesEditText );
-        selfSearchSearchView = dialog.findViewById( R.id.selfSearchSearchView);
-        saveNewProductItemButton =dialog.findViewById( R.id.saveNewProductItemButton);
-        webSearchSuggestion =dialog.findViewById( R.id.webSearchSuggestion);
-        saveAndStay =dialog.findViewById( R.id.saveAndStay);
-        unitSelectorView = dialog.findViewById(R.id.unit_selector);
-        iv_barcodeScan =dialog.findViewById( R.id.iv_barcodeScan);
-    }
+	public CustomProductDialog(Context context) {
+		this.context = context;
+		createDialog();
+	}
 
-    public void show(ProductStorageManager productStorageManager , String nameQuery , String barcodeQuery  ) {
-        this.productStorageManager= productStorageManager;
-        barcodeDialogHandler =new BarcodeDialogHandler(context);
+	private void createDialog() {
+		dialog = new Dialog(context);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.dialog_product_custom);
 
-        dialog.show();
-        setupData(nameQuery , barcodeQuery);
-        setupListeners();
-    }
-    private void setupData(String nameQuery , String barcodeQuery) {
-        //unitSelectorView.selectDefaultUnit();
-        if (!nameQuery.isEmpty()){
-        newProductNameEditText.setText( nameQuery );}
-        if (!barcodeQuery.isEmpty()){
-           barcodeDialogHandler.getBarcodeEditText().setText( barcodeQuery );}
-    }
-    private void setupListeners() {
-        if (listenersSetup) return;
+		Objects.requireNonNull(dialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT);
+		dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		dialog.getWindow().setGravity(Gravity.BOTTOM);
+		dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 
-        iv_barcodeScan.setOnClickListener( view -> {barcodeDialogHandler.showDialog();} );
+		dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+		initViews();
+	}
 
-        saveNewProductItemButton.setOnClickListener(this::saveNewProduct);
+	private void initViews() {
+		ly_productCreationForm = dialog.findViewById(R.id.ly_productCreationForm);
+		ly_customProductBottomSheet = dialog.findViewById(R.id.ly_customProductBottomSheet);
+		newProductNameEditText = dialog.findViewById(R.id.newProductNameEditText);
+		newProductCaloriesEditText = dialog.findViewById(R.id.newProductCaloriesEditText);
+		selfSearchSearchView = dialog.findViewById(R.id.selfSearchSearchView);
+		saveNewProductItemButton = dialog.findViewById(R.id.saveNewProductItemButton);
+		webSearchSuggestion = dialog.findViewById(R.id.webSearchSuggestion);
+		saveAndStay = dialog.findViewById(R.id.saveAndStay);
+		unitSelectorView = dialog.findViewById(R.id.unit_selector);
+		iv_barcodeScan = dialog.findViewById(R.id.iv_barcodeScan);
+	}
 
-        saveAndStay.setOnClickListener(this::saveNewProduct);
+	public void show(ProductStorageManager productStorageManager, String nameQuery, String barcodeQuery) {
+		this.productStorageManager = productStorageManager;
+		barcodeDialogHandler = new BarcodeDialogHandler(context);
 
-        webSearchSuggestion.setOnClickListener( view -> {
-            String searchSuggestion = webSearchSuggestion.getText().toString().trim();
-            if (searchSuggestion.isEmpty()){
-                return;
-            }
+		dialog.show();
+		setupData(nameQuery, barcodeQuery);
+		setupListeners();
+	}
 
-            if (listener != null) {
-                listener.onSearchSuggestionClicked(searchSuggestion);
-            }
-            webSearchSuggestion.setVisibility( View.GONE );
-        } );
+	private void setupData(String nameQuery, String barcodeQuery) {
+		// unitSelectorView.selectDefaultUnit();
+		if (!nameQuery.isEmpty()) {
+			newProductNameEditText.setText(nameQuery);
+		}
+		if (!barcodeQuery.isEmpty()) {
+			barcodeDialogHandler.getBarcodeEditText().setText(barcodeQuery);
+		}
+	}
 
-        selfSearchSearchView.setOnClickListener( view -> {selfSearchSearchView.setIconified(false);} );
+	private void setupListeners() {
+		if (listenersSetup)
+			return;
 
-        selfSearchSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                if (listener != null) {
-                    listener.onSearch(s);
-                }
-                return  false;
-            }
+		iv_barcodeScan.setOnClickListener(view -> {
+			barcodeDialogHandler.showDialog();
+		});
 
-            @Override
-            public boolean onQueryTextChange(String s) {
-                return false;
-            }
-        });
+		saveNewProductItemButton.setOnClickListener(this::saveNewProduct);
 
-        newProductNameEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
+		saveAndStay.setOnClickListener(this::saveNewProduct);
 
-            }
-            @Override
-            public void onTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
-                newProductNameEditText.setBackgroundResource( R.drawable.edit_text_background);
+		webSearchSuggestion.setOnClickListener(view -> {
+			String searchSuggestion = webSearchSuggestion.getText().toString().trim();
+			if (searchSuggestion.isEmpty()) {
+				return;
+			}
 
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String searchQuery = newProductNameEditText.getText().toString().trim();
-                webSearchSuggestion.setText(searchQuery);
-                if(!searchQuery.isEmpty()){
-                    webSearchSuggestion.setVisibility( View.VISIBLE );
-                    webSearchSuggestion.setText( newProductNameEditText.getText().toString() + " " + "קלוריות" );
-                }else{
-                    webSearchSuggestion.setVisibility( View.GONE );
-                }
-                /* if (webview.getUrl().toString().equals( "https://www.google.com/search?q=" + et_food.getText().toString() +" "+ "קלוריות")){
-                    moreSerch.setVisibility( View.GONE );
-                }
-                */
+			if (listener != null) {
+				listener.onSearchSuggestionClicked(searchSuggestion);
+			}
+			webSearchSuggestion.setVisibility(View.GONE);
+		});
 
-            }
-        });
+		selfSearchSearchView.setOnClickListener(view -> {
+			selfSearchSearchView.setIconified(false);
+		});
 
-        newProductCaloriesEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
+		selfSearchSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			@Override
+			public boolean onQueryTextSubmit(String s) {
+				if (listener != null) {
+					listener.onSearch(s);
+				}
+				return false;
+			}
 
-            }
-            @Override
-            public void onTextChanged(CharSequence charSequence , int i , int i1 , int i2) {
-                newProductCaloriesEditText.setBackgroundResource( R.drawable.edit_text_background);
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
+			@Override
+			public boolean onQueryTextChange(String s) {
+				return false;
+			}
+		});
 
-        });
+		newProductNameEditText.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-        listenersSetup = true;
-    }
+			}
 
-    private void saveNewProduct(View v) {
+			@Override
+			public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+				newProductNameEditText.setBackgroundResource(R.drawable.edit_text_background);
 
-        String newProductName = newProductNameEditText.getText().toString().trim();
-        String newProductCalories = newProductCaloriesEditText.getText().toString().trim();
-        String newProductUnit = unitSelectorView.getUnit();
+			}
 
-        if (newProductName.isEmpty()) {
-            newProductNameEditText.setBackgroundResource( R.drawable.sty_red );
-            return;
-        }
-        if (newProductCalories.isEmpty() || !isValidAmount(newProductCalories)) {
-            newProductCaloriesEditText.setBackgroundResource( R.drawable.sty_red );
-            return;
-        }
+			@Override
+			public void afterTextChanged(Editable editable) {
+				String searchQuery = newProductNameEditText.getText().toString().trim();
+				webSearchSuggestion.setText(searchQuery);
+				if (!searchQuery.isEmpty()) {
+					webSearchSuggestion.setVisibility(View.VISIBLE);
+					webSearchSuggestion.setText(newProductNameEditText.getText().toString() + " " + "קלוריות");
+				} else {
+					webSearchSuggestion.setVisibility(View.GONE);
+				}
+				/*
+				 * if (webview.getUrl().toString().equals( "https://www.google.com/search?q=" +
+				 * et_food.getText().toString() +" "+ "קלוריות")){ moreSerch.setVisibility(
+				 * View.GONE ); }
+				 */
 
-        addToFoodList(v);  // הליסינר בפנים חשוב אך ניתן לשנות את הפעולות על מנת לנקות את הקוד ולשפר ביצועיו
+			}
+		});
 
-        newProductNameEditText.setBackgroundResource( R.drawable.edit_text_background);
-        newProductCaloriesEditText.setBackgroundResource( R.drawable.edit_text_background);
-        newProductCaloriesEditText.setText( "" );
+		newProductCaloriesEditText.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+			}
 
+			@Override
+			public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+				newProductCaloriesEditText.setBackgroundResource(R.drawable.edit_text_background);
+			}
 
-        makeToast( "\"" + newProductName +"\"" +" "+ newProductUnit +" נוסף למערכת!", context);
+			@Override
+			public void afterTextChanged(Editable editable) {
+			}
 
-    }
-    private void addToFoodList(View v){
-        //הוסף מזון לרשימת מוצרים שלי (רק אם אני בחיפוש עצמי או עורך מוצר קיים)
-        Product item;
-        String name = newProductNameEditText.getText().toString().trim();
-        String unit = unitSelectorView.getUnit();
-        String calories = newProductCaloriesEditText.getText().toString().trim();
-        String barcode = barcodeDialogHandler.getBarcodeEditText().getText().toString().trim();
+		});
 
-        item = new Product(   1 , name , unit , calories , barcode );
+		listenersSetup = true;
+	}
 
-        productStorageManager.addProductAndSave(item);
+	private void saveNewProduct(View v) {
 
-        if (listener != null && v == saveNewProductItemButton) {  // הליסטינר יכול לעבור למיקום אחר אבל יש לשים לב להגיון הפנימי
-            listener.onItemCreated(item);
-        }
-    }
+		String newProductName = newProductNameEditText.getText().toString().trim();
+		String newProductCalories = newProductCaloriesEditText.getText().toString().trim();
+		String newProductUnit = unitSelectorView.getUnit();
 
-    private boolean isValidAmount(String amountText) {
-        return !amountText.isEmpty() && amountText.matches("\\d+(\\.\\d+)?");
-    }
+		if (newProductName.isEmpty()) {
+			newProductNameEditText.setBackgroundResource(R.drawable.sty_red);
+			return;
+		}
+		if (newProductCalories.isEmpty() || !isValidAmount(newProductCalories)) {
+			newProductCaloriesEditText.setBackgroundResource(R.drawable.sty_red);
+			return;
+		}
 
-    public void close(){
-        if (listener != null){
-            listener.onDialogClose();
-        }
-        dialog.dismiss();
-    }
-    public boolean isClosed(){
-        return !dialog.isShowing();
-    }
+		addToFoodList(v); // הליסינר בפנים חשוב אך ניתן לשנות את הפעולות על מנת לנקות את הקוד ולשפר
+							// ביצועיו
 
-    public void handleBarcodeResult(IntentResult result) {
-        if (barcodeDialogHandler != null && result != null) {
-            barcodeDialogHandler.handleActivityResult(result);
-        }
-    }
-    public Dialog getDialog(){
-        return dialog;
-    }
+		newProductNameEditText.setBackgroundResource(R.drawable.edit_text_background);
+		newProductCaloriesEditText.setBackgroundResource(R.drawable.edit_text_background);
+		newProductCaloriesEditText.setText("");
+
+		makeToast("\"" + newProductName + "\"" + " " + newProductUnit + " נוסף למערכת!", context);
+
+	}
+
+	private void addToFoodList(View v) {
+		// הוסף מזון לרשימת מוצרים שלי (רק אם אני בחיפוש עצמי או עורך מוצר קיים)
+		Product item;
+		String name = newProductNameEditText.getText().toString().trim();
+		String unit = unitSelectorView.getUnit();
+		String calories = newProductCaloriesEditText.getText().toString().trim();
+		String barcode = barcodeDialogHandler.getBarcodeEditText().getText().toString().trim();
+
+		item = new Product(1, name, unit, calories, barcode);
+
+		productStorageManager.addProductAndSave(item);
+
+		if (listener != null && v == saveNewProductItemButton) { // הליסטינר יכול לעבור למיקום אחר אבל יש לשים לב להגיון
+																	// הפנימי
+			listener.onItemCreated(item);
+		}
+	}
+
+	private boolean isValidAmount(String amountText) {
+		return !amountText.isEmpty() && amountText.matches("\\d+(\\.\\d+)?");
+	}
+
+	public void close() {
+		if (listener != null) {
+			listener.onDialogClose();
+		}
+		dialog.dismiss();
+	}
+
+	public boolean isClosed() {
+		return !dialog.isShowing();
+	}
+
+	public void handleBarcodeResult(IntentResult result) {
+		if (barcodeDialogHandler != null && result != null) {
+			barcodeDialogHandler.handleActivityResult(result);
+		}
+	}
+
+	public Dialog getDialog() {
+		return dialog;
+	}
 
 //    public void addBarcode(String barcode){
 //        if (barcodeDialogHandler != null && barcode != null) {

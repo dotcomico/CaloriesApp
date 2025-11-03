@@ -1,141 +1,140 @@
 package com.example.calories.data.models;
+
 import static com.example.calories.utils.AppConstants.*;
 
 import androidx.annotation.NonNull;
 
 public class Product {
-    /// לשנות calorieText לInt
-    private int itemState; // הבחנה בין מוצר פרטי למוצר במערכת (0=מערכת, 1=פרטי)
-    private String name; // שם מוצר
-    private String unit; // סוג המדד כמחרוזת
-    private String calorieText; /// קלוריות
-    private String barcode;
-    private boolean isFavorite;
-    private boolean isMarked;
+	/// לשנות calorieText לInt
+	private int itemState; // הבחנה בין מוצר פרטי למוצר במערכת (0=מערכת, 1=פרטי)
+	private String name; // שם מוצר
+	private String unit; // סוג המדד כמחרוזת
+	private String calorieText; /// קלוריות
+	private String barcode;
+	private boolean isFavorite;
+	private boolean isMarked;
 
-    public Product() {
-        // קונסטרקטור ריק
-    }
-    public Product(int itemState, String name, String unit,
-                   String calorieText, String barcode , boolean isFavorite, boolean isMarked) {
-        this.itemState = itemState;
-        this.name = name.trim();
-        this.unit = unit.trim();
-        this.calorieText = calorieText.trim();
-        this.barcode = barcode.trim();
-        this.isFavorite = isFavorite;
-        this.isMarked = isMarked;
-    }
+	public Product() {
+		// קונסטרקטור ריק
+	}
 
-    public Product(int itemState, String name, String unit,
-                   String calorieText, String barcode) {
-        this.itemState = itemState;
-        this.name = name.trim();
-        this.unit = unit.trim();
-        this.calorieText = calorieText.trim();
-        this.barcode = barcode.trim();
-    }
+	public Product(int itemState, String name, String unit, String calorieText, String barcode, boolean isFavorite,
+			boolean isMarked) {
+		this.itemState = itemState;
+		this.name = name.trim();
+		this.unit = unit.trim();
+		this.calorieText = calorieText.trim();
+		this.barcode = barcode.trim();
+		this.isFavorite = isFavorite;
+		this.isMarked = isMarked;
+	}
 
-    // Getters and Setters
+	public Product(int itemState, String name, String unit, String calorieText, String barcode) {
+		this.itemState = itemState;
+		this.name = name.trim();
+		this.unit = unit.trim();
+		this.calorieText = calorieText.trim();
+		this.barcode = barcode.trim();
+	}
 
-    public boolean isFavorite() {
-        return isFavorite;
-    }
+	// Getters and Setters
 
-    public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
-    }
+	public boolean isFavorite() {
+		return isFavorite;
+	}
 
-    public boolean isMarked() {
-        return isMarked;
-    }
+	public void setFavorite(boolean favorite) {
+		isFavorite = favorite;
+	}
 
-    public void setMarked(boolean marked) {
-        isMarked = marked;
-    }
+	public boolean isMarked() {
+		return isMarked;
+	}
 
-    public int getItemState() {
-        return itemState;
-    }
+	public void setMarked(boolean marked) {
+		isMarked = marked;
+	}
 
-    public void setItemState(int itemState) {
-        this.itemState = itemState;
-    }
+	public int getItemState() {
+		return itemState;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setItemState(int itemState) {
+		this.itemState = itemState;
+	}
 
-    public void setName(String name) {
-        this.name = name.trim();
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getUnit() {
-        return unit;
-    }
+	public void setName(String name) {
+		this.name = name.trim();
+	}
 
-    public void setUnit(String unit) {
-        this.unit = unit.trim();
-    }
+	public String getUnit() {
+		return unit;
+	}
 
-    public String getCalorieText() {
-        return calorieText;
-    }
+	public void setUnit(String unit) {
+		this.unit = unit.trim();
+	}
 
-    public void setCalorieText(String calorieText) {
-        this.calorieText = calorieText.trim();
-    }
+	public String getCalorieText() {
+		return calorieText;
+	}
 
-    public String getBarcode() {
-        return barcode;
-    }
+	public void setCalorieText(String calorieText) {
+		this.calorieText = calorieText.trim();
+	}
 
-    public void setBarcode(String barcode) {
-        this.barcode = barcode.trim();
-    }
+	public String getBarcode() {
+		return barcode;
+	}
 
-    /**
-     * בדיקה האם המוצר הוא מוצר מערכת
-     * @return true אם מוצר מערכת, false אחרת
-     */
-    public boolean isSystemItem() {
-        return itemState == PRODUCT_STATE_SYSTEM;
-    }
+	public void setBarcode(String barcode) {
+		this.barcode = barcode.trim();
+	}
 
-    /**
-     * בדיקה האם המוצר הוא מוצר פרטי
-     * @return true אם מוצר פרטי, false אחרת
-     */
-    public boolean isPrivateItem() {
-        return itemState == PRODUCT_STATE_CUSTOM;
-    }
+	/**
+	 * בדיקה האם המוצר הוא מוצר מערכת
+	 * 
+	 * @return true אם מוצר מערכת, false אחרת
+	 */
+	public boolean isSystemItem() {
+		return itemState == PRODUCT_STATE_SYSTEM;
+	}
 
-    /**
-     * בדיקה האם יש לקלורי טקסט תקין
-     * @return true אם יש ערך קלוריות תקין, false אחרת
-     */
-    public boolean hasValidCalories() {
-        if (calorieText == null || calorieText.trim().isEmpty()) {
-            return false;
-        }
+	/**
+	 * בדיקה האם המוצר הוא מוצר פרטי
+	 * 
+	 * @return true אם מוצר פרטי, false אחרת
+	 */
+	public boolean isPrivateItem() {
+		return itemState == PRODUCT_STATE_CUSTOM;
+	}
 
-        try {
-            double calories = Double.parseDouble(calorieText);
-            return calories >= 0;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
+	/**
+	 * בדיקה האם יש לקלורי טקסט תקין
+	 * 
+	 * @return true אם יש ערך קלוריות תקין, false אחרת
+	 */
+	public boolean hasValidCalories() {
+		if (calorieText == null || calorieText.trim().isEmpty()) {
+			return false;
+		}
 
+		try {
+			double calories = Double.parseDouble(calorieText);
+			return calories >= 0;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "Product{" +
-                "name='" + name + '\'' +
-                ", unit='" + unit + '\'' +
-                ", calories='" + calorieText + '\'' +
-                ", itemState=" + itemState +
-                '}';
-    }
+	@NonNull
+	@Override
+	public String toString() {
+		return "Product{" + "name='" + name + '\'' + ", unit='" + unit + '\'' + ", calories='" + calorieText + '\''
+				+ ", itemState=" + itemState + '}';
+	}
 }
